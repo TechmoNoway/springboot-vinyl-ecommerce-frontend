@@ -1,0 +1,125 @@
+.cart-list {
+    width: 300px;
+    font-family: var(--font-family);
+
+    .cart-item {
+        margin-left: 0;
+    }
+}
+
+.menu-popper {
+    padding-bottom: 25px;
+}
+
+.total-count {
+    color: #697077;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 18px;
+    align-items: center;
+    width: 278px;
+    font-family: var(--font-family);
+    margin-left: 11px;
+    padding: 10px 10px;
+    border-bottom: 1px solid rgba(22, 24, 35, 0.12);
+}
+
+.cart-item {
+    width: 100%;
+
+    justify-content: center;
+}
+
+.inner {
+    margin-left: 11px;
+    width: 278px;
+    border-radius: 0;
+    font-family: var(--font-family);
+    line-height: 18px;
+    align-items: center;
+    padding: 10px 15px;
+    justify-content: space-between;
+    display: flex;
+    border-bottom: 1px solid rgba(22, 24, 35, 0.12);
+
+    &:hover {
+        background-color: rgba(22, 24, 35, 0.03);
+    }
+}
+
+.item-image {
+    width: 80px;
+    height: 80px;
+}
+
+.item-title {
+    line-height: 24px;
+}
+
+.item-price {
+    font-size: 13px;
+    color: #000000;
+}
+
+.item-name {
+    color: #697077;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.amount {
+    margin-left: 11px;
+    width: 278px;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.amount-title {
+    color: #697077;
+    font-size: 16px;
+}
+
+.amount-price {
+    color: #697077;
+    font-size: 15px;
+}
+
+.ToCartButton {
+    margin-left: 25px;
+    width: 250px;
+    justify-content: center;
+    border: 2px solid #000000;
+    height: 41px;
+    font-size: 13px;
+    display: flex;
+    color: #000000;
+    align-items: center;
+}
+
+.ToPaymentButton {
+    margin-top: 10px;
+    margin-left: 25px;
+    width: 250px;
+    justify-content: center;
+    border: 2px solid #000000;
+    height: 41px;
+    font-size: 13px;
+    display: flex;
+    background-color: #000000;
+    color: #ffffff;
+    align-items: center;
+}
+
+.empty-title {
+    justify-content: center;
+    font-size: 13px;
+    display: flex;
+    color: #696969;
+    align-items: center;
+    height: 41px;
+    padding-top: 8px;
+}
