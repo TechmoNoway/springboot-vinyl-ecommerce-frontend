@@ -34,9 +34,9 @@ function Login() {
 
     useEffect(() => {
         const getUserList = async () => {
-            const { data: userlist } = await axios.get('http://localhost:8081/api/user/getAllUsers');
+            const { data: userListResponse } = await axios.get('http://localhost:8081/api/user/getAllUsers');
 
-            setUserList(userlist.data);
+            setUserList(userListResponse.data);
         };
 
         getUserList();

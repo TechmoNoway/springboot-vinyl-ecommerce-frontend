@@ -1,6 +1,10 @@
+.search, .search-result{
+    width: 380px;
+}
+
+
 .search {
     color: #999999;
-    width: 310px;
     padding-left: 10px;
     height: 33px;
     position: relative;
@@ -22,6 +26,17 @@
     &:focus-within {
         border-color: #999999;
     }
+}
+
+.search-result{
+    
+}
+
+.search-title {
+    padding: 5px 12px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: rgba(22, 24, 35, 0.5);
 }
 
 .search-btn {

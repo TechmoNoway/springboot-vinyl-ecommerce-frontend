@@ -268,6 +268,19 @@ function Home() {
                                     alt=""
                                 ></img>
 
+                                <div className={cx('add-links-wrap')}>
+
+                                        <div>
+
+
+                                        </div>
+
+                                        <div>
+
+                                            
+                                        </div>
+                                </div>
+
                                 <div className={cx('vinyl-product-title')}>
                                     <p className={cx('vinyl-name')}>AFTER HOURS</p>
                                     <p className={cx('vinyl-author')}>The Weekend</p>
