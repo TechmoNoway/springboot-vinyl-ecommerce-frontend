@@ -7,11 +7,13 @@ import { faFacebook, faInstagram, faSpotify, faTiktok, faYoutube } from '@fortaw
 import { DiscIcon, DroppingIcon, OkIcon, ShippingIcon } from '~/asset/Icons';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
 function Home() {
     const [user, setUser] = useState({});
+    const [bestDiscList, setBestDiscList] = useState([]);
 
     useEffect(() => {
         const loggedInUser = localStorage.getItem('userInfoData');
@@ -19,6 +21,17 @@ function Home() {
             const foundUser = JSON.parse(loggedInUser);
             setUser(foundUser);
         }
+
+        const handleGetBestDiscs = async () => {
+
+            const { data: response } = await axios.get('http://localhost:8081/api/disc/getBestDiscs');
+
+            setBestDiscList(response.data)
+
+        } 
+
+        handleGetBestDiscs();
+
     }, []);
 
     
@@ -260,178 +273,29 @@ function Home() {
                     </div>
 
                     <div className={cx('ready-vinyl-content')}>
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2023/03/602508818400.jpg"
-                                    alt=""
-                                ></img>
+                        {bestDiscList.map((item) => (
+                            <div key={item.id} className={cx('vinyl-product')}>
+                                <Link to={`/product/${item.albumName}`}>
+                                    <img className={cx('vinyl-image')} src={item.image} alt=""></img>
 
-                                <div className={cx('add-links-wrap')}>
+                                    <div className={cx('add-links-wrap')}>
+                                        <div></div>
 
-                                        <div>
+                                        <div></div>
+                                    </div>
 
-
+                                    <div className={cx('vinyl-product-title')}>
+                                        <p className={cx('vinyl-name')}>{item.albumName}</p>
+                                        <p className={cx('vinyl-author')}>{item.artist}</p>
+                                        <p className={cx('vinyl-price')}>{item.price.toLocaleString('en-US')} đ</p>
+                                        <div className={cx('vinyl-stock-status')}>
+                                            <span className={cx('vinyl-onstock')}>{item.stockStatus}</span>
+                                            <span className={cx('vinyl-status')}>{item.status}</span>
                                         </div>
-
-                                        <div>
-
-                                            
-                                        </div>
-                                </div>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>AFTER HOURS</p>
-                                    <p className={cx('vinyl-author')}>The Weekend</p>
-                                    <p className={cx('vinyl-price')}>1,350,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-onstock')}>CÒN HÀNG</span>
-                                        <span className={cx('vinyl-status')}>M</span>
                                     </div>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2021/04/blackpink-the-album-pink-front-800x800.jpg"
-                                    alt=""
-                                ></img>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>THE ALBUM</p>
-                                    <p className={cx('vinyl-author')}>Blackpink</p>
-                                    <p className={cx('vinyl-price')}>910,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-outstock')}>ĐANG VỀ</span>
-                                        <span className={cx('vinyl-status')}>M</span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2022/12/kiotviet_bf084d4d5bf36652fc84fee20b595ae9-800x800.jpg"
-                                    alt=""
-                                ></img>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>AM</p>
-                                    <p className={cx('vinyl-author')}>Arctic Monkeys</p>
-                                    <p className={cx('vinyl-price')}>980,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-onstock')}>CÒN HÀNG</span>
-                                        <span className={cx('vinyl-status')}>M</span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2021/04/blackpink-the-album-pink-front-800x800.jpg"
-                                    alt=""
-                                ></img>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>MODAL SOUL</p>
-                                    <p className={cx('vinyl-author')}>Nujabes</p>
-                                    <p className={cx('vinyl-price')}>1,550,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-onstock')}>CÒN HÀNG</span>
-                                        <span className={cx('vinyl-status')}>M</span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2023/03/602577915123.jpg"
-                                    alt=""
-                                ></img>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>ABBEY ROAD</p>
-                                    <p className={cx('vinyl-author')}>The Beatles</p>
-                                    <p className={cx('vinyl-price')}>1,030,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-outstock')}>ĐANG VỀ</span>
-                                        <span className={cx('vinyl-status')}>M</span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2023/03/9226390.jpg"
-                                    alt=""
-                                ></img>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>BORN TO DIE</p>
-                                    <p className={cx('vinyl-author')}>Lana Del Rey</p>
-                                    <p className={cx('vinyl-price')}>970,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-outstock')}>ĐANG VỀ</span>
-                                        <span className={cx('vinyl-status')}>M</span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2023/05/16.jpg"
-                                    alt=""
-                                ></img>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>FRIDAY MAGIC</p>
-                                    <p className={cx('vinyl-author')}>Meiko Nakahara</p>
-                                    <p className={cx('vinyl-price')}>1,350,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-onstock')}>CÒN HÀNG</span>
-                                        <span className={cx('vinyl-status')}>M</span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
-
-                        <div className={cx('vinyl-product')}>
-                            <Link to="/">
-                                <img
-                                    className={cx('vinyl-image')}
-                                    src="https://vocrecords.vn/wp-content/uploads/2023/01/kiotviet_73e7a22404315384c970f093e062e157-800x800.jpg"
-                                    alt=""
-                                ></img>
-
-                                <div className={cx('vinyl-product-title')}>
-                                    <p className={cx('vinyl-name')}>25</p>
-                                    <p className={cx('vinyl-author')}>Adele</p>
-                                    <p className={cx('vinyl-price')}>950,000 đ</p>
-                                    <div className={cx('vinyl-stock-status')}>
-                                        <span className={cx('vinyl-outstock')}>ĐANG VỀ</span>
-                                        <span className={cx('vinyl-status')}>M</span>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
+                                </Link>
+                            </div>
+                        ))}
                     </div>
 
                     <div className={cx('ready-vinyl-footer')}>

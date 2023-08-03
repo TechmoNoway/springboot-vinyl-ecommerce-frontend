@@ -66,7 +66,10 @@ function Header() {
             setUser(JSON.parse(localStorage.getItem('userInfoData')));
             setCurrentUser(true);
         }
-    }, []);
+    }, [user, setUser]);
+
+   
+
 
     const cartItems = [
         // {

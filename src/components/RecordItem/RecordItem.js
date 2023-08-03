@@ -4,18 +4,17 @@ import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function RecordItem({ data }) {
+function RecordItem({ data, onClick }) {
     return (
-        <Link to="/" className={cx('wrapper')}>
+        <Link to={`/product/${data.albumName}`} className={cx('wrapper')} onClick={onClick}>
             <img className={cx('disc-image')} src={data.image} alt=""></img>
 
             <div className={cx('info')}>
                 <h5 className={cx('left-info')}>
                     <span className={cx('name')}>{data.albumName}</span>
-                    <div className={cx('price')}>{data.price}đ</div>
+                    <div className={cx('price')}>{data.price.toLocaleString('en-US')}đ</div>
                 </h5>
-                <span className={cx('status')}>{data.status}</span>
-                
+                <span className={cx('status')}>{data.stockStatus}</span>
             </div>
         </Link>
     );

@@ -8,6 +8,7 @@ import styles from './Search.module.scss';
 import axios from 'axios';
 import RecordItem from '~/components/RecordItem/RecordItem';
 import SearchPopper from '~/components/SearchPopper/SearchPopper';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +18,10 @@ function Search() {
     const [searchResult, setSearchResult] = useState([]);
 
     const [discList, setDistList] = useState([]);
+
+    const [showResult, setShowResult] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!searchValue.trim()) {
@@ -30,10 +35,10 @@ function Search() {
             );
 
             setDistList(response.data);
-            
-            setSearchResult(response.data) 
 
-            console.log(response.data);
+            setSearchResult(response.data);
+
+            // console.log(response.data);
         };
 
         getAllDiscs();
@@ -49,23 +54,34 @@ function Search() {
         }
     };
 
-    const handleSubmit = () => {};
+    const handleHideResult = () => {
+        setShowResult(false);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        navigate(`/category/${searchValue}`);
+
+        handleHideResult();
+    };
 
     return (
         <div>
             <HeadlessTippy
                 interactive
-                visible={searchResult.length > 0}
-                placement='bottom-start'
+                visible={showResult && searchResult.length > 0}
+                placement="bottom-start"
                 render={(attr) => (
                     <div className={cx('search-result')} tabIndex="-1" {...attr}>
                         <SearchPopper>
                             {searchResult.map((item) => (
-                                <RecordItem key={item.id} data={item}></RecordItem>
+                                <RecordItem key={item.id} data={item} onClick={handleHideResult}></RecordItem>
                             ))}
                         </SearchPopper>
                     </div>
                 )}
+                onClickOutside={handleHideResult}
             >
                 <div className={cx('search')}>
                     <input
@@ -74,6 +90,7 @@ function Search() {
                         placeholder="Search songs, albums, artists..."
                         spellCheck={false}
                         onChange={handleChange}
+                        onFocus={() => setShowResult(true)}
                     />
 
                     <button className={cx('search-btn')} onClick={handleSubmit} onMouseDown={(e) => e.preventDefault()}>

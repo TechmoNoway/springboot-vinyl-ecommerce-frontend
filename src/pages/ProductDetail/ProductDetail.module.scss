@@ -1,0 +1,271 @@
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.content {
+    width: 1160px;
+}
+
+.content-inner {
+    display: flex;
+}
+
+//left content
+
+.left-content {
+    padding: 0 10px;
+    width: 50%;
+}
+
+.main-image {
+    width: 551.4px;
+    height: 551.4px;
+    border: 1px solid #f4f4f4;
+}
+
+.buying-notice {
+    margin-top: 20px;
+    padding: 19px;
+    width: 555px;
+    height: 203.63px;
+    background-color: #f2f4f8;
+}
+
+.notice-title {
+    align-items: center;
+    font-size: 20px;
+    font-family: var(--font-banner);
+    display: flex;
+    font-weight: 700;
+}
+
+.notice-title-text {
+    margin-left: 9px;
+    color: #222329;
+}
+
+.notice-info {
+    padding-left: 20px;
+
+    margin-top: 14px;
+}
+
+.notice-info-inner {
+    padding: 10px;
+}
+
+.notice-info-text {
+    font-size: 15px;
+    font-family: var(--font-family);
+    line-height: 24px;
+}
+
+.trade-link {
+    margin-top: 20px;
+    font-size: 15px;
+    font-family: var(--font-family);
+    font-weight: 700;
+    line-height: 15px;
+    text-transform: uppercase;
+}
+
+.trade-link-text {
+    color: #000000;
+}
+
+//right content
+
+.right-content {
+    padding: 0 10px;
+    width: 50%;
+}
+
+.album-name {
+    font-size: 25px;
+    font-weight: 700;
+    font-family: var(--font-banner);
+    letter-spacing: -0.25px;
+    line-height: 30px;
+    text-transform: uppercase;
+    word-spacing: 0;
+    color: #222529;
+}
+
+.artist {
+    font-size: 20px;
+    font-family: var(--font-family);
+    font-weight: 500;
+    line-height: 32px;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+
+.platform {
+    font-size: 16px;
+    font-family: var(--font-family);
+    line-height: 24px;
+    margin-top: 5px;
+    color: #697077;
+}
+
+.price-line {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.price {
+    font-size: 21px;
+    font-family: var(--font-banner);
+    line-height: 23.1px;
+    letter-spacing: -0.42px;
+    text-transform: uppercase;
+}
+
+.stock-status {
+    font-size: 10px;
+    font-family: var(--font-banner);
+    font-weight: 600;
+    letter-spacing: -0.42;
+    line-height: 16px;
+    padding: 4px 8px 4px 8px;
+    margin-left: 5px;
+    width: 54.6125px;
+    height: 26px;
+    color: #28a820;
+    background: linear-gradient(0deg, rgba(40, 168, 32, 0.15), rgba(40, 168, 32, 0.15)), #ffffff;
+}
+
+.action-buttons {
+    display: flex;
+    margin: 20px 0 0 0;
+    padding: 12px 0 16px 0;
+    border-top: 1px solid #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
+    height: 78.6px;
+    align-items: center;
+}
+
+.demo-audio-btn {
+    margin-right: 20px;
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-weight: bold;
+    width: 50px;
+    height: 40px;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1px solid #121619;
+    box-shadow: 4px 4px 0px #000000;
+    line-height: 34px;
+    letter-spacing: -0.21px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.demo-audio-icon{
+    color: #000000;
+}
+
+.favorite-btn {
+    margin-right: 20px;
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-weight: bold;
+    width: 65px;
+    height: 40px;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1px solid #121619;
+    box-shadow: 4px 4px 0px #000000;
+    line-height: 34px;
+    letter-spacing: -0.18px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.add-cart-btn {
+    font-family: var(--font-family);
+    font-size: 15px;
+    font-weight: bold;
+    width: 258px;
+    height: 40px;
+    padding: 10px 12px;
+    background: #fff27e;
+    border: 1px solid #121619;
+    box-shadow: 4px 4px 0px #000000;
+    line-height: 34px;
+    letter-spacing: -0.21px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.add-btn-content {
+    color: #000000;
+}
+
+.description {
+    font-size: 14px;
+    font-family: var(--font-family);
+    letter-spacing: -0.21;
+    line-height: 23.625px;
+    margin-top: 15px;
+    text-align: justify;
+}
+
+//disc info
+
+.disc-info {
+    margin-top: 30px;
+}
+
+.disc-info-title {
+    height: 38.6px;
+    color: #222329;
+    font-size: 20px;
+    font-family: var(--font-banner);
+    font-weight: 700;
+    line-height: 27px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #A2A9B0;
+    padding-bottom: 10px;
+}
+
+.info-table {
+    margin-top: 20px;
+    width: 100%;
+    
+}
+
+.info-table-item {
+    padding: 3px 0 3px 0;
+    height: 30px;
+}
+
+.info-item-label {
+    font-size: 16px;
+    font-weight: 300;
+    font-family: var(--font-family);
+    line-height: 24px;
+    vertical-align: top;
+    text-align: start;
+    width:50%;
+    color:  #121619;
+}
+
+.info-item-value {
+    font-size: 16px;
+    font-family: var(--font-family);
+    line-height: 24px;
+    padding: 3px 0;
+    color: #000000;
+}

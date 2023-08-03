@@ -19,13 +19,14 @@
 }
 
 .left-info {
+    width: 220px;
     padding-top: 3px;
     padding-bottom: 3px;
 }
 
 .name {
     color: #302e2a;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .price {
@@ -35,8 +36,17 @@
 }
 
 .status {
-    color: #302e2a;
-    padding-left: 40px;
+    height: 26px;
+    font-family: var(--font-banner);
+    display: flex;
+    font-weight: 600;
+    align-items: center;
+    width: 60px;
+    color: #28a820;
+    padding: 0 8px  ;
+    font-size: 10px;
+    text-transform: uppercase;
+    background: linear-gradient(0deg, rgba(40, 168, 32, 0.15), rgba(40, 168, 32, 0.15)), #ffffff;
 }
 
 .disc-image {
