@@ -58,12 +58,20 @@ function Search() {
         setShowResult(false);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        navigate(`/category/${searchValue}`);
+    const handleSubmit = async () => {
+        if (searchValue === '') {
+            navigate(`/category/AllDisc`);
+        } else {
+            navigate(`/category/${searchValue}`);
+        }
 
         handleHideResult();
+    };
+
+    const handleSearchKeydown = (e) => {
+        if (e.keyCode === 13) {
+            handleSubmit();
+        }
     };
 
     return (
@@ -91,6 +99,7 @@ function Search() {
                         spellCheck={false}
                         onChange={handleChange}
                         onFocus={() => setShowResult(true)}
+                        onKeyDown={handleSearchKeydown}
                     />
 
                     <button className={cx('search-btn')} onClick={handleSubmit} onMouseDown={(e) => e.preventDefault()}>

@@ -1,16 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
-import { Fragment, useContext, useEffect } from 'react';
+import { Fragment } from 'react';
 import { useState } from 'react';
 import { UserContext } from './context/UserContext';
 
 function App() {
     const [user, setUser] = useState({});
-
-    // useEffect(() => {
-    //     console.log(user);
-    // }, [user]);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>

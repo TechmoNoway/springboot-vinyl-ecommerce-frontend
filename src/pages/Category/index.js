@@ -4,8 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+import ReactPaginate from 'react-paginate';
 
 const cx = classNames.bind(styles);
 
@@ -14,17 +13,65 @@ function Category() {
 
     const [productList, setProductList] = useState([]);
 
+    const [currentItems, setCurrentItems] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemOffset, setItemOffset] = useState(0);
+    const itemsPerPage = 15;
+
     useEffect(() => {
         const handleFillProductList = async () => {
-            const { data: response } = await axios.get(
-                `http://localhost:8081/api/disc/getMoreDiscByName?searchParam=${searchParam}`,
-            );
+            if (searchParam === 'AllDisc') {
+                const { data: response } = await axios.get(`http://localhost:8081/api/disc/getAllDisc`);
 
-            setProductList(response.data);
+                setProductList(response.data);
+            } else {
+                const { data: response } = await axios.get(
+                    `http://localhost:8081/api/disc/getMoreDiscByName?searchParam=${searchParam}`,
+                );
+
+                setProductList(response.data);
+            }
         };
 
         handleFillProductList();
-    }, [searchParam]);
+
+        const endOffset = itemOffset + itemsPerPage;
+        setCurrentItems(productList.slice(itemOffset, endOffset));
+        setCurrentPage(Math.ceil(productList.length / itemsPerPage));
+    }, [searchParam, itemOffset, productList]);
+
+    console.log(productList);
+
+    const handlePageClick = (event) => {
+        const newOffset = (event.selected * itemsPerPage) % productList.length;
+        setItemOffset(newOffset);
+    };
+
+    const renderData = () => {
+        return currentItems.map((item) => (
+            <div key={item.id} className={cx('vinyl-product')}>
+                <Link to={`/product/${item.albumName}`}>
+                    <img className={cx('vinyl-image')} src={item.image} alt=""></img>
+
+                    <div className={cx('add-links-wrap')}>
+                        <div></div>
+
+                        <div></div>
+                    </div>
+
+                    <div className={cx('vinyl-product-title')}>
+                        <p className={cx('vinyl-name')}>{item.albumName}</p>
+                        <p className={cx('vinyl-author')}>{item.artist}</p>
+                        <p className={cx('vinyl-price')}>{item.price.toLocaleString('en-US')} đ</p>
+                        <div className={cx('vinyl-stock-status')}>
+                            <span className={cx('vinyl-onstock')}>{item.stockStatus}</span>
+                            <span className={cx('vinyl-status')}>{item.status}</span>
+                        </div>
+                    </div>
+                </Link>
+            </div>
+        ));
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -69,7 +116,7 @@ function Category() {
                 </div>
 
                 <div className={cx('product-list')}>
-                    {productList.map((item) => (
+                    {/* {currentItems.map((item) => (
                         <div key={item.id} className={cx('vinyl-product')}>
                             <Link to={`/product/${item.albumName}`}>
                                 <img className={cx('vinyl-image')} src={item.image} alt=""></img>
@@ -91,20 +138,26 @@ function Category() {
                                 </div>
                             </Link>
                         </div>
-                    ))}
+                    ))} */}
+
+                    {renderData()}
                 </div>
 
                 <div className={cx('footer')}>
-                    <div className={cx('page-numbers')}>
-                        <span className={cx('prev-page-btn')}>
-                            <FontAwesomeIcon className={cx('prev-icon')} icon={faAngleLeft} />
-                        </span>
-                        <span>1</span>
-                        <span>2</span>
-                        <span className={cx('next-page-btn')}>
-                            <FontAwesomeIcon className={cx('next-icon')} icon={faAngleRight} />
-                        </span>
-                    </div>
+                    <ReactPaginate
+                        pageCount={Math.ceil(productList.length / itemsPerPage)}
+                        pageRangeDisplayed={3}
+                        previousLabel="<"
+                        nextLabel=">"
+                        breakLabel={'...'}
+                        onPageChange={handlePageClick}
+                        containerClassName={cx('pagination')}
+                        activeClassName={cx('active')}
+                        renderOnZeroPageCount={null}
+                        pageClassName={cx('page-numbers')}
+                        previousClassName={cx('prev-page-btn')}
+                        nextClassName={cx('next-page-btn')}
+                    />
                 </div>
             </div>
         </div>

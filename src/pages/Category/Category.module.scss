@@ -193,12 +193,32 @@
     justify-content: right;
 }
 
-.page-numbers {
-    padding-top: 25px;
+.pagination {
     display: flex;
-    justify-content: space-between;
-    width: 271px;
+    justify-content: center;
+    list-style: none;
     align-items: center;
+    font-size: 13px;
+    gap: 5px;
+
+    .active {
+        background-color: #000000;
+        color: #ffffff;
+    }
+}
+
+.page-numbers {
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-family: var(--font-family);
+    font-size: 17px;
+
+    &:hover {
+        background-color: #000000;
+        color: #ffffff;
+    }
 }
 
 .prev-page-btn {
@@ -211,21 +231,14 @@
     display: flex;
     justify-content: center;
     cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-family);
+    font-size: 16px;
 
     &:hover {
         background-color: #000000;
-
-        .next-icon {
-            color: #ffffff;
-        }
+        color: #ffffff;
     }
-
-
-}
-
-.prev-icon {
-    font-size: 16px;
-    color: #000000;
 }
 
 .next-page-btn {
@@ -238,19 +251,12 @@
     display: flex;
     justify-content: center;
     cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-family);
+    font-size: 16px;
 
     &:hover {
         background-color: #000000;
-
-        .next-icon {
-            color: #ffffff;
-        }
+        color: #ffffff;
     }
-
-
-}
-
-.next-icon {
-    font-size: 16px;
-    color: #000000;
 }
