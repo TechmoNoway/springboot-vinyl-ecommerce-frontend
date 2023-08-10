@@ -44,18 +44,9 @@ const USER_ITEMS = [
 function Header() {
     const [currentUser, setCurrentUser] = useState(false);
 
-    // const [user, setUser] = useState({});
-
-    // useEffect(() => {
-    //     const loggedInUser = localStorage.getItem('userInfoData');
-    //     if (loggedInUser) {
-    //         const foundUser = JSON.parse(loggedInUser);
-    //         setUser(foundUser);
-    //         setCurrentUser(true)
-    //     }
-    // }, []);
-
     const { user, setUser } = useContext(UserContext);
+
+    // const [cartItems, setCartItems] = useState([])
 
     useEffect(() => {
         if (JSON.stringify(user) !== '{}') {
@@ -68,29 +59,11 @@ function Header() {
         }
     }, [user, setUser]);
 
-   
+    let cartItems = [];
 
-
-    const cartItems = [
-        // {
-        //     image: 'https://vocrecords.vn/wp-content/uploads/2021/04/blackpink-the-album-pink-front-150x150.jpg',
-        //     to: '/',
-        //     name: 'Blackpink - the Album',
-        //     price: '910,000đ',
-        // },
-        // {
-        //     image: 'https://vocrecords.vn/wp-content/uploads/2021/04/blackpink-the-album-pink-front-150x150.jpg',
-        //     to: '/',
-        //     name: 'Blackpink - the Album',
-        //     price: '910,000đ',
-        // },
-        // {
-        //     image: 'https://vocrecords.vn/wp-content/uploads/2021/04/blackpink-the-album-pink-front-150x150.jpg',
-        //     to: '/',
-        //     name: 'Blackpink - the Album',
-        //     price: '910,000đ',
-        // },
-    ];
+    if (JSON.parse(sessionStorage.getItem('cartList'))) {
+        cartItems = JSON.parse(sessionStorage.getItem('cartList'));
+    }
 
     const userMenu = [
         {
@@ -101,7 +74,7 @@ function Header() {
         {
             icon: <FontAwesomeIcon icon={faUser} />,
             title: 'View Profile',
-            to: '/@phuluon',
+            to: '/profile',
             separate: true,
         },
         {

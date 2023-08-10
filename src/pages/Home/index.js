@@ -349,7 +349,7 @@ function Home() {
                             <div className={cx('commit-item-inner')}>
                                 <Link to="/">
                                     <OkIcon className={cx('item-icon')} />
-                                </Link>{' '}
+                                </Link>
                                 <span className={cx('item-des')}>
                                     <Link to="/" className={cx('orderby-request')}>
                                         NHẬN ĐẶT ĐĨA RIÊNG THEO YÊU CẦU

@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+
+
+.wrapper {
+    background: #f9f9f9;
+    font-family: 'Roboto', sans-serif;
+}
+
+.container {
+    max-width: 1160px;
+    max-height: 2000px;
+}
+
+.page-title {
+    font-size: 40px;
+}
+
+.shadow {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.profile-tab-nav {
+    min-width: 250px;
+	border-right: 1px solid #dddddd;
+}
+
+.username {
+    font-size: 24px;
+}
+
+.navlink {
+	border-radius: 0px !important;
+	border: 1px solid #dddddd;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    color: #333333;
+}
+
+.nav-icon {
+    font-size: 15px;
+    margin-right: 10px;
+}
+
+.tabBigTitle {
+    font-size: 28px;
+    margin-bottom: 24px !important;
+}
+
+.tab-content {
+    padding: 48px !important;
+}
+
+.input-label {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.prop-input {
+    font-size: 16px;
+    line-height: 24px;
+    color: #495057;
+    height: 38px;
+}
+
+.textarea-input {
+    color: #495057;
+    font-size: 16px !important;
+    padding: 6px 12px !important;
+}
+
+// .tab-content{
+// 	flex:1;
+// }
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.account-action-button {
+    padding: 6px 12px;
+    font-size: 16px;
+    line-height: 24px;
+	margin-top: 25px;
+}
+
+.account-action-button + .account-action-button {
+	margin-left: 5px;
+}
+
+.nav-pills {
+    a.nav-link {
+        padding: 15px 20px;
+        border-bottom: 1px solid #ddd;
+        border-radius: 0;
+        color: #333;
+        i {
+            width: 20px;
+        }
+    }
+}
+
+.img-circle {
+    .shadow {
+        height: 100px;
+        width: 100px;
+        border-radius: 100%;
+        border: 5px solid #fff;
+    }
+}

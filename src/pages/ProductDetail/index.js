@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './ProductDetail.module.scss';
 import { RecordIcon } from '~/asset/Icons';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeOff } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
@@ -13,6 +13,10 @@ const cx = classNames.bind(styles);
 function ProductDetail() {
     const [product, setProduct] = useState({});
 
+    const oldCartList = [];
+
+    const navigate = useNavigate();
+
     const { albumName } = useParams();
 
     useEffect(() => {
@@ -21,19 +25,29 @@ function ProductDetail() {
                 `http://localhost:8081/api/disc/getLessDiscByName?searchParam=${albumName}`,
             );
 
-            setProduct(...response.data)
+            setProduct(...response.data);
         };
 
         handleLoadProductInfo();
-    },[albumName])
-
-    console.log(product);
+    }, [albumName]);
 
     const handleFormatPrice = () => {
         const formatter = new Intl.NumberFormat('en-US');
         const formattedNumber = formatter.format(product.price);
-        return formattedNumber
-    }
+        return formattedNumber;
+    };
+
+    const handleAddProductToCart = () => {
+        const arrayCartList = JSON.parse(sessionStorage.getItem('cartList'));
+
+        if (arrayCartList === null) {
+            sessionStorage.setItem('cartList', JSON.stringify([{ ...product }, ...oldCartList]));
+        } else {
+            sessionStorage.setItem('cartList', JSON.stringify([{ ...product }, ...arrayCartList]));
+        }
+
+        navigate('/cart');
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -92,18 +106,13 @@ function ProductDetail() {
                                     <FontAwesomeIcon icon={faHeart} />
                                 </span>
 
-                                <a href="/" className={cx('add-cart-btn')}>
+                                <span onClick={handleAddProductToCart} className={cx('add-cart-btn')}>
                                     <span className={cx('add-btn-content')}>THÊM VÀO GIỎ HÀNG</span>
-                                </a>
+                                </span>
                             </div>
 
                             <div className={cx('description')}>
-                                <p>
-                                    Album nhạc phim anime nổi tiếng, gồm 21 bản nhạc của nhạc sĩ Joe Hisaishi, mang đến
-                                    cho người nghe một trải nghiệm âm nhạc tuyệt vời với giai điệu lãng mạn và nhẹ những
-                                    âm thanh của piano, violin và những nhạc cụ khác, album đã trở thành một tác phẩm âm
-                                    nhạc đáng nghe.
-                                </p>
+                                <p>{product.description}</p>
                             </div>
                         </div>
 

@@ -14,6 +14,16 @@ function CartMenu({ children, hideOnClick = false, items = [] }) {
         });
     };
 
+    const handleCalTotalPrice = (array) => {
+        return array.reduce((acc, item) => acc + item['price'] * item['quantity'], 0);
+    };
+
+    const handleFormatPrice = (inputPrice) => {
+        const formatter = new Intl.NumberFormat('en-US');
+        const formattedNumber = formatter.format(inputPrice);
+        return formattedNumber;
+    };
+
     const renderResult = (attrs) => {
         return (
             <div className={cx('cart-list')} tabIndex="-1" {...attrs}>
@@ -25,19 +35,19 @@ function CartMenu({ children, hideOnClick = false, items = [] }) {
                         <div>
                             <p className={cx('amount')}>
                                 <strong className={cx('amount-title')}>TỔNG SỐ PHỤ:</strong>
-                                <strong className={cx('amount-price')}>1,880,000đ</strong>
+                                <strong className={cx('amount-price')}>
+                                    {handleFormatPrice(handleCalTotalPrice(items))} đ
+                                </strong>
                             </p>
-                            <Link className={cx('ToCartButton')} to="/">
+                            <Link className={cx('ToCartButton')} to="/cart">
                                 <div className={cx('ToCartButtonTitle')}>XEM GIỎ HÀNG</div>
                             </Link>
-                            <Link className={cx('ToPaymentButton')} to="/">
+                            <Link className={cx('ToPaymentButton')} to="/payment">
                                 <div className={cx('ToPaymentButtonTitle')}>THANH TOÁN</div>
                             </Link>
                         </div>
                     ) : (
-                        <div className={cx('empty-title')}>
-                            Chưa có sản phẩm trong giỏ hàng
-                        </div>
+                        <div className={cx('empty-title')}>Chưa có sản phẩm trong giỏ hàng</div>
                     )}
                 </CartPopper>
             </div>

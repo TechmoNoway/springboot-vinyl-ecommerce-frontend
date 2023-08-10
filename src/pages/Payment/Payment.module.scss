@@ -1,0 +1,477 @@
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.payment-content {
+    margin-top: 30px;
+    width: 1160px;
+    display: flex;
+    padding: 0 15px;
+}
+
+//left content
+
+.left-content {
+    width: 33.3333333333%;
+    padding: 0 10px;
+}
+
+.left-content-header {
+    width: 100%;
+    height: 32px;
+}
+
+.left-content-title {
+    font-family: var(--font-banner);
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+    color: #222329;
+}
+
+.left-content-body {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.fullname {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.firstname {
+    width: 48%;
+}
+
+.firstname-text {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.required {
+    text-decoration: underline dotted;
+    color: #c10000;
+}
+
+.firstname-box {
+    font-family: var(--font-family);
+    font-size: 13.6px;
+    line-height: 19.4286px;
+    vertical-align: middle;
+    height: 37.025px;
+    color: #777777;
+    border: 1px solid #cccccc;
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+}
+
+.firstname-input {
+    width: 100%;
+}
+
+.lastname {
+    width: 48%;
+}
+
+.lastname-text {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.lastname-box {
+    font-family: var(--font-family);
+    font-size: 13.6px;
+    line-height: 19.4286px;
+    vertical-align: middle;
+    height: 37.025px;
+    color: #777777;
+    border: 1px solid #cccccc;
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+}
+
+.lastname-input {
+    width: 100%;
+}
+
+.address {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.address-text {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.address-box {
+    font-family: var(--font-family);
+    font-size: 13.6px;
+    line-height: 19.4286px;
+    vertical-align: middle;
+    height: 37.025px;
+    color: #777777;
+    border: 1px solid #cccccc;
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+}
+
+.city {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.city-text {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.city-box {
+    font-family: var(--font-family);
+    font-size: 13.6px;
+    line-height: 19.4286px;
+    vertical-align: middle;
+    height: 37.025px;
+    color: #777777;
+    border: 1px solid #cccccc;
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+} 
+
+.input-city {
+    width: 100%;
+}
+
+.phone {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.phone-text {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.phone-box {
+    font-family: var(--font-family);
+    font-size: 13.6px;
+    line-height: 19.4286px;
+    vertical-align: middle;
+    height: 37.025px;
+    color: #777777;
+    border: 1px solid #cccccc;
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+}
+
+.input-phone{
+    width: 100%;
+}
+
+.email {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.email-text {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.email-box {
+    font-family: var(--font-family);
+    font-size: 13.6px;
+    line-height: 19.4286px;
+    vertical-align: middle;
+    height: 37.025px;
+    color: #777777;
+    border: 1px solid #cccccc;
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+}
+
+.input-email{
+    width:  100%;
+}
+
+.note {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.note-text {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.note-box {
+    font-family: var(--font-family);
+    font-size: 13.6px;
+    line-height: 19.4286px;
+    vertical-align: middle;
+    height: 37.025px;
+    color: #777777;
+    border: 1px solid #cccccc;
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    min-height: 300px;
+
+    &:focus {
+        border: 1px solid #cccccc;
+    }
+}
+
+//right content
+.right-content {
+    width: 67.6767676767%;
+    padding: 0 10px;
+}
+
+.right-content-header {
+    width: 100%;
+    height: 32px;
+}
+
+.right-content-title {
+    font-family: var(--font-banner);
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+    color: #222329;
+}
+
+.right-content-body {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.payment-method {
+    width: 100%;
+    background: #f2f4f8;
+    padding: 20px;
+}
+
+.payment-method-label {
+    font-family: var(--font-family);
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.payment-method-description {
+    margin-top: 8px;
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.payment-table {
+    width: 100%;
+    font-family: var(--font-family);
+}
+
+.payment-table-box {
+    width: 100%;
+    background: #f2f4f8;
+    height: 437.6px;
+    padding: 20px;
+}
+
+//payment table
+.payment-table-header {
+    width: 100%;
+    height: 44px;
+}
+
+.product-name-title {
+    width: 40%;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px;
+}
+
+.product-subprice-title {
+    width: 60%;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px;
+}
+
+.payment-item {
+    height: 68.8px;
+    width: 100%;
+}
+
+.product-name {
+    font-size: 14px;
+    line-height: 24px;
+    border-top: 1px solid #dddddd;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.product-quantity {
+    color: #222222;
+}
+
+.product-total {
+    font-size: 14px;
+    line-height: 24px;
+    border-top: 1px solid #dddddd;
+    border-left: 1px solid #dcdcdc;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.subtotal {
+    height: 44.8px;
+    width: 100%;
+}
+
+.subtotal-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    border-top: 1px solid #dddddd;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.subtotal-value {
+    font-size: 14px;
+    line-height: 24px;
+    border-top: 1px solid #dddddd;
+    border-left: 1px solid #dcdcdc;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.shipping-choices {
+    height: 148.8px;
+    width: 100%;
+}
+
+.shipping-choices-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    border-top: 1px solid #dddddd;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.choices {
+    border-top: 1px solid #dddddd;
+    border-left: 1px solid #dcdcdc;
+    padding: 10px;
+}
+
+.choice-radio + .choice-radio {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.choice-label {
+    font-size: 14px;
+    line-height: 24px;
+    margin-left: 5px;
+}
+
+.table-total {
+    height: 36.4px;
+    width: 100%;
+}
+
+.table-total-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    border-top: 1px solid #dddddd;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.table-total-value {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    border-top: 1px solid #dddddd;
+    border-left: 1px solid #dcdcdc;
+    padding: 10px;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.right-content-footer {
+    width: 100%;
+    height: 208.262px;
+    background: #f2f4f8;
+    padding: 20px;
+}
+
+.right-footer-policy {
+    font-family: var(--font-family);
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.right-footer-total {
+    margin-top: 20px;
+    font-family: var(--font-banner);
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 32px;
+    text-transform: uppercase;
+    color: #222329;
+}
+
+.order-btn {
+    height: 48.2625px;
+    width: 182.788px;
+    border: 1px solid #222222;
+    padding: 10px 40px 10px 40px;
+    font-family: var(--font-family);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 26.666px;
+    text-align: center;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-top: 20px;
+    background-color:  #222222;
+    color: #ffffff;
+    cursor: pointer;
+}
