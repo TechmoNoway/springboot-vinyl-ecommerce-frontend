@@ -51,11 +51,13 @@ function Login() {
 
         if (response.data !== null) {
             setUser({ ...response.data });
+
             if (remember) {
                 localStorage.setItem('userInfoData', JSON.stringify(response.data));
             }
             swal('Login Success', 'Welcome to Soleil Music', 'success');
             setTimeout(() => {
+                localStorage.setItem('userInfoData', JSON.stringify(response.data));
                 navigate('/');
             }, 50);
         } else {
@@ -81,6 +83,8 @@ function Login() {
 
         if (response.success) {
             swal('Thank You', 'Register Successfully', 'success');
+            localStorage.setItem('userInfoData', JSON.stringify(response.data));
+            navigate('/profile');
         } else {
             swal('Sorry', 'Register Failed', 'error');
         }
@@ -120,7 +124,8 @@ function Login() {
             console.log(response);
 
             setTimeout(() => {
-                navigate('/');
+                localStorage.setItem('userInfoData', JSON.stringify(response.data));
+                navigate('/profile');
             }, 50);
         }
     };
@@ -148,10 +153,10 @@ function Login() {
     };
 
     return (
-        <div className={cx('hero')}>
+        <div className={cx('wrapper')}>
             <div className={cx('form-box')}>
                 <div className={cx('button-box')}>
-                    <div ref={toggleButton} className={cx('btn')}></div>
+                    <div ref={toggleButton} className={cx('back-ground-btn')}></div>
                     <button type="button" className={cx('toggle-btn')} onClick={handleToggleLogin}>
                         Login
                     </button>
@@ -189,14 +194,14 @@ function Login() {
                     <input
                         type="text"
                         className={cx('input-field')}
-                        placeholder="Enter Username"
+                        placeholder="username"
                         onChange={(e) => setUsernameLogin(e.target.value)}
                         required
                     />
                     <input
-                        type="text"
+                        type="password"
                         className={cx('input-field')}
-                        placeholder="Enter Password"
+                        placeholder="password"
                         onChange={(e) => setPasswordLogin(e.target.value)}
                         required
                     />

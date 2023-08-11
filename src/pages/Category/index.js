@@ -12,7 +12,7 @@ function Category() {
     const { searchParam } = useParams();
 
     const [productList, setProductList] = useState([]);
-
+    const [selectedOption, setSelectedOption] = useState();
     const [currentItems, setCurrentItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
@@ -45,43 +45,30 @@ function Category() {
         setItemOffset(newOffset);
     };
 
-    const handleSortOptions = async (e) => {
-        const sortType = e.target.value;
-
-        if (sortType === 'DEFAULT') {
-            if (searchParam === 'AllDisc') {
-                const { data: response } = await axios.get(`http://localhost:8081/api/disc/getAllDisc`);
-                setProductList(response.data);
-            } else {
-                const { data: response } = await axios.get(
-                    `http://localhost:8081/api/disc/getMoreDiscByName?searchParam=${searchParam}`,
-                );
-                setProductList(response.data);
-            }
+    const handleChangeSelectedOption = (e) => {
+        const targetValue = e.target.value;
+        setSelectedOption(targetValue);
+        if (targetValue === 'DEFAULT') {
+            setCurrentItems(productList);
         }
-
-        if (sortType === 'ASC') {
-            console.log('ASC');
-
-            const { data: response } = await axios.get(
-                `http://localhost:8081/api/disc/getDiscByNameASC?searchParam=${searchParam}`,
-            );
-
-            setProductList(response.data);
-        }
-
-        if (sortType === 'DESC') {
-            console.log('DESC');
-
-            const { data: response } = await axios.get(
-                `http://localhost:8081/api/disc/getDiscByNameDESC?searchParam=${searchParam}`,
-            );
-
-            setProductList(response.data);
+        if (targetValue === 'ATOZ') {
+            setCurrentItems(() => {
+                return currentItems.slice().sort((a, b) => a.albumName.localeCompare(b.albumName));
+            });
+        } else if (targetValue === 'ZTOA') {
+            setCurrentItems(() => {
+                return currentItems.slice().sort((a, b) => b.albumName.localeCompare(a.albumName));
+            });
+        } else if (targetValue === 'PRICEASC') {
+            setCurrentItems(() => {
+                return currentItems.slice().sort((a, b) => a.price - b.price);
+            });
+        } else if (targetValue === 'PRICEDESC') {
+            setCurrentItems(() => {
+                return currentItems.slice().sort((a, b) => b.price - a.price);
+            });
         }
     };
-
-    console.log(productList);
 
     const renderData = () => {
         return currentItems.map((item) => (
@@ -137,15 +124,21 @@ function Category() {
                 <div className={cx('product-control')}>
                     <div className={cx('sort-product-module')}>
                         <p className={cx('sortby-text')}>SẮP XẾP BỞI:</p>
-                        <select className={cx('select-sort-kind')} onChange={handleSortOptions}>
+                        <select className={cx('select-sort-kind')} onChange={handleChangeSelectedOption}>
                             <option className={cx('select-item')} value="DEFAULT">
                                 Thứ Tự Mặc Định
                             </option>
-                            <option className={cx('select-item')} value="ASC">
+                            <option className={cx('select-item')} value="PRICEASC">
                                 Giá Tăng Dần
                             </option>
-                            <option className={cx('select-item')} value="DESC">
+                            <option className={cx('select-item')} value="PRICEDESC">
                                 Giá Giảm Dần
+                            </option>
+                            <option className={cx('select-item')} value="ATOZ">
+                                Xếp Từ A-Z
+                            </option>
+                            <option className={cx('select-item')} value="ZTOA">
+                                Xếp Từ Z-A
                             </option>
                         </select>
                     </div>

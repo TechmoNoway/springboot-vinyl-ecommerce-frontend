@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { UserContext } from '~/context/UserContext';
 import axios from 'axios';
 import swal from 'sweetalert';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,8 @@ function Payment() {
         firstname: '',
         lastname: '',
     });
+
+    const navigate = useNavigate()
 
     const { address, city, email, note, firstname, lastname, phone } = form;
     const handleEnterInput = (e) => {
@@ -62,8 +65,10 @@ function Payment() {
 
             const { data: orderSaveResponse } = await axios.post('http://localhost:8081/api/order/saveOrder', newOrder);
 
-            if (orderListResponse.success === true) {
-                console.log(orderSaveResponse.data);
+            if (orderSaveResponse.success === true) {
+                swal('Nice!', 'Thanks For Order Our Product', 'success');
+            }else {
+                swal('Sorry', 'Order Failed', 'error');
             }
         }
     };

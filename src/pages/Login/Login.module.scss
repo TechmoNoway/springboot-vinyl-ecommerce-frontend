@@ -1,4 +1,4 @@
-.hero {
+.wrapper {
     height: 100%;
     width: 100%;
     background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
@@ -10,8 +10,8 @@
 }
 
 .form-box {
-    width: 380px;
-    height: 515px;
+    width: 390px;
+    height: 550px;
     position: relative;
     margin: 6% auto;
     background: #ffffff;
@@ -35,9 +35,11 @@
     outline: none;
     position: relative;
     margin-left: 8px;
+    font-size: 13px;
+    font-family: var(--font-family);
 }
 
-.btn {
+.back-ground-btn {
     top: 0;
     left: 0;
     position: absolute;
@@ -48,30 +50,29 @@
     transition: 0.5s;
 }
 
-.social-icons{
+.social-icons {
     margin: 30px auto;
     text-align: center;
     justify-content: center;
     display: flex;
 }
 
-.social-image{
-    width: 30px;
+.social-image {
+    width: 35px;
     margin: 0 12px;
     box-shadow: 0 0 20px 0 #7f7f7f3d;
     cursor: pointer;
     border-radius: 50%;
 }
 
-.input-group{
+.input-group {
     top: 180px;
     position: absolute;
     width: 280px;
-    transition: .5s;
-
+    transition: 0.5s;
 }
 
-.input-field{
+.input-field {
     width: 100%;
     padding: 10px 0;
     margin: 5px 0;
@@ -81,9 +82,11 @@
     border-bottom: 1px solid #999;
     outline: none;
     background: transparent;
+    font-size: 16px;
+    color: #999;
 }
 
-.submit-btn{
+.submit-btn {
     width: 85%;
     padding: 10px 30px;
     font-size: 17px;
@@ -98,28 +101,32 @@
     border-radius: 30px;
 }
 
-.check-box{
+.check-box {
     margin: 30px 10px 30px 0;
 }
 
-.remember{
+.remember {
     color: #777;
-    font-size: 12px;
+    font-size: 13px;
     bottom: 68px;
     position: absolute;
+    font-family: var(--font-family);
+    margin-bottom: 3px;
 }
 
-.condition{
+.condition {
     color: #777;
-    font-size: 12px;
+    font-size: 13px;
     bottom: 68px;
     position: absolute;
+    font-family: var(--font-family);
+    margin-bottom: 3px;
 }
 
-.login{
+.login {
     left: 50px;
 }
 
-.register{
+.register {
     left: 450px;
 }
