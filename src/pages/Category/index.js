@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Category.module.scss';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
@@ -16,6 +16,7 @@ function Category() {
     const [currentItems, setCurrentItems] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
+    const { pathname } = useLocation();
     const itemsPerPage = 15;
 
     useEffect(() => {
@@ -39,6 +40,14 @@ function Category() {
 
         handleFillProductList();
     }, [searchParam, itemOffset]);
+
+    useEffect(() => {
+        document.documentElement.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'instant', // Optional if you want to skip the scrolling animation
+        });
+    }, [pathname]);
 
     const handlePageClick = (event) => {
         const newOffset = (event.selected * itemsPerPage) % productList.length;

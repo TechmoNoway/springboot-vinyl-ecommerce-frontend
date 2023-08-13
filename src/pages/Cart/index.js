@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from './Cart.module.scss';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import swal from 'sweetalert';
 
 const cx = classNames.bind(styles);
 
@@ -12,10 +13,19 @@ function Cart() {
     const [discountCode, setDiscountCode] = useState('');
     const [cartItemList, setCartItemList] = useState([{}]);
     const navigate = useNavigate();
+    const { pathname } = useLocation();
 
     useEffect(() => {
         setCartItemList(JSON.parse(sessionStorage.getItem('cartList')));
     }, []);
+
+    useEffect(() => {
+        document.documentElement.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'instant', // Optional if you want to skip the scrolling animation
+        });
+    }, [pathname]);
 
     const handleIncreaseQuantity = (index) => {
         setCartItemList(() => {
@@ -52,7 +62,57 @@ function Cart() {
     };
 
     const handleCalTotalPrice = (array) => {
-        // return array?.reduce((acc, item) => acc + item['price'] * item['quantity'], 0);
+        return array.reduce((acc, item) => acc + item['price'] * item['quantity'], 0);
+    };
+
+    const handleGotoPayment = () => {
+        if (cartItemList.length > 0) {
+            navigate('/payment');
+        } else {
+            swal('Sorry', 'You Dont Have Any Disc In Cart', 'warning');
+        }
+    };
+
+    const renderCartItem = () => {
+        if (cartItemList.length > 0) {
+            return (
+                <>
+                    {cartItemList.map((item, index) => (
+                        <tr key={index} className={cx('product-item')}>
+                            <td className={cx('product-remove')}>
+                                <p className={cx('product-remove-text')} onClick={() => handleRemoveFromCart(item?.id)}>
+                                    ×
+                                </p>
+                            </td>
+                            <td className={cx('product-thumbnail')}>
+                                <Link to={`/product/${item?.albumName}`}>
+                                    <img className={cx('product-image')} src={item.image} alt=""></img>
+                                </Link>
+                            </td>
+                            <td className={cx('product-name')}>{item.albumName}</td>
+                            <td className={cx('product-price')}>{handleFormatPrice(item.price)} ₫</td>
+                            <td className={cx('product-quantity')}>
+                                <span className={cx('minus')} onClick={() => handleDecreaseQuantity(index)}>
+                                    -
+                                </span>
+                                <input
+                                    className={cx('quantity-input')}
+                                    type="text"
+                                    value={item.quantity || 0}
+                                    onChange={() => console.log('CHNAGE')}
+                                />
+                                <span className={cx('plus')} onClick={() => handleIncreaseQuantity(index)}>
+                                    +
+                                </span>
+                            </td>
+                            <td className={cx('product-subtotal')}>
+                                {handleFormatPrice(item.price * item.quantity)} ₫
+                            </td>
+                        </tr>
+                    ))}
+                </>
+            );
+        }
     };
 
     return (
@@ -64,86 +124,57 @@ function Cart() {
 
                 <div className={cx('cart-content')}>
                     <div className={cx('left-content')}>
-                        <table className={cx('cart-table')}>
-                            <thead className={cx('table-heading')}>
-                                <tr className={cx('table-row-heading')}>
-                                    <th className={cx('title-remove')}></th>
-                                    <th className={cx('title-thumbnail')}></th>
-                                    <th className={cx('title-name')}>Tên Sản Phẩm</th>
-                                    <th className={cx('title-price')}>Đơn Giá</th>
-                                    <th className={cx('title-quantity')}>Số Lượng</th>
-                                    <th className={cx('title-subtotal')}>Tổng Tiền</th>
-                                </tr>
-                            </thead>
-
-                            <tbody className={cx('table-body')}>
-                                {cartItemList?.map((item, index) => (
-                                    <tr key={index} className={cx('product-item')}>
-                                        <td className={cx('product-remove')}>
-                                            <p
-                                                className={cx('product-remove-text')}
-                                                onClick={() => handleRemoveFromCart(item?.id)}
-                                            >
-                                                ×
-                                            </p>
-                                        </td>
-                                        <td className={cx('product-thumbnail')}>
-                                            <Link to={`/product/${item?.albumName}`}>
-                                                <img className={cx('product-image')} src={item?.image} alt=""></img>
-                                            </Link>
-                                        </td>
-                                        <td className={cx('product-name')}>{item?.albumName}</td>
-                                        <td className={cx('product-price')}>{handleFormatPrice(item?.price)} ₫</td>
-                                        <td className={cx('product-quantity')}>
-                                            <span className={cx('minus')} onClick={() => handleDecreaseQuantity(index)}>
-                                                -
-                                            </span>
-                                            <input
-                                                className={cx('quantity-input')}
-                                                type="text"
-                                                value={item?.quantity}
-                                                onChange={() => console.log('CHNAGE')}
-                                            />
-                                            <span className={cx('plus')} onClick={() => handleIncreaseQuantity(index)}>
-                                                +
-                                            </span>
-                                        </td>
-                                        <td className={cx('product-subtotal')}>
-                                            {handleFormatPrice(item?.price * item?.quantity)} ₫
-                                        </td>
+                        <div className={cx('left-content-inner')}>
+                            <table className={cx('cart-table')}>
+                                <thead className={cx('table-heading')}>
+                                    <tr className={cx('table-row-heading')}>
+                                        <th className={cx('title-remove')}></th>
+                                        <th className={cx('title-thumbnail')}></th>
+                                        <th className={cx('title-name')}>Tên Sản Phẩm</th>
+                                        <th className={cx('title-price')}>Đơn Giá</th>
+                                        <th className={cx('title-quantity')}>Số Lượng</th>
+                                        <th className={cx('title-subtotal')}>Tổng Tiền</th>
                                     </tr>
-                                ))}
+                                </thead>
 
-                                <tr className={cx('discount-code-card')}>
-                                    <td className={cx('discount-card-inner')}>
-                                        <div className={cx('card-content')}>
-                                            <div className={cx('card-title')}>
-                                                <span className={cx('card-title-text')}>MÃ GIẢM GIÁ</span>
-                                                <FontAwesomeIcon className={cx('card-title-icon')} icon={faAngleDown} />
-                                            </div>
-                                            <div className={cx('card-body')}>
-                                                <div className={cx('card-body-inner')}>
-                                                    <p className={cx('form-label')}>Nhập mã giảm giá của bạn:</p>
-                                                    <div className={cx('form-code-input')}>
-                                                        <input
-                                                            type="text"
-                                                            className={cx('code-input')}
-                                                            onChange={(e) => setDiscountCode(e.target.value)}
-                                                        />
-                                                        <button className={cx('code-btn')}> ÁP DỤNG</button>
+                                <tbody className={cx('table-body')}>
+                                    {renderCartItem()}
+
+                                    <tr className={cx('discount-code-card')}>
+                                        <td className={cx('discount-card-inner')}>
+                                            <div className={cx('card-content')}>
+                                                <div className={cx('card-title')}>
+                                                    <span className={cx('card-title-text')}>MÃ GIẢM GIÁ</span>
+                                                    <FontAwesomeIcon
+                                                        className={cx('card-title-icon')}
+                                                        icon={faAngleDown}
+                                                    />
+                                                </div>
+                                                <div className={cx('card-body')}>
+                                                    <div className={cx('card-body-inner')}>
+                                                        <p className={cx('form-label')}>Nhập mã giảm giá của bạn:</p>
+                                                        <div className={cx('form-code-input')}>
+                                                            <input
+                                                                type="text"
+                                                                className={cx('code-input')}
+                                                                onChange={(e) => setDiscountCode(e.target.value)}
+                                                                value={discountCode}
+                                                            />
+                                                            <button className={cx('code-btn')}> ÁP DỤNG</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
-                        <div className={cx('cart-actions')}>
-                            <Link className={cx('keep-buying-link')} to="/category">
-                                TIẾP TỤC MUA HÀNG
-                            </Link>
+                            <div className={cx('cart-actions')}>
+                                <Link className={cx('keep-buying-link')} to="/category">
+                                    TIẾP TỤC MUA HÀNG
+                                </Link>
+                            </div>
                         </div>
                     </div>
 
@@ -202,9 +233,9 @@ function Cart() {
                                 </table>
                             </div>
                             <div className={cx('payment-conduct')}>
-                                <Link className={cx('payment-conduct-text')} to="/payment">
+                                <div className={cx('payment-conduct-text')} onClick={handleGotoPayment}>
                                     TIẾN HÀNH THANH TOÁN
-                                </Link>
+                                </div>
                             </div>
                         </div>
                     </div>

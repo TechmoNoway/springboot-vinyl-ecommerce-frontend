@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './ProductDetail.module.scss';
 import { RecordIcon } from '~/asset/Icons';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeOff } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
@@ -12,12 +12,10 @@ const cx = classNames.bind(styles);
 
 function ProductDetail() {
     const [product, setProduct] = useState({});
-
     const oldCartList = [];
-
     const navigate = useNavigate();
-
     const { albumName } = useParams();
+    const { pathname } = useLocation();
 
     useEffect(() => {
         const handleLoadProductInfo = async () => {
@@ -30,6 +28,14 @@ function ProductDetail() {
 
         handleLoadProductInfo();
     }, [albumName]);
+
+    useEffect(() => {
+        document.documentElement.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'instant', // Optional if you want to skip the scrolling animation
+        });
+    }, [pathname]);
 
     const handleFormatPrice = () => {
         const formatter = new Intl.NumberFormat('en-US');

@@ -2,7 +2,7 @@
     height: 100%;
     width: 100%;
     background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-        url('https://i.ibb.co/QfHYCm5/banner.jpg');
+        url('/asset/Images/LoginImages/banner.jpg');
     background-position: center;
     background-size: cover;
     position: absolute;
@@ -13,7 +13,7 @@
     width: 390px;
     height: 550px;
     position: relative;
-    margin: 6% auto;
+    margin: 4% auto;
     background: #ffffff;
     padding: 5px;
     overflow: hidden;
@@ -86,6 +86,35 @@
     color: #999;
 }
 
+.password-box {
+    display: flex;
+}
+
+.password-field {
+    width: 100%;
+    padding: 10px 0;
+    margin: 5px 0;
+    border-left: 0;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: #999;
+}
+
+.show-password-btn{
+    background: transparent;
+    font-size: 16px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #999;
+    height: 50px;
+    cursor: pointer;
+}
+
 .submit-btn {
     width: 85%;
     padding: 10px 30px;
@@ -99,6 +128,7 @@
     border: 0;
     outline: none;
     border-radius: 30px;
+    text-align: center;
 }
 
 .check-box {

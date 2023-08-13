@@ -1,14 +1,14 @@
-import { useRef, useState, createContext } from 'react';
-import axios from 'axios';
+import { useRef, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LoginSocialGoogle } from 'reactjs-social-login';
 import swal from 'sweetalert';
+import axios from 'axios';
 
 import classNames from 'classnames/bind';
 import styles from './Login.module.scss';
-import { useEffect } from 'react';
-import { LoginSocialGoogle } from 'reactjs-social-login';
-import { useContext } from 'react';
 import { UserContext } from '~/context/UserContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -19,12 +19,15 @@ function Login() {
     const [userList, setUserList] = useState([]);
     const [usernameLogin, setUsernameLogin] = useState('');
     const [passwordLogin, setPasswordLogin] = useState('');
-
     const [usernameRegister, setUsernameRegister] = useState('');
     const [passwordRegister, setPasswordRegister] = useState('');
     const [emailRegister, setEmailRegister] = useState('');
-
     const [remember, setRemember] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const [form, setForm] = useState({});
 
     const loginRef = useRef();
 
@@ -66,27 +69,31 @@ function Login() {
     };
 
     const handleRegisterSubmit = async () => {
-        const newUser = {
-            id: userList.length + 1,
-            username: usernameRegister,
-            password: passwordRegister,
-            avatar: null,
-            email: emailRegister,
-            roleId: 2,
-            phone: null,
-            birthday: null,
-            fullname: null,
-            address: null,
-        };
-
-        const { data: response } = await axios.post('http://localhost:8081/api/user/saveUserRegister', newUser);
-
-        if (response.success) {
-            swal('Thank You', 'Register Successfully', 'success');
-            localStorage.setItem('userInfoData', JSON.stringify(response.data));
-            navigate('/profile');
+        if (usernameRegister !== null || passwordRegister !== null || emailRegister !== null) {
+            swal('Sorry', 'Please Fill Enough Infomation', 'warning');
         } else {
-            swal('Sorry', 'Register Failed', 'error');
+            const newUser = {
+                id: userList.length + 1,
+                username: usernameRegister,
+                password: passwordRegister,
+                avatar: 'https://i.ibb.co/4PzYh0M/No-Image-Avatar.png',
+                email: emailRegister,
+                roleId: 2,
+                phone: null,
+                birthday: null,
+                fullname: null,
+                address: null,
+            };
+
+            const { data: response } = await axios.post('http://localhost:8081/api/user/saveUserRegister', newUser);
+
+            if (response.success) {
+                swal('Thank You', 'Register Successfully', 'success');
+                localStorage.setItem('userInfoData', JSON.stringify(response.data));
+                navigate('/profile');
+            } else {
+                swal('Sorry', 'Register Failed', 'error');
+            }
         }
     };
 
@@ -152,6 +159,18 @@ function Login() {
         registerRef.current.style.left = '50px';
     };
 
+    const togglePassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleRegisterPassword = () => {
+        setShowRegisterPassword(!showRegisterPassword);
+    };
+
+    const toggleConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('form-box')}>
@@ -198,13 +217,18 @@ function Login() {
                         onChange={(e) => setUsernameLogin(e.target.value)}
                         required
                     />
-                    <input
-                        type="password"
-                        className={cx('input-field')}
-                        placeholder="password"
-                        onChange={(e) => setPasswordLogin(e.target.value)}
-                        required
-                    />
+                    <div className={cx('password-box')}>
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            className={cx('password-field')}
+                            placeholder="password"
+                            onChange={(e) => setPasswordLogin(e.target.value)}
+                            required
+                        />
+                        <span className={cx('show-password-btn')} onClick={togglePassword}>
+                            {showPassword ? <FontAwesomeIcon icon={faEye} /> : <FontAwesomeIcon icon={faEyeSlash} />}
+                        </span>
+                    </div>
                     <input type="checkbox" className={cx('check-box')} onChange={handleRemember} />
                     <span className={cx('remember')}>Rememer Me</span>
                     <button type="submit" className={cx('submit-btn')}>
@@ -227,26 +251,44 @@ function Login() {
                         onChange={(e) => setEmailRegister(e.target.value)}
                         required
                     />
-                    <input
-                        type="password"
-                        className={cx('input-field')}
-                        placeholder="password"
-                        autoComplete="on"
-                        onChange={(e) => setPasswordRegister(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        className={cx('input-field')}
-                        autoComplete="on"
-                        placeholder="confirm password"
-                        required
-                    />
+                    <div className={cx('password-box')}>
+                        <input
+                            type={showRegisterPassword ? 'text' : 'password'}
+                            className={cx('password-field')}
+                            placeholder="password"
+                            onChange={(e) => setPasswordRegister(e.target.value)}
+                            required
+                        />
+                        <span className={cx('show-password-btn')} onClick={toggleRegisterPassword}>
+                            {showRegisterPassword ? (
+                                <FontAwesomeIcon icon={faEye} />
+                            ) : (
+                                <FontAwesomeIcon icon={faEyeSlash} />
+                            )}
+                        </span>
+                    </div>
+
+                    <div className={cx('password-box')}>
+                        <input
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            className={cx('password-field')}
+                            placeholder="confirm password"
+                            required
+                        />
+                        <span className={cx('show-password-btn')} onClick={toggleConfirmPassword}>
+                            {showConfirmPassword ? (
+                                <FontAwesomeIcon icon={faEye} />
+                            ) : (
+                                <FontAwesomeIcon icon={faEyeSlash} />
+                            )}
+                        </span>
+                    </div>
+
                     <input type="checkbox" className={cx('check-box')} />
                     <span className={cx('condition')}>I agree to the terms & conditions</span>
-                    <button type="submit" className={cx('submit-btn')} onClick={handleRegisterSubmit}>
+                    <div type="submit" className={cx('submit-btn')} onClick={handleRegisterSubmit}>
                         Sign Up
-                    </button>
+                    </div>
                 </form>
             </div>
         </div>

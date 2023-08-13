@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { UserContext } from '~/context/UserContext';
 import axios from 'axios';
 import swal from 'sweetalert';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -20,20 +20,27 @@ function Payment() {
         lastname: '',
     });
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const { address, city, email, note, firstname, lastname, phone } = form;
     const handleEnterInput = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
-
     const { user, setUser } = useContext(UserContext);
-
     const [productList, setProductList] = useState([]);
+    const { pathname } = useLocation();
 
     useEffect(() => {
         setProductList(JSON.parse(sessionStorage.getItem('cartList')));
     }, []);
+
+    useEffect(() => {
+        document.documentElement.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'instant', // Optional if you want to skip the scrolling animation
+        });
+    }, [pathname]);
 
     const handleFormatPrice = (inputPrice) => {
         const formatter = new Intl.NumberFormat('en-US');
@@ -67,7 +74,7 @@ function Payment() {
 
             if (orderSaveResponse.success === true) {
                 swal('Nice!', 'Thanks For Order Our Product', 'success');
-            }else {
+            } else {
                 swal('Sorry', 'Order Failed', 'error');
             }
         }

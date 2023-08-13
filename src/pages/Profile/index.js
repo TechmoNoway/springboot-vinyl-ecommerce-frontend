@@ -3,36 +3,45 @@ import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
 import { Container, Nav, NavItem, NavLink, Row, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHomeLg, faKey } from '@fortawesome/free-solid-svg-icons';
-import { useContext } from 'react';
-import { useState } from 'react';
-import { UserContext } from '~/context/UserContext';
+import { faCamera, faHomeLg, faKey } from '@fortawesome/free-solid-svg-icons';
+import { useRef, useState } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
+
+     const onClassnames = 'tab-pane fade show';
+
+     const offClassnames = 'tab-pane fade';
+
+    const { pathname } = useLocation();
+
+    const navigate = useNavigate();
+
     const [accountShow, setAccountShow] = useState(true);
 
     const [passwordShow, setPasswordShow] = useState(false);
-
-    // const { user, setUser } = useContext(UserContext);
-
-    const navigate = useNavigate();
 
     const [user, setUser] = useState(() => {
         return JSON.parse(localStorage.getItem('userInfoData'));
     });
 
+    const [preview, setPreview] = useState(null);
+
+    // const { user, setUser } = useContext(UserContext);
+
+    const [selectedFile, setSelectedFile] = useState(null);
+
     const [form, setForm] = useState({
         id: null,
         username: '',
         password: '',
-        avatar: '',
         email: '',
+        avatar: '',
         phone: '',
         roldId: null,
         firstname: '',
@@ -44,18 +53,12 @@ function Profile() {
         oldPassword: '',
     });
 
-    useEffect(() => {
-        setForm(() => {
-            return { ...user, ...handleSplitFullname(user?.fullname) };
-        });
-    }, []);
-
     const {
         username,
         password,
-        avatar,
         email,
         phone,
+        avatar,
         firstname,
         lastname,
         address,
@@ -64,13 +67,52 @@ function Profile() {
         newPassword,
     } = form;
 
-    const onClassnames = 'tab-pane fade show';
+    useEffect(() => {
+        setForm(() => {
+            return { ...user, ...handleSplitFullname(user.fullname)};
+        });
+    }, []);
 
-    const offClassnames = 'tab-pane fade';
+    useEffect(() => {
+        document.documentElement.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'instant',
+        });
+    }, [pathname]);
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview(null);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            setPreview(reader.result);
+        };
+        reader.readAsDataURL(selectedFile);
+
+        return () => {
+            reader.onload = null;
+        };
+    }, [selectedFile, preview]);
+
+    
 
     const handleEnterInput = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file);
+    };
+    
+    // const handleFileChange = (event) => {
+    //     const file = event.target.files[0];
+    //     setSelectedFile(file);
+    // };
 
     const handleSetTabAccountPage = () => {
         setAccountShow(true);
@@ -99,7 +141,7 @@ function Profile() {
             id: user.id,
             username: username,
             password: password,
-            avatar: user.avatar,
+            avatar: avatar,
             email: email,
             roleId: 2,
             phone: phone,
@@ -117,8 +159,6 @@ function Profile() {
         } else {
             swal('Sorry!', 'User Data Not Valuable', 'error');
         }
-
-        console.log(response);
     };
 
     const submitPasswordChange = async () => {
@@ -146,15 +186,14 @@ function Profile() {
 
             if (response.success) {
                 localStorage.setItem('userInfoData', JSON.stringify(response.data));
-                swal('Nice!', 'Password Updated', 'success');
                 window.location.reload('/profile');
+                swal('Nice!', 'Password Updated', 'success');
             } else {
                 swal('Sorry!', 'User Data Not Valuable', 'error');
             }
-
-            console.log(response.success);
         }
     };
+
 
     return (
         <div className={cx('wrapper')}>
@@ -163,9 +202,35 @@ function Profile() {
                 <div className={cx('bg-white', 'shadow', 'rounded', 'd-sm-flex')}>
                     <div className={cx('profile-tab-nav')}>
                         <div className={cx('p-5')}>
-                            <div className={cx('img-circle', 'text-center', 'mb-3')}>
+                            {/* <div className={cx('img-circle', 'text-center', 'mb-3')}>
                                 <img src={avatar} alt="" className={cx('shadow')} />
+                            </div> */}
+
+                            <div className={cx('img-upload-container')}>
+                                <div className={cx('avatar-upload')}>
+                                    <div className={cx('avatar-edit')}>
+                                        <input
+                                            type="file"
+                                            id="imageUpload"
+                                            name="avatar"
+                                            className={cx('d-none')}
+                                            accept=".png, .jpg, .jpeg"
+                                            onChange={handleFileChange}
+                                        />
+                                        <label className={cx('image-upload')} htmlFor="imageUpload">
+                                            <FontAwesomeIcon icon={faCamera} className={cx('camera-icon')} />
+                                        </label>
+                                    </div>
+                                    <div className={cx('avatar-preview')}>
+                                        <div
+                                            style={{ backgroundImage: `url(${preview})`, animation: 'fadeIn' }}
+                                            alt="Preview"
+                                            className={cx('image-preview')}
+                                        />
+                                    </div>
+                                </div>
                             </div>
+
                             <h4 className={cx('username', 'text-center')}>{username}</h4>
                         </div>
 
@@ -266,7 +331,7 @@ function Profile() {
                                                 onChange={handleEnterInput}
                                                 type="text"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={firstname}
+                                                value={firstname || ''}
                                             />
                                         </div>
                                     </div>
@@ -278,7 +343,7 @@ function Profile() {
                                                 type="text"
                                                 onChange={handleEnterInput}
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={lastname}
+                                                value={lastname || ''}
                                             />
                                         </div>
                                     </div>
@@ -290,7 +355,7 @@ function Profile() {
                                                 name="email"
                                                 type="text"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={email}
+                                                value={email || ''}
                                             />
                                         </div>
                                     </div>
@@ -302,7 +367,7 @@ function Profile() {
                                                 name="username"
                                                 type="text"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={username}
+                                                value={username || ''}
                                             />
                                         </div>
                                     </div>
@@ -314,7 +379,7 @@ function Profile() {
                                                 name="phone"
                                                 type="text"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={phone}
+                                                value={phone || ''}
                                             />
                                         </div>
                                     </div>
@@ -326,7 +391,7 @@ function Profile() {
                                                 name="address"
                                                 type="text"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={address}
+                                                value={address || ''}
                                             />
                                         </div>
                                     </div>
@@ -335,7 +400,9 @@ function Profile() {
                                             <label className={cx('input-label')}>Description</label>
                                             <textarea
                                                 className={cx('form-control', 'px-4 py-3', 'textarea-input')}
+                                                onChange={handleEnterInput}
                                                 rows="4"
+                                                value="Nice!"
                                             ></textarea>
                                         </div>
                                     </div>
@@ -369,7 +436,7 @@ function Profile() {
                                                 onChange={handleEnterInput}
                                                 type="password"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={oldPassword}
+                                                value={oldPassword || ''}
                                             />
                                         </div>
                                     </div>
@@ -383,7 +450,7 @@ function Profile() {
                                                 onChange={handleEnterInput}
                                                 type="password"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={newPassword}
+                                                value={newPassword || ''}
                                             />
                                         </div>
                                     </div>
@@ -395,7 +462,7 @@ function Profile() {
                                                 onChange={handleEnterInput}
                                                 type="password"
                                                 className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={confirmPassword}
+                                                value={confirmPassword || ''}
                                             />
                                         </div>
                                     </div>

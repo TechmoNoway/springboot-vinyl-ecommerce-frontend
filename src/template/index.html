@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- css and fonts tag -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="themify-icons.css">
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+    <!-- type srcipt library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+</head>
+
+<body>
+    <header>
+        <nav class="navbar my-navbar navbar-expand-lg navbar-light position-fixed" id="my-navbar" style="width: 100%">
+            <div class="container-fluid">
+                <a href="">Logo</a>
+                <button class="navbar-toggler text-white border-0" style="box-shadow: none;" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="ti-menu"></i>
+                </button>
+                <div class="collapse w-75 dropMenuBarWraper navbar-collapse"
+                    style="flex-grow: 0; justify-content: flex-end;" id="navbarSupportedContent">
+                    <ul class="navbar-nav dropMenuBar mb-lg-0">
+                        <form class="d-flex searchForm position-relative">
+                            <input class="form-control header-input me-5" style="padding: 10px" type="search"
+                                placeholder="Search" aria-label="Search" />
+                            <button class="btn searchBtn-fixed position-absolute fixed-search-button" type="submit">
+                                <i class="ti-search"></i>
+                            </button>
+                        </form>
+                        <li class="nav-item-fixed">
+                            <a class="nav-link" style="font-weight: 600" aria-current="page" href="#">
+                                <i class="ti-bell"></i>
+                                Notification</a>
+                        </li>
+                        <li class="nav-item-fixed">
+                            <a class="nav-link" style="font-weight: 600" href="#">
+                                <i class="ti-shopping-cart"></i>
+                                Cart</a>
+                        </li>
+                        <li class="nav-item-fixed dropdown">
+                            <a class="nav-link dropdown-toggle" style="font-weight: 600" href="#" id="navbarDropdown"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="ti-archive"></i>
+                                Category
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <a class="dropdown-item" style="font-weight: 600" href="#">Action</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" style="font-weight: 600" href="#">Another action</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" style="font-weight: 600" href="#">Something else here</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item-fixed">
+                            <a class="nav-link" style="font-weight: 600" href="#">
+                                <i class="ti-user"></i>
+                                Account
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+
+        <nav class="navbar header-nav navbar-expand-lg navbar-light  px-5" id="header-navbar">
+            <div class="container-fluid px-5">
+                <div class="container-fluid d-flex p-3 m-0 w-100 justify-content-between align-items-center">
+                    <a class="navbar-brand p-1 m-1 me-md-5 pe-md-5" href="#">Logo</a>
+
+                    <div class="collapse navbar-collapse search-container" id="navbarSupportedContent1">
+
+                        <form class="d-flex header-menu-search">
+                            <input class="form-control header-input rounded-0" type="search" placeholder="Search"
+                                aria-label="Search">
+                            <button class="btn btn-outline-success rounded-0 header-search-button"
+                                type="submit">Search</button>
+                        </form>
+                        <i class="ti-user nav-item" style="font-weight: 900;"></i>
+                    </div>
+                    <button class="navbar-toggler border-0" style="box-shadow: none;" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent1"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="ti-menu"></i>
+                    </button>
+
+
+                </div>
+                <hr width="100%">
+
+
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent1">
+                        <ul class="navbar-nav navbar-menu me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="#">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Notification</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Shop
+                                </a>
+                                <ul class="dropdown-menu " style="top: 108%;left: -175%;width: 1032px;"
+                                    aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Cart</a>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    <main>
+
+        <div class="container-fluid p-0">
+            <div class="container profile-container mb-4">
+
+
+                <div class="profile-wrapper">
+                    <div class="profile-title py-3 my-4">
+                        <h2>My profile</h2>
+                        <p class="m-0"> Manage profile information for account security</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="profile-inf-container pb-4">
+                                <div>
+                                    <label for="">Username</label> <span class="profile-username ps-md-5"
+                                        id="profile-username" name="profile-username">Phule</span>
+                                </div>
+                                <div>
+                                    <label for="">Email</label> <span class="profile-email ps-md-5" id="profile-email"
+                                        name="profile-email">Phule@123</span> <button class="profile-edit-button"
+                                        id="profile-edit-button" name="profile-edit-button"><i
+                                            class="ti-pencil-alt"></i>
+                                        Edit</button>
+                                </div>
+                                <div>
+                                    <label for="">Phone Number</label> <span class="profile-phoneNum ps-md-5"
+                                        id="profile-phoneNum" name="profile-phoneNum">0123456789</span>
+                                    <button class="profile-edit-button" id="profile-edit-button"
+                                        name="profile-edit-button"><i class="ti-pencil-alt"></i>
+                                        Edit</button>
+                                </div>
+                                <div>
+                                    <label for="">Birth</label> <span class="profile-birth ps-md-5" id="profile-birth"
+                                        name="profile-birth">22/11/2003</span>
+                                    <button class="profile-edit-button" id="profile-edit-button"
+                                        name="profile-edit-button"><i class="ti-pencil-alt"></i>
+                                        Edit</button>
+                                </div>
+                                <div>
+                                    <label for="">Gender</label>
+                                    <!-- <ul class="gender-ul d-inline-block">
+                                        <li><input radio- type="radio">Male</li>
+                                        <li><input type="radio">Female</li>
+                                        <li><input type="radio">Other</li>
+                                    </ul> -->
+                                    <div class="form-check form-check-inline ps-md-5">
+                                        <input class="form-check-input" type="radio" name="profile-gender"
+                                            id="profile-gender" value="{3:option1}">
+                                        <e class="form-check-label" for="">Male</e>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="profile-gender"
+                                            id="profile-gender" value="option2">
+                                        <e class="form-check-label" for="">Female</e>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="profile-gender"
+                                            id="profile-gender" value="option3">
+                                        <e class="form-check-label" for="">Other</e>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3 p-0">
+                            <div class="img-upload-container px-5">
+                                <h1>Choose Your Avatar
+                                    <small>with preview</small>
+                                </h1>
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit">
+                                        <input type='file' id="imageUpload" class="d-none" accept=".png, .jpg, .jpeg" />
+                                        <label for="imageUpload"></label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        <div id="imagePreview">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+        </div>
+
+    </main>
+    <footer>
+        <div class=" container-fluid footer p-0">
+            <div class="row w-100 p-5">
+                <div class="col-3">
+                    <div class="footer-logo ">
+                        Logo
+                    </div>
+                    <p>Công Viên Phần Mềm Quang Trung Quận 12 TpHCM</p>
+
+                    <p>Nhận đặt hàng trực tuyến và giao hàng tận nơi.
+                        KHÔNG hỗ trợ đặt mua và nhận hàng trực tiếp tại
+                        văn phòng cũng như tất cả Hệ Thống trên toàn quốc
+                    </p>
+
+                    <div class="footer-contact">
+                        <i class="ti-facebook"></i>
+                        <i class="ti-instagram"></i>
+                        <i class="ti-youtube"></i>
+                        <i class="ti-twitter-alt"></i>
+                        <i class="ti-pinterest"></i>
+                    </div>
+
+                </div>
+                <div class="col-3 ">
+                    <div class="footer-winget">
+                        <div class="footer-label ps-3">
+                            DỊCH VỤ
+                            <ul class="footer-list">
+                                <li><a href="">Điều khoản sử dụng</a></li>
+                                <li><a href="">Giới thiệu</a></li>
+                                <li><a href="">Hệ thống trung tâm - nhà sách</a></li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-3">
+                    <div class="footer-label ps-3">
+                        HỖ TRỢ
+
+                        <ul class="footer-list">
+                            <li><a href="">Chính sách đổi - trả - hoàn tiền</a></li>
+                            <li><a href="">Chính sách vận chuyển</a></li>
+                            <li><a href="">Phương thức thanh toán và xuất HĐ</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="footer-label ps-3">
+                        TÀI KHOẢN CỦA TÔI
+
+                        <ul class="footer-list">
+                            <li><a href="">Lịch sử mua hàng</a></li>
+                            <li><a href="">Chi tiết tài khoản</a></li>
+                            <li><a href="">Thay đổi địa chỉ khách hàng</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+        </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+        </script>
+
+    <script>
+
+        const productContainers = [
+            ...document.querySelectorAll(".product-container"),
+        ];
+        const nxtBtn = [...document.querySelectorAll(".nxt-btn")];
+        const preBtn = [...document.querySelectorAll(".pre-btn")];
+
+        productContainers.forEach((item, i) => {
+            let containerDimensions = item.getBoundingClientRect();
+            let containerWidth = containerDimensions.width;
+
+            nxtBtn[i].addEventListener("click", () => {
+                item.scrollLeft += containerWidth;
+            });
+
+            preBtn[i].addEventListener("click", () => {
+                item.scrollLeft -= containerWidth;
+            });
+        });
+
+
+        const productContainers2 = [
+            ...document.querySelectorAll(".product-container2"),
+        ];
+        const nxtBtn2 = [...document.querySelectorAll(".nxt-btn2")];
+        const preBtn2 = [...document.querySelectorAll(".pre-btn2")];
+
+        productContainers2.forEach((item, i) => {
+            let containerDimensions = item.getBoundingClientRect();
+            let containerWidth = containerDimensions.width;
+
+            nxtBtn2[i].addEventListener("click", () => {
+                item.scrollLeft += containerWidth;
+            });
+
+            preBtn2[i].addEventListener("click", () => {
+                item.scrollLeft -= containerWidth;
+            });
+        });
+
+
+        //menu script
+
+        var boxElement = document.getElementById('my-navbar');
+
+        window.onscroll = function () {
+            if (document.body.scrollTop > 150 || document.documentElement.scrollTop > 150) {
+                boxElement.style.top = "0px";
+                boxElement.style.display = "block";
+
+
+            }
+            else {
+                boxElement.style.top = "-100px";
+                boxElement.style.display = "none";
+
+            }
+        }
+        //upload img
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imageUpload").change(function () {
+            readURL(this);
+        });
+
+    </script>
+</body>
+
+</html>
