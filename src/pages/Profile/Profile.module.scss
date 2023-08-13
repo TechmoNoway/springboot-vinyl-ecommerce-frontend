@@ -3,6 +3,7 @@
 .wrapper {
     background: #f9f9f9;
     font-family: 'Roboto', sans-serif;
+    height: 100%;
 }
 
 .container {
@@ -19,7 +20,7 @@
 }
 
 .profile-tab-nav {
-    min-width: 250px;
+    width: 250px;
     border-right: 1px solid #dddddd;
 }
 

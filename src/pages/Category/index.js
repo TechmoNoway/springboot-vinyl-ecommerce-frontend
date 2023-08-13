@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import ReactPaginate from 'react-paginate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -19,12 +21,29 @@ function Category() {
     const { pathname } = useLocation();
     const itemsPerPage = 15;
 
+    const [form, setForm] = useState({
+        categoryName: '',
+        moodName: '',
+        releaseYear: '',
+        stockStatus: '',
+    });
+
+    const { categoryName, moodName, releaseYear, stockStatus } = form;
+
+    const handleEnterInput = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
     useEffect(() => {
         const handleFillProductList = async () => {
             if (searchParam === 'AllDisc') {
                 const { data: response } = await axios.get(`http://localhost:8081/api/disc/getAllDisc`);
 
                 setProductList(response.data);
+
+                const endOffset = itemOffset + itemsPerPage;
+                setCurrentItems(response.data.slice(itemOffset, endOffset));
+                setCurrentPage(Math.ceil(response.data.length / itemsPerPage));
             } else {
                 const { data: response } = await axios.get(
                     `http://localhost:8081/api/disc/getMoreDiscByName?searchParam=${searchParam}`,
@@ -45,9 +64,33 @@ function Category() {
         document.documentElement.scrollTo({
             top: 0,
             left: 0,
-            behavior: 'instant', // Optional if you want to skip the scrolling animation
+            behavior: 'instant',
         });
     }, [pathname]);
+
+    const handleFilterSubmit = async () => {
+        if (searchParam === 'AllDisc') {
+            const { data: response } = await axios.get(
+                `http://localhost:8081/api/disc/getDiscByNameFiltered?searchParam=&categoryName=${categoryName}&moodName=${moodName}&releaseYear=${releaseYear}&stockStatus=${stockStatus}`,
+            );
+
+            setProductList(response.data);
+
+            const endOffset = itemOffset + itemsPerPage;
+            setCurrentItems(response.data.slice(itemOffset, endOffset));
+            setCurrentPage(Math.ceil(response.data.length / itemsPerPage));
+        } else {
+            const { data: response } = await axios.get(
+                `http://localhost:8081/api/disc/getDiscByNameFiltered?searchParam=${searchParam}&categoryName=${categoryName}&moodName=${moodName}&releaseYear=${releaseYear}&stockStatus=${stockStatus}`,
+            );
+
+            setProductList(response.data);
+
+            const endOffset = itemOffset + itemsPerPage;
+            setCurrentItems(response.data.slice(itemOffset, endOffset));
+            setCurrentPage(Math.ceil(response.data.length / itemsPerPage));
+        }
+    };
 
     const handlePageClick = (event) => {
         const newOffset = (event.selected * itemsPerPage) % productList.length;
@@ -62,19 +105,19 @@ function Category() {
         }
         if (targetValue === 'ATOZ') {
             setCurrentItems(() => {
-                return currentItems.slice().sort((a, b) => a.albumName.localeCompare(b.albumName));
+                return productList.slice().sort((a, b) => a.albumName.localeCompare(b.albumName));
             });
         } else if (targetValue === 'ZTOA') {
             setCurrentItems(() => {
-                return currentItems.slice().sort((a, b) => b.albumName.localeCompare(a.albumName));
+                return productList.slice().sort((a, b) => b.albumName.localeCompare(a.albumName));
             });
         } else if (targetValue === 'PRICEASC') {
             setCurrentItems(() => {
-                return currentItems.slice().sort((a, b) => a.price - b.price);
+                return productList.slice().sort((a, b) => a.price - b.price);
             });
         } else if (targetValue === 'PRICEDESC') {
             setCurrentItems(() => {
-                return currentItems.slice().sort((a, b) => b.price - a.price);
+                return productList.slice().sort((a, b) => b.price - a.price);
             });
         }
     };
@@ -96,13 +139,28 @@ function Category() {
                         <p className={cx('vinyl-author')}>{item.artist}</p>
                         <p className={cx('vinyl-price')}>{item.price.toLocaleString('en-US')} đ</p>
                         <div className={cx('vinyl-stock-status')}>
-                            <span className={cx('vinyl-onstock')}>{item.stockStatus}</span>
+                            {/* <span className={cx('vinyl-onstock')}>{item.stockStatus}</span> */}
+                            {renderStockStatus(item.stockStatus)}
                             <span className={cx('vinyl-status')}>{item.status}</span>
                         </div>
                     </div>
                 </Link>
             </div>
         ));
+    };
+
+    const renderStockStatus = (stock) => {
+        if (stock === 'Còn Hàng') {
+            return <span className={cx('vinyl-onstock')}>{stock}</span>;
+        }
+
+        if (stock === 'Preorder') {
+            return <span className={cx('vinyl-preorder')}>{stock}</span>;
+        }
+
+        if (stock === 'Hết Hàng') {
+            return <span className={cx('vinyl-outstock')}>{stock}</span>;
+        }
     };
 
     return (
@@ -114,19 +172,43 @@ function Category() {
 
                 <div className={cx('filter-inputs')}>
                     <div className={cx('input-item')}>
-                        <input className={cx('input-detail')} placeholder="THỂ LOẠI"></input>
+                        <input
+                            name="categoryName"
+                            onChange={handleEnterInput}
+                            className={cx('input-detail')}
+                            placeholder="THỂ LOẠI"
+                            value={categoryName}
+                        ></input>
                     </div>
 
                     <div className={cx('input-item')}>
-                        <input className={cx('input-detail')} placeholder="TÂM TRẠNG"></input>
+                        <input
+                            name="moodName"
+                            onChange={handleEnterInput}
+                            className={cx('input-detail')}
+                            placeholder="TÂM TRẠNG"
+                            value={moodName}
+                        ></input>
                     </div>
 
                     <div className={cx('input-item')}>
-                        <input className={cx('input-detail')} placeholder="GIÁ"></input>
+                        <input
+                            name="releaseYear"
+                            onChange={handleEnterInput}
+                            className={cx('input-detail')}
+                            placeholder="THỜI KỲ"
+                            value={releaseYear}
+                        ></input>
                     </div>
 
                     <div className={cx('input-item')}>
-                        <input className={cx('input-detail')} placeholder="TRÌNH TRẠNG KHO"></input>
+                        <input
+                            name="stockStatus"
+                            onChange={handleEnterInput}
+                            className={cx('input-detail')}
+                            placeholder="TRÌNH TRẠNG KHO"
+                            value={stockStatus}
+                        ></input>
                     </div>
                 </div>
 
@@ -150,6 +232,11 @@ function Category() {
                                 Xếp Từ Z-A
                             </option>
                         </select>
+                    </div>
+
+                    <div className={cx('filter-box')} onClick={handleFilterSubmit}>
+                        <span className={cx('filter-box-text')}>THỰC HIỆN LỌC</span>
+                        <FontAwesomeIcon className={cx('filter-icon')} icon={faFilter} />
                     </div>
                 </div>
 

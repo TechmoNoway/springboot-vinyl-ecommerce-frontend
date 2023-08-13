@@ -41,6 +41,7 @@
     height: 44px;
     align-items: center;
     padding: 5px 10px;
+    width: 100%;
 }
 
 .input-item + .input-item {
@@ -52,10 +53,14 @@
     line-height: 24px;
     font-family: var(--font-family);
     text-transform: uppercase;
+    width: 100%;
 }
 
 .product-control {
     margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sort-product-module {
@@ -85,6 +90,31 @@
     font-weight: 700;
     font-family: var(--font-family);
     line-height: 17.2454px;
+}
+
+.filter-box {
+    cursor: pointer;
+}
+
+.filter-box-text {
+    font-family: var(--font-family);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    cursor: pointer;
+    color: #2f2f2f;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.filter-icon {
+    padding-left: 4px;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 14px;
+    color: #2f2f2f;
 }
 
 .product-list {
@@ -160,6 +190,20 @@
 }
 
 .vinyl-outstock {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: #b4a30c;
+    margin: 5px 5px 0 0;
+    padding: 4px 8px 4px 8px;
+    width: 68px;
+    height: 26px;
+    line-height: 160%;
+    background: #fff9c4;
+    text-transform: uppercase;
+}
+
+.vinyl-preorder {
     display: inline-block;
     font-size: 10px;
     font-weight: 600;

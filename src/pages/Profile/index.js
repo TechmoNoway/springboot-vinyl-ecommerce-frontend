@@ -4,7 +4,7 @@ import styles from './Profile.module.scss';
 import { Container, Nav, NavItem, NavLink, Row, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera, faHomeLg, faKey } from '@fortawesome/free-solid-svg-icons';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { useEffect } from 'react';
@@ -13,10 +13,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function Profile() {
+    const onClassnames = 'tab-pane fade show';
 
-     const onClassnames = 'tab-pane fade show';
-
-     const offClassnames = 'tab-pane fade';
+    const offClassnames = 'tab-pane fade';
 
     const { pathname } = useLocation();
 
@@ -69,7 +68,7 @@ function Profile() {
 
     useEffect(() => {
         setForm(() => {
-            return { ...user, ...handleSplitFullname(user.fullname)};
+            return { ...user, ...handleSplitFullname(user.fullname) };
         });
     }, []);
 
@@ -98,8 +97,6 @@ function Profile() {
         };
     }, [selectedFile, preview]);
 
-    
-
     const handleEnterInput = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -108,7 +105,7 @@ function Profile() {
         const file = event.target.files[0];
         setSelectedFile(file);
     };
-    
+
     // const handleFileChange = (event) => {
     //     const file = event.target.files[0];
     //     setSelectedFile(file);
@@ -141,7 +138,7 @@ function Profile() {
             id: user.id,
             username: username,
             password: password,
-            avatar: avatar,
+            avatar: preview,
             email: email,
             roleId: 2,
             phone: phone,
@@ -194,7 +191,6 @@ function Profile() {
         }
     };
 
-
     return (
         <div className={cx('wrapper')}>
             <Container className={cx('mt-5', 'container')}>
@@ -223,7 +219,10 @@ function Profile() {
                                     </div>
                                     <div className={cx('avatar-preview')}>
                                         <div
-                                            style={{ backgroundImage: `url(${preview})`, animation: 'fadeIn' }}
+                                            style={{
+                                                backgroundImage: `url(${preview === null ? avatar : preview})`,
+                                                animation: 'fadeIn',
+                                            }}
                                             alt="Preview"
                                             className={cx('image-preview')}
                                         />
@@ -325,7 +324,7 @@ function Profile() {
                                 <Row>
                                     <div className="col-md-6">
                                         <div className={cx('form-group')}>
-                                            <label className={cx('input-label')}>First Name</label>
+                                            <label className={cx('input-label')}> First Name </label>
                                             <input
                                                 name="firstname"
                                                 onChange={handleEnterInput}
@@ -395,17 +394,6 @@ function Profile() {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-md-12">
-                                        <div className={cx('form-group')}>
-                                            <label className={cx('input-label')}>Description</label>
-                                            <textarea
-                                                className={cx('form-control', 'px-4 py-3', 'textarea-input')}
-                                                onChange={handleEnterInput}
-                                                rows="4"
-                                                value="Nice!"
-                                            ></textarea>
-                                        </div>
-                                    </div>
                                 </Row>
                                 <div>
                                     <Button onClick={submitUpdateUser} className={cx('account-action-button')}>
@@ -423,11 +411,12 @@ function Profile() {
                         {passwordShow && (
                             <div
                                 className={passwordShow ? onClassnames : offClassnames}
+                                id="password"
                                 role="tabpanel"
                                 aria-labelledby="password-tab"
                             >
                                 <h3 className={cx('mb-5', 'tabBigTitle')}>Password Settings</h3>
-                                <div className={cx('row')}>
+                                <Row>
                                     <div className={cx('col-md-6')}>
                                         <div className={cx('form-group')}>
                                             <label className={cx('input-label')}>Old password</label>
@@ -440,33 +429,34 @@ function Profile() {
                                             />
                                         </div>
                                     </div>
-                                </div>
-                                <div className={cx('row')}>
-                                    <div className={cx('col-md-6')}>
-                                        <div className={cx('form-group')}>
-                                            <label className={cx('input-label')}>New password</label>
-                                            <input
-                                                name="newPassword"
-                                                onChange={handleEnterInput}
-                                                type="password"
-                                                className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={newPassword || ''}
-                                            />
+
+                                    <div className={cx('row')}>
+                                        <div className={cx('col-md-6')}>
+                                            <div className={cx('form-group')}>
+                                                <label className={cx('input-label')}>New password</label>
+                                                <input
+                                                    name="newPassword"
+                                                    onChange={handleEnterInput}
+                                                    type="password"
+                                                    className={cx('form-control', 'px-3 py-2', 'prop-input')}
+                                                    value={newPassword || ''}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className={cx('col-md-6')}>
+                                            <div className={cx('form-group')}>
+                                                <label className={cx('input-label')}>Confirm new password</label>
+                                                <input
+                                                    name="confirmPassword"
+                                                    onChange={handleEnterInput}
+                                                    type="password"
+                                                    className={cx('form-control', 'px-3 py-2', 'prop-input')}
+                                                    value={confirmPassword || ''}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className={cx('col-md-6')}>
-                                        <div className={cx('form-group')}>
-                                            <label className={cx('input-label')}>Confirm new password</label>
-                                            <input
-                                                name="confirmPassword"
-                                                onChange={handleEnterInput}
-                                                type="password"
-                                                className={cx('form-control', 'px-3 py-2', 'prop-input')}
-                                                value={confirmPassword || ''}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                                </Row>
                                 <div>
                                     <Button className={cx('account-action-button')} onClick={submitPasswordChange}>
                                         Update

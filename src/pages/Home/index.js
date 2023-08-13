@@ -469,7 +469,7 @@ function Home() {
                         <div className={cx('what-listening')}>
                             <div className={cx('what-listening-inner')}>
                                 <div className={cx('playlist-month')}>
-                                    <h4 className={cx('playlist-month-text')}>PLAYLIST THÁNG 12</h4>
+                                    <div className={cx('playlist-month-text')}>PLAYLIST THÁNG 12</div>
                                 </div>
                                 <div className={cx('what-listening-items')}>
                                     <h4 className={cx('what-listening-title')}>SOLEIL ĐANG NGHE GÌ?</h4>
