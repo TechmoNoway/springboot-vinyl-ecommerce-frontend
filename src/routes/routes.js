@@ -1,5 +1,6 @@
 import config from '~/config';
 import LoginLayout from '~/layouts/LoginLayout/LoginLayout';
+import Admin from '~/pages/Admin';
 import Cart from '~/pages/Cart';
 import Category from '~/pages/Category';
 
@@ -16,8 +17,9 @@ const publicRoutes = [
     { path: config.routes.product, component: ProductDetail },
     { path: config.routes.category, component: Category },
     { path: config.routes.cart, component: Cart },
-    { path: config.routes.payment, component: Payment},
-    { path: config.routes.profile, component: Profile}
+    { path: config.routes.payment, component: Payment },
+    { path: config.routes.profile, component: Profile },
+    { path: config.routes.admin, component: Admin },
 ];
 
 const privateRoutes = [];

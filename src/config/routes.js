@@ -6,6 +6,7 @@ const routes = {
     cart: '/cart',
     payment: '/payment',
     profile: '/profile',
+    admin: '/admin',
 };
 
 export default routes;

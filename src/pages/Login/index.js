@@ -106,7 +106,7 @@ function Login() {
             password: null,
             avatar: data.picture,
             email: data.email,
-            roleId: 2,
+            roleId: 'USER',
             phone: null,
             birthday: null,
             fullname: data.family_name + data.given_name,
