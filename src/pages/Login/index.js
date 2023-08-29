@@ -48,28 +48,45 @@ function Login() {
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
 
-        const { data: response } = await axios.post(
-            `http://localhost:8081/api/user/checklogin?username=${usernameLogin}&password=${passwordLogin}`,
-        );
+        const requestUser = {
+            username: usernameLogin,
+            password: passwordLogin,
+        };
 
-        if (response.data !== null) {
-            setUser({ ...response.data });
+        const { data: jwtResponse } = await axios.post('http://localhost:8081/api/auth/user/authenticate', requestUser);
 
-            if (remember) {
-                localStorage.setItem('userInfoData', JSON.stringify(response.data));
+        if (jwtResponse !== null) {
+            const { data: response } = await axios.get(
+                `http://localhost:8081/api/user/getUserByUsername?username=${requestUser.username}`,
+            );
+
+            if (response.data !== null) {
+                setUser({ ...response.data });
+
+                console.log(jwtResponse);
+
+                if (remember) {
+                    localStorage.setItem('userInfoData', JSON.stringify(response.data));
+                }
+
+                setTimeout(() => {
+                    localStorage.setItem('userInfoData', JSON.stringify(response.data));
+                    localStorage.setItem('UserToken', JSON.stringify(jwtResponse));
+                    swal('Login Success', 'Welcome to Soleil Music', 'success');
+                    navigate('/');
+                }, 50);
             }
-            swal('Login Success', 'Welcome to Soleil Music', 'success');
-            setTimeout(() => {
-                localStorage.setItem('userInfoData', JSON.stringify(response.data));
-                navigate('/');
-            }, 50);
         } else {
             swal('Sorry', 'Account Not Exists', 'error');
         }
+
+        // const { data: response } = await axios.post(
+        //     `http://localhost:8081/api/user/checklogin?username=${usernameLogin}&password=${passwordLogin}`,
+        // );
     };
 
     const handleRegisterSubmit = async () => {
-        if (usernameRegister !== null || passwordRegister !== null || emailRegister !== null) {
+        if (usernameRegister === null || passwordRegister === null || emailRegister === null) {
             swal('Sorry', 'Please Fill Enough Infomation', 'warning');
         } else {
             const newUser = {
@@ -78,18 +95,25 @@ function Login() {
                 password: passwordRegister,
                 avatar: 'https://i.ibb.co/4PzYh0M/No-Image-Avatar.png',
                 email: emailRegister,
-                roleId: 2,
+                role: 'USER',
                 phone: null,
                 birthday: null,
                 fullname: null,
                 address: null,
             };
 
-            const { data: response } = await axios.post('http://localhost:8081/api/user/saveUserRegister', newUser);
+            // const { data: response } = await axios.post('http://localhost:8081/api/user/saveUserRegister', newUser);
 
-            if (response.success) {
+            const { data: jwtResponse } = await axios.post('http://localhost:8081/api/auth/register', newUser);
+
+            const { data: findResponse } = await axios.get(
+                `http://localhost:8081/api/user/getUserByUsername?username=${newUser.username}`,
+            );
+
+            if (findResponse.success) {
+                localStorage.setItem('UserToken', JSON.stringify(jwtResponse));
+                localStorage.setItem('userInfoData', JSON.stringify(findResponse.data));
                 swal('Thank You', 'Register Successfully', 'success');
-                localStorage.setItem('userInfoData', JSON.stringify(response.data));
                 navigate('/profile');
             } else {
                 swal('Sorry', 'Register Failed', 'error');
@@ -103,10 +127,10 @@ function Login() {
         const newUser = {
             id: userlist.data.length + 1,
             username: data.name,
-            password: null,
+            password: 123,
             avatar: data.picture,
             email: data.email,
-            roleId: 'USER',
+            role: 'USER',
             phone: null,
             birthday: null,
             fullname: data.family_name + data.given_name,
@@ -122,16 +146,18 @@ function Login() {
                 navigate('/');
             }, 50);
         } else {
-            const { data: response } = await axios.post('http://localhost:8081/api/user/saveUserRegister', newUser);
+            const { data: jwtResponse } = await axios.post('http://localhost:8081/api/auth/register', newUser);
 
-            setUser({ ...response.data });
+            const { data: findResponse } = await axios.get(
+                `http://localhost:8081/api/user/getUserByUsername?username=${newUser.username}`,
+            );
 
-            swal('Login Success', 'Welcome to Soleil Music', 'success');
-
-            console.log(response);
+            setUser({ ...findResponse.data });
 
             setTimeout(() => {
-                localStorage.setItem('userInfoData', JSON.stringify(response.data));
+                localStorage.setItem('UserToken', JSON.stringify(jwtResponse));
+                localStorage.setItem('userInfoData', JSON.stringify(findResponse.data));
+                swal('Login Success', 'Welcome to Soleil Music', 'success');
                 navigate('/profile');
             }, 50);
         }
@@ -170,6 +196,16 @@ function Login() {
     const toggleConfirmPassword = () => {
         setShowConfirmPassword(!showConfirmPassword);
     };
+
+    // const API = axios.create({ baseURL: 'http://localhost:3000' });
+
+    // API.interceptors.request.use((req) => {
+    //     if (localStorage.getItem('UserProfile')) {
+    //         req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('UserProfile')).accessToken}`;
+    //     }
+
+    //     return req;
+    // });
 
     return (
         <div className={cx('wrapper')}>

@@ -26,12 +26,17 @@ function Payment() {
     const handleEnterInput = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
+
     const { user, setUser } = useContext(UserContext);
     const [productList, setProductList] = useState([]);
     const { pathname } = useLocation();
 
     useEffect(() => {
-        setProductList(JSON.parse(sessionStorage.getItem('cartList')));
+        if (localStorage.getItem('UserToken')) {
+            setProductList(JSON.parse(sessionStorage.getItem('cartList')));
+        } else {
+            navigate('/page404');
+        }
     }, []);
 
     useEffect(() => {
@@ -52,6 +57,21 @@ function Payment() {
         return array.reduce((acc, item) => acc + item['price'] * item['quantity'], 0);
     };
 
+    const handleGetCurrentDate = () => {
+        const currentDate = new Date();
+        let stringMonth;
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+
+        if (month < 10) {
+            stringMonth = '0' + month;
+        }
+
+        const day = currentDate.getDate();
+
+        return `${year}-${stringMonth}-${day}`;
+    };
+
     const handleSubmitPayment = async () => {
         if (JSON.stringify(user) === '{}') {
             swal('Sorry', 'Please Sign In To Purchase Our Product', 'warning');
@@ -64,18 +84,31 @@ function Payment() {
                 id: orderListResponse.data.length + 1,
                 userId: user.id,
                 userAddress: address + ', ' + city,
-                phone: phone,
+                totalPrice: handleCalTotalPrice(productList),
+                userPhone: phone,
                 email: email,
                 note: note,
-                fullname: lastname + firstname,
+                fullname: lastname + ' ' + firstname,
+                orderDate: handleGetCurrentDate(),
             };
 
-            const { data: orderSaveResponse } = await axios.post('http://localhost:8081/api/order/saveOrder', newOrder);
+            if (address !== '' || city !== '' || phone !== '' || email !== '' || lastname !== '' || firstname !== '') {
+                const { data: orderSaveResponse } = await axios.post(
+                    'http://localhost:8081/api/order/saveOrder',
+                    newOrder,
+                );
 
-            if (orderSaveResponse.success === true) {
-                swal('Nice!', 'Thanks For Order Our Product', 'success');
+                console.log(newOrder);
+
+                if (orderSaveResponse.success === true) {
+                    swal('Nice!', 'Thanks For Order Our Product', 'success');
+                    sessionStorage.clear();
+                    navigate('/');
+                } else {
+                    swal('Sorry', 'Order Failed', 'error');
+                }
             } else {
-                swal('Sorry', 'Order Failed', 'error');
+                swal('Sorry', 'Please Fill Enough Infomation', 'warning');
             }
         }
     };

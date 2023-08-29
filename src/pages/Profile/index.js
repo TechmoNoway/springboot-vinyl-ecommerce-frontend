@@ -42,7 +42,7 @@ function Profile() {
         email: '',
         avatar: '',
         phone: '',
-        roldId: null,
+        role: null,
         firstname: '',
         lastname: '',
         address: '',
@@ -67,9 +67,13 @@ function Profile() {
     } = form;
 
     useEffect(() => {
-        setForm(() => {
-            return { ...user, ...handleSplitFullname(user.fullname) };
-        });
+        if (localStorage.getItem('UserToken')) {
+            setForm(() => {
+                return { ...user, ...handleSplitFullname(user.fullname) };
+            });
+        } else {
+            navigate('/page404');
+        }
     }, []);
 
     useEffect(() => {
@@ -140,7 +144,7 @@ function Profile() {
             password: password,
             avatar: preview,
             email: email,
-            roleId: 2,
+            role: 2,
             phone: phone,
             birthday: null,
             fullname: firstname + ' ' + lastname,
@@ -159,12 +163,14 @@ function Profile() {
     };
 
     const submitPasswordChange = async () => {
-        if (oldPassword !== user.password) {
-            swal('Warning!', 'Your Old Password Not Right!', 'warning');
-        } else if (newPassword !== confirmPassword) {
+        if (newPassword === '' || confirmPassword === '') {
+            swal('Warning!', 'Please Fill Enough Info To Change Pass', 'warning');
+        }
+        // else if (cryptoJs.SHA256(oldPassword) === user.password) {
+        //     swal('Warning!', 'Your Old Password Not Right!', 'warning');
+        // }
+        else if (newPassword !== confirmPassword) {
             swal('Warning!', 'Please Enter Right Confirm Password!', 'warning');
-        } else if (oldPassword === newPassword) {
-            swal('Warning!', 'Please Enter New Different Password', 'warning');
         } else {
             const newUser = {
                 id: user.id,
@@ -172,7 +178,7 @@ function Profile() {
                 password: newPassword,
                 avatar: user.avatar,
                 email: user.email,
-                roleId: 2,
+                role: 2,
                 phone: user.phone,
                 birthday: null,
                 fullname: user.fullname,

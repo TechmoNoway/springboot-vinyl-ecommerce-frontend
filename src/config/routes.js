@@ -7,6 +7,7 @@ const routes = {
     payment: '/payment',
     profile: '/profile',
     admin: '/admin',
+    page404: '/page404',
 };
 
 export default routes;

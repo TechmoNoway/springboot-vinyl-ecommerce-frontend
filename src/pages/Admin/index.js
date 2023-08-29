@@ -1,113 +1,122 @@
+import classNames from 'classnames/bind';
+import styles from './Admin.module.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const cx = classNames.bind(styles);
+
 function Admin() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (localStorage.getItem('UserToken')) {
+        } else {
+            navigate('/page404');
+        }
+    }, []);
+
     return (
-        <div>
-            <nav>
-                <div class="logo-name">
-                    <div class="logo-image">
-                        <img src="./Images/cat-ocean-eyes-xh-1920x1080.jpg" alt="" />
+        <div className={cx('wrapper')}>
+            {/* <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+
+            <nav className={cx('admin-nav')}>
+                <div className={cx('logo-name')}>
+                    <div className={cx('logo-image')}>
+                        <img
+                            className={cx('logo-detail-image')}
+                            src="./Images/cat-ocean-eyes-xh-1920x1080.jpg"
+                            alt=""
+                        />
                     </div>
 
-                    <span class="logo_name">Movies</span>
+                    <span className={cx('logo_name')}>SOLEIL RECORDS</span>
                 </div>
 
-                
-
-                <div class="menu-items">
-                    <ul class="nav-links">
-                        <li>
-                            <a href="/">
-                                <i class="uil uil-estate"></i>
-                                <span class="link-name">User</span>
+                <div className={cx('menu-items')}>
+                    <ul className={cx('nav-links')}>
+                        <li className={cx('nav-link-title')}>
+                            <a className={cx('item-link')} href="/">
+                                <i className={cx('uil uil-estate')}></i>
+                                <span className={cx('link-name')}>User</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="/">
-                                <i class="uil uil-files-landscapes"></i>
-                                <span class="link-name">Product</span>
+                        <li className={cx('nav-link-title')}>
+                            <a className={cx('item-link')} href="/">
+                                <i className={cx('uil uil-files-landscapes')}></i>
+                                <span className={cx('link-name')}>Product</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="/">
-                                <i class="uil uil-chart"></i>
-                                <span class="link-name">Order</span>
+                        <li className={cx('nav-link-title')}>
+                            <a className={cx('item-link')} href="/">
+                                <i className={cx('uil uil-chart')}></i>
+                                <span className={cx('link-name')}>Order</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="/">
-                                <i class="uil uil-thumbs-up"></i>
-                                <span class="link-name">Category</span>
+                        <li className={cx('nav-link-title')}>
+                            <a className={cx('item-link')} href="/">
+                                <i className={cx('uil uil-thumbs-up')}></i>
+                                <span className={cx('link-name')}>Category</span>
                             </a>
                         </li>
                     </ul>
 
-                    <ul class="logout-mode">
+                    <ul className={cx('logout-mode')}>
                         <li>
                             <a href="/">
-                                <i class="uil uil-signout"></i>
-                                <span class="link-name">Logout</span>
+                                <i className={cx('uil uil-signout')}></i>
+                                <span className={cx('link-name')}>Logout</span>
                             </a>
-                        </li>
-
-                        <li class="mode">
-                            <a href="/">
-                                <i class="uil uil-moon"></i>
-                                <span class="link-name">Dark Mode</span>
-                            </a>
-
-                            <div class="mode-toggle">
-                                <span class="switch"></span>
-                            </div>
                         </li>
                     </ul>
                 </div>
             </nav>
 
-            
-
-            <section class="dashboard">
-                <div class="top">
-                    <i class="uil uil-bars sidebar-toggle"></i>
-
-                    <div class="search-box">
-                        <i class="uil uil-search"></i>
+            <section className={cx('dashboard')}>
+                <div className={cx('top')}>
+                    <div className={cx('search-box')}>
+                        <i className={cx('uil uil-search')}></i>
                         <input type="text" placeholder="Search here..." />
                     </div>
 
                     <img src="images/profile.jpg" alt="" />
                 </div>
 
-                <div class="dash-content">
-                    <div class="activity">
-                        <div class="title">
-                            <i class="uil uil-clock-three"></i>
-                            <span class="text">Recent Activity</span>
-                        </div>
+                <div className={cx('dash-content')}>
+                    <div className="content">
+                        <div className="container">
+                            <h2 className="mb-5 mt-4 mx-5">User List</h2>
 
-                        <div class="activity-data">
-                            <div class="data names">
-                                <span class="data-title">Name</span>
-                                <span class="data-list">Prem Shahi</span>
-                            </div>
-                            <div class="data email">
-                                <span class="data-title">Email</span>
-                                <span class="data-list">premshahi@gmail.com</span>
-                            </div>
-                            <div class="data joined">
-                                <span class="data-title">Joined</span>
-                                <span class="data-list">2022-02-12</span>
-                            </div>
-                            <div class="data type">
-                                <span class="data-title">Type</span>
-                                <span class="data-list">New</span>
-                            </div>
-                            <div class="data status">
-                                <span class="data-title">Status</span>
-                                <span class="data-list">Liked</span>
+                            <div className="table-responsive mx-5">
+                                <table className="table table-striped custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Username</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Phone</th>
+                                            <th scope="col">Address</th>
+                                            <th scope="col">Fullname</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1392</td>
+                                            <td>James Yates</td>
+                                            <td>Web Designer</td>
+                                            <td>+63 983 0962 971</td>
+                                            <td>NY University</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
         </div>
     );
 }

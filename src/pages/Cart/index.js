@@ -16,7 +16,11 @@ function Cart() {
     const { pathname } = useLocation();
 
     useEffect(() => {
-        setCartItemList(JSON.parse(sessionStorage.getItem('cartList')));
+        if (localStorage.getItem('UserToken')) {
+            setCartItemList(JSON.parse(sessionStorage.getItem('cartList')));
+        } else {
+            navigate('/page404');
+        }
     }, []);
 
     useEffect(() => {
@@ -28,10 +32,13 @@ function Cart() {
     }, [pathname]);
 
     const handleIncreaseQuantity = (index) => {
-        setCartItemList(() => {
-            cartItemList[index].quantity = cartItemList[index].quantity + 1;
-            return cartItemList;
-        });
+        if (cartItemList[index].quantity < 5) {
+            setCartItemList(() => {
+                cartItemList[index].quantity = cartItemList[index].quantity + 1;
+                cartItemList[index].stockQuantiy = cartItemList[index].quantity - 1;
+                return cartItemList;
+            });
+        }
 
         sessionStorage.setItem('cartList', JSON.stringify(cartItemList));
         navigate('/cart');
@@ -41,6 +48,7 @@ function Cart() {
         if (cartItemList[index].quantity > 1) {
             setCartItemList(() => {
                 cartItemList[index].quantity = cartItemList[index].quantity - 1;
+                cartItemList[index].stockQuantiy = cartItemList[index].quantity + 1;
                 return cartItemList;
             });
 
