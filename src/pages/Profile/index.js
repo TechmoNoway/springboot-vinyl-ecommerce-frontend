@@ -253,7 +253,7 @@ function Profile() {
                                     role="tab"
                                     aria-controls="account"
                                     aria-selected="true"
-                                    className={cx('px-5 py-4', 'navlink')}
+                                    className={cx('px-5', 'py-4', 'navlink')}
                                 >
                                     <FontAwesomeIcon className={cx('text-center', 'nav-icon')} icon={faHomeLg} />
                                     Account
@@ -266,7 +266,7 @@ function Profile() {
                                     role="tab"
                                     aria-controls="password"
                                     aria-selected="false"
-                                    className={cx('px-5 py-4', 'navlink')}
+                                    className={cx('px-5', 'py-4', 'navlink')}
                                 >
                                     <FontAwesomeIcon className={cx('text-center', 'nav-icon')} icon={faKey} />
                                     Password

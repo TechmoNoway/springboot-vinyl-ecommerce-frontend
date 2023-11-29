@@ -55,7 +55,7 @@ function Login() {
 
         const { data: jwtResponse } = await axios.post('http://localhost:8081/api/auth/user/authenticate', requestUser);
 
-        if (jwtResponse !== null) {
+        if (jwtResponse.token !== null) {
             const { data: response } = await axios.get(
                 `http://localhost:8081/api/user/getUserByUsername?username=${requestUser.username}`,
             );
@@ -76,7 +76,7 @@ function Login() {
                     navigate('/');
                 }, 50);
             }
-        } else {
+        } else if (jwtResponse.token === null) {
             swal('Sorry', 'Account Not Exists', 'error');
         }
 

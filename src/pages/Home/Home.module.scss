@@ -53,6 +53,9 @@
     margin-top: 40px;
     border: 1px solid #121619;
     box-shadow: 4px 4px 0px #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
         text-decoration: underline;
@@ -80,6 +83,9 @@
     margin-top: 20px;
     border: 1px solid #121619;
     box-shadow: 4px 4px 0px #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
         text-decoration: underline;
@@ -140,6 +146,9 @@
     border: 1px solid #121619;
     box-shadow: 4px 4px 0px #000000;
     text-decoration: underline;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-vietnam-content {
@@ -163,6 +172,9 @@
     margin-top: 20px;
     border: 1px solid #121619;
     box-shadow: 4px 4px 0px #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
         text-decoration: underline;
@@ -228,6 +240,9 @@
     margin-top: 20px;
     border: 1px solid #121619;
     box-shadow: 4px 4px 0px #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
         text-decoration: underline;
@@ -519,7 +534,8 @@
 }
 
 .vinyl-product {
-    margin-top: 10px;
+    position: relative;
+    margin-top: 40px;
     max-width: 25%;
     flex: 0 0 25%;
     text-align: center;
@@ -527,6 +543,92 @@
     padding-right: 10px;
     height: 401.65px;
     cursor: pointer;
+}
+
+//Showing the add product button
+
+.add-links-wrap {
+    position: absolute;
+    left: 13%;
+    top: 29.5%;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 2;
+    opacity: 0;
+
+    &:hover {
+        opacity: 1;
+        visibility: visible;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 0.4s linear;
+    }
+}
+
+.favorite-product-button {
+    font-family: var(--font-family);
+    font-size: 9px;
+    font-family: 'Popins', sans-serif;
+    font-weight: bold;
+    width: 53.4px;
+    height: 36px;
+    padding: 10px 12px;
+    background: white;
+    margin: 0px 8px;
+    border: 1px solid #121619;
+    box-shadow: 4px 4px 0px #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorite-product-icon {
+    width: 16px;
+    height: 16px;
+    color: black;
+}
+
+.cart-product-button {
+    margin-right: 20px;
+    font-family: var(--font-family);
+    font-size: 9px;
+    font-family: 'Popins', sans-serif;
+    font-weight: bold;
+    width: 130px;
+    height: 36px;
+    padding: 10px 6px;
+    background: #fff27e;
+    margin: 0px 8px;
+    border: 1px solid #121619;
+    box-shadow: 4px 4px 0px #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-product-icon {
+    width: 14px;
+    height: 14px;
+    color: black;
+}
+
+.cart-product-link {
+    color: black;
+    margin-left: 5px;
+}
+
+///////
+
+.touch-link-product {
+    &:hover ~ .add-links-wrap {
+        opacity: 1;
+        visibility: visible;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 0.4s linear;
+    }
 }
 
 .vinyl-image {

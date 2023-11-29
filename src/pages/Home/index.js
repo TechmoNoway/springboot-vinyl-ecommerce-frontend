@@ -2,12 +2,13 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight, faCircle, faCompactDisc, faMusic } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faBagShopping, faCircle, faCompactDisc, faMusic } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook, faInstagram, faSpotify, faTiktok, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { DiscIcon, DroppingIcon, OkIcon, ShippingIcon } from '~/asset/Icons';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -23,18 +24,13 @@ function Home() {
         }
 
         const handleGetBestDiscs = async () => {
-
             const { data: response } = await axios.get('http://localhost:8081/api/disc/getBestDiscs');
 
-            setBestDiscList(response.data)
-
-        } 
+            setBestDiscList(response.data);
+        };
 
         handleGetBestDiscs();
-
     }, []);
-
-    
 
     return (
         <div className={cx('wrapper')}>
@@ -275,15 +271,22 @@ function Home() {
                     <div className={cx('ready-vinyl-content')}>
                         {bestDiscList.map((item) => (
                             <div key={item.id} className={cx('vinyl-product')}>
-                                <Link to={`/product/${item.albumName}`}>
-                                    <img className={cx('vinyl-image')} src={item.image} alt=""></img>
-
-                                    <div className={cx('add-links-wrap')}>
-                                        <div></div>
-
-                                        <div></div>
+                                <Link to={`/product/${item.albumName}`} className={cx('touch-link-product')}>
+                                    <img className={cx('vinyl-image')} src={item.image} alt="" loading="lazy"></img>
+                                </Link>
+                                <div className={cx('add-links-wrap')}>
+                                    <div className={cx('favorite-product-button')}>
+                                        <FontAwesomeIcon icon={faHeart} className={cx('favorite-product-icon')} />
                                     </div>
 
+                                    <div className={cx('cart-product-button')}>
+                                        <a href="/" className={cx('cart-product-link')}>
+                                            <FontAwesomeIcon icon={faBagShopping} className={cx('cart-product-icon')} />
+                                            THÊM VÀO GIỎ HÀNG
+                                        </a>
+                                    </div>
+                                </div>
+                                <Link to={`/product/${item.albumName}`} className={cx('touch-link-product')}>
                                     <div className={cx('vinyl-product-title')}>
                                         <p className={cx('vinyl-name')}>{item.albumName}</p>
                                         <p className={cx('vinyl-author')}>{item.artist}</p>
