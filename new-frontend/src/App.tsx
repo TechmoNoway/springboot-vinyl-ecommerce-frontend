@@ -5,7 +5,7 @@ import { Home } from './_root/pages';
 
 function App() {
     return (
-        <main className="h-screen w-screen">
+        <main className="w-screen">
             <Routes>
                 {/* Public Routes */}
                 {/* <Route element={<AuthLayout />}>
