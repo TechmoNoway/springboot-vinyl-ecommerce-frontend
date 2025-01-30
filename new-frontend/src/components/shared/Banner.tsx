@@ -12,7 +12,7 @@ const Banner = () => {
                         <h2 className="text-2xl font-bold uppercase hover:underline">Đĩa Mới &gt;</h2>
                         <p className="text-gray-700 mt-2">Đĩa than nguyên seal mới toanh của bạn và chỉ riêng bạn</p>
 
-                        <div className="mt-4 flex flex-col items-end space-y-4">
+                        <div className="mt-4 flex flex-col items-end space-y-5">
                             <Button className="flex items-center justify-center bg-white hover:bg-white hover:border-black border-black px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] font-bold hover:underline shadow-[4px_4px_0px_#000000]">
                                 <FaMusic className="" /> Đĩa Mới Có Sẵn
                             </Button>
@@ -30,9 +30,9 @@ const Banner = () => {
                 </div>
 
                 {/* Vintage Vinyl Section */}
-                <div className="w-1/2 flex-1 bg-gray-200 pt-12">
+                <div className="w-1/2 flex-1 bg-gray-200 pt-12 flex-col">
                     <div className="pl-5">
-                        <h2 className="text-xl font-bold hover:underline uppercase">Đĩa Vintage &gt;</h2>
+                        <h2 className="text-2xl font-bold hover:underline uppercase">Đĩa Vintage &gt;</h2>
                         <p className="text-gray-700 mt-2">
                             Những chiếc đĩa than vượt năm tháng để đưa giai điệu nguyên bản tới đôi tai bạn
                         </p>
@@ -142,7 +142,7 @@ const Banner = () => {
                     className="w-[318px] h-[53px] mt-4 flex items-center"
                 />
 
-                <p className="mt-24">"VỌC ƠI, CÒN ĐĨA NÀY HEM?"</p>
+                <p className="mt-24 font-semibold">"VỌC ƠI, CÒN ĐĨA NÀY HEM?"</p>
 
                 <div className="w-full flex mt-20">
                     <div className="w-1/2 flex justify-end px-5 py-2">
