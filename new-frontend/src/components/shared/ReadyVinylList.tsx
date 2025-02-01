@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import { getReadyProducts } from '@/services/ProductService';
 import { useEffect, useState } from 'react';
+import { IProduct } from '../../../types/index';
 
 const ReadyVinylList = () => {
-    const [readyDiscList, setReadyDiscList] = useState([]);
+    const [readyDiscList, setReadyDiscList] = useState<IProduct[]>([]);
 
     const fetchReadyDiscList = async () => {
         try {
             const response = await getReadyProducts();
-            setReadyDiscList(response?.data);
+            setReadyDiscList(response?.data.data);
         } catch (error) {
             console.error(error);
         }
@@ -22,72 +23,18 @@ const ReadyVinylList = () => {
 
     return (
         <>
-            <section>
+            <section className="px-40">
                 <div>
                     <div>
                         <span>ĐĨA THAN SẴN SÀNG</span>
                         <span>XEM ĐĨA GIẢM GIÁ</span>
                     </div>
 
-                    <div>
-                        {/* {bestDiscList.map((item) => (
-                            <div key={item.id} className={cx('vinyl-product')}>
-                                <Link to={`/product/${item.albumName}`} className={cx('touch-link-product')}>
-                                    <img className={cx('vinyl-image')} src={item.image} alt="" loading="lazy"></img>
-                                </Link>
-                                <div className={cx('add-links-wrap')}>
-                                    <div className={cx('favorite-product-button')}>
-                                        <FontAwesomeIcon icon={faHeart} className={cx('favorite-product-icon')} />
-                                    </div>
-
-                                    <div className={cx('cart-product-button')}>
-                                        <a href="/" className={cx('cart-product-link')}>
-                                            <FontAwesomeIcon icon={faBagShopping} className={cx('cart-product-icon')} />
-                                            THÊM VÀO GIỎ HÀNG
-                                        </a>
-                                    </div>
-                                </div>
-                                <Link to={`/product/${item.albumName}`} className={cx('touch-link-product')}>
-                                    <div className={cx('vinyl-product-title')}>
-                                        <p className={cx('vinyl-name')}>{item.albumName}</p>
-                                        <p className={cx('vinyl-author')}>{item.artist}</p>
-                                        <p className={cx('vinyl-price')}>{item.price.toLocaleString('en-US')} đ</p>
-                                        <div className={cx('vinyl-stock-status')}>
-                                            <span className={cx('vinyl-onstock')}>{item.stockStatus}</span>
-                                            <span className={cx('vinyl-status')}>{item.status}</span>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </div> */}
-                        {/* ))} */}
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {readyDiscList?.map((product) => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
                     </div>
-
-                    <div>
-                        <Link to={`/product/`}>
-                            <img src={''} alt="" loading="lazy"></img>
-                        </Link>
-                        <div>
-                            <div></div>
-
-                            <div>
-                                <a href="/">THÊM VÀO GIỎ HÀNG</a>
-                            </div>
-                        </div>
-                        <Link to={`/product/`}>
-                            <div>
-                                <p>test</p>
-                                <p>test</p>
-                                <p>100 đ</p>
-                                <div>
-                                    <span>CÒN HÀNG</span>
-                                    <span>Test</span>
-                                </div>
-                            </div>
-                        </Link>
-                    </div>
-
-                    <ProductCard />
-
                     <div>
                         <div>
                             <div>
