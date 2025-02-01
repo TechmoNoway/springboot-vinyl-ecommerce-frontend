@@ -11,6 +11,16 @@ const API = axios.create({ baseURL: apiBaseUrl });
 //     return req;
 // });
 
+export const getAllProducts = () => {
+    try {
+        const res = API.get(`api/v1/products/getAllProducts`);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
 export const getReadyProducts = () => {
     try {
         const res = API.get(`api/v1/products/getReadyProducts`);

@@ -1,8 +1,25 @@
 import { FaFacebook, FaInstagram, FaSpotify, FaTiktok, FaYoutube } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
+import { getReadyProducts } from '@/services/ProductService';
+import { useEffect, useState } from 'react';
 
 const ReadyVinylList = () => {
+    const [readyDiscList, setReadyDiscList] = useState([]);
+
+    const fetchReadyDiscList = async () => {
+        try {
+            const response = await getReadyProducts();
+            setReadyDiscList(response?.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchReadyDiscList();
+    }, []);
+
     return (
         <>
             <section>
