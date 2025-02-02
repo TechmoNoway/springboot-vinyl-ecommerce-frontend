@@ -24,8 +24,8 @@ const ReadyVinylList = () => {
 
     return (
         <>
-            <section className="my-8 px-8 md:px-28 lg:px-28 xl:px-48 flex flex-col items-center">
-                <div className="w-full">
+            <section className="my-8 px-8 md:px-40 lg:px-40 xl:px-48 flex flex-col items-center justify-center">
+                <div className="w-full flex flex-col justify-between">
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p className="font-bold text-xl uppercase">ĐĨA THAN SẴN SÀNG</p>
                         <Link
@@ -35,38 +35,38 @@ const ReadyVinylList = () => {
                             XEM ĐĨA ORDER
                         </Link>
                     </div>
+                </div>
 
-                    <div className="grid gap-8 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
-                        {readyDiscList?.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
+                <div className="grid gap-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-6">
+                    {readyDiscList?.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
 
-                    <div className="w-full flex justify-center items-center mt-4 mb-20">
-                        <Button className="flex items-center justify-center bg-white hover:bg-white hover:border-black border-black px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] font-bold hover:underline shadow-[4px_4px_0px_#000000]">
-                            Đĩa Mới Có Sẵn
-                        </Button>
-                    </div>
+                <div className="w-full flex justify-center items-center mt-4 mb-20">
+                    <Button className="flex items-center justify-center bg-white hover:bg-white hover:border-black border-black px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] font-bold hover:underline shadow-[4px_4px_0px_#000000]">
+                        Khám phá danh sách đĩa than của vọc
+                    </Button>
+                </div>
 
-                    <div className="flex justify-center items-center space-x-4">
-                        <p>Theo dõi VỌC RECORDS trên:</p>
+                <div className="flex justify-center items-center space-x-4">
+                    <p>Theo dõi VỌC RECORDS trên:</p>
 
-                        <a href="/" className="text-gray-400 text-xl pl-3">
-                            <FaFacebook />
-                        </a>
-                        <a href="/" className="text-gray-400 text-xl">
-                            <FaInstagram />
-                        </a>
-                        <a href="/" className="text-gray-400 text-xl">
-                            <FaTiktok />
-                        </a>
-                        <a href="/" className="text-gray-400 text-xl">
-                            <FaYoutube />
-                        </a>
-                        <a href="/" className="text-gray-400 text-xl">
-                            <FaSpotify />
-                        </a>
-                    </div>
+                    <a href="/" className="text-gray-400 text-xl pl-3">
+                        <FaFacebook />
+                    </a>
+                    <a href="/" className="text-gray-400 text-xl">
+                        <FaInstagram />
+                    </a>
+                    <a href="/" className="text-gray-400 text-xl">
+                        <FaTiktok />
+                    </a>
+                    <a href="/" className="text-gray-400 text-xl">
+                        <FaYoutube />
+                    </a>
+                    <a href="/" className="text-gray-400 text-xl">
+                        <FaSpotify />
+                    </a>
                 </div>
             </section>
         </>

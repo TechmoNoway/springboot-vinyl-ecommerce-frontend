@@ -106,7 +106,7 @@ const Banner = () => {
                         <img
                             src="https://vocrecords.vn/wp-content/uploads/2022/07/Group-8.png"
                             alt=""
-                            className="absolute top-3 right-3 w-[91px] h-[90px]"
+                            className="absolute top-3 right-3 w-[91px] h-[90px] hidden sm:block"
                         />
                     </div>
 
