@@ -10,10 +10,7 @@ interface Props {
 const ProductCard = ({ product }: Props) => {
     return (
         <>
-            <Link
-                to={`/product/${product.title}`}
-                className="relative group w-64 mx-auto my-3 text-center cursor-pointer"
-            >
+            <Link to={`/product/${product.title}`} className="relative group w-64 my-3 text-center cursor-pointer">
                 {/* Logo */}
                 <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10">
                     <h2 className="text-xs font-bold text-gray-900 bg-white px-2 py-1 rounded">
@@ -24,7 +21,7 @@ const ProductCard = ({ product }: Props) => {
 
                 {/* Product Image */}
                 <div className="relative">
-                    <img src={product.posterUrl} alt={product.title} className="w-full rounded shadow-lg" />
+                    <img src={product.posterUrl} alt={product.title} className="rounded shadow-lg w-full" />
                 </div>
 
                 {/* Hover Buttons */}
@@ -42,17 +39,25 @@ const ProductCard = ({ product }: Props) => {
                 </div>
 
                 {/* Product Details */}
-                <div className="mt-4">
-                    <p className="text-gray-500">{product.title}</p> {/* Album Name */}
-                    <h3 className="text-lg font-bold">{product.artist}</h3> {/* Artist */}
+                <div className="my-10">
+                    <p className="text-gray-500 font-normal">{product.title}</p> {/* Album Name */}
+                    <h3 className="text-lg text-black">{product.artist}</h3> {/* Artist */}
                     <p className="text-xl font-bold text-gray-900">{product.price.toLocaleString('en-US')} ₫</p>
                     {/* Price */}
                     {/* Stock & Size */}
                     <div className="flex justify-center mt-2 space-x-2">
-                        <span className="bg-green-200 text-green-700 text-xs font-bold px-2 py-1 rounded">
+                        <span
+                            className="text-green-700 rounded-none text-[10px] px-2 py-1 uppercase"
+                            style={{
+                                background:
+                                    'linear-gradient(0deg, rgba(40, 168, 32, 0.15), rgba(40, 168, 32, 0.15)), #FFFFFF',
+                            }}
+                        >
+                            Còn hàng
+                        </span>
+                        <span className="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-1 rounded-none">
                             {product.status}
                         </span>
-                        <span className="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-1 rounded">M</span>
                     </div>
                 </div>
             </Link>
