@@ -30,3 +30,13 @@ export const getReadyProducts = () => {
         return null;
     }
 };
+
+export const getProductByTitle = (title: string) => {
+    try {
+        const res = API.get(`api/v1/products/getProductByTitle?title=${title}`);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
