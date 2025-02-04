@@ -2,10 +2,14 @@ import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 
 import { Link } from 'react-router-dom';
 import { Button } from '../ui/button';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { searchProductsByTitle } from '@/services/ProductService';
+import { IProduct } from 'types';
 
 const Header = () => {
     const [opacity, setOpacity] = useState(1);
+    const [searchInput, setSearchInput] = useState<string>('');
+    const [searchResults, setSearchResults] = useState<IProduct[]>([]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -20,6 +24,20 @@ const Header = () => {
         };
     }, []);
 
+    const handleSearchChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value.startsWith(' ')) {
+            return;
+        }
+        setSearchInput(value);
+        if (value.length > 0) {
+            const response = await searchProductsByTitle(value);
+            console.log(response?.data.data);
+            setSearchResults(response?.data.data);
+        } else {
+            setSearchResults([]);
+        }
+    };
     return (
         <>
             <header
@@ -80,8 +98,21 @@ const Header = () => {
                             <input
                                 type="text"
                                 placeholder="Tìm tên bài hát, album, nghệ sĩ..."
+                                onChange={handleSearchChange}
+                                value={searchInput}
                                 className="bg-transparent text-sm outline-none placeholder:text-xs placeholder-gray-500 hidden lg:block text-white md:w-[283px] px-3"
                             />
+                            {searchResults.length > 0 && (
+                                <div className="absolute right-96 top-20 mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 w-40">
+                                    <ul>
+                                        {searchResults.map((product, index) => (
+                                            <li key={index} className="p-2 hover:bg-gray-100">
+                                                {product?.title}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
                             {/* Icons */}
                             <Button className="bg-transparent hover:bg-transparent border-none">

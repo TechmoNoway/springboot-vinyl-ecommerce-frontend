@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { getProductByTitle } from '@/services/ProductService';
 import { useEffect, useState } from 'react';
-import { FaHeart, FaInfoCircle, FaShoppingCart, FaVolumeUp } from 'react-icons/fa';
+import { FaCommentAlt, FaHeart, FaInfoCircle, FaShoppingCart, FaVolumeUp } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { IProduct } from 'types';
 
@@ -29,7 +29,7 @@ const ProductDetail = () => {
     }, [title]);
 
     return (
-        <div className="container px-4 sm:px-6 md:px-10 xl:px-36 py-6">
+        <div className="container px-4 sm:px-6 md:px-10 xl:px-36 py-10">
             <div className="flex flex-col lg:flex-row items-center lg:items-start">
                 {/* Left: Product Image */}
                 <div className="w-full lg:w-1/2 flex flex-col items-center lg:pr-8">
@@ -43,10 +43,39 @@ const ProductDetail = () => {
                     {/* Thumbnail Preview */}
                     <div className="mt-4 flex space-x-2">
                         <img
-                            src="/your-product-thumbnail.jpg"
+                            src={product?.posterUrl}
                             alt="Thumbnail"
                             className="w-14 h-14 sm:w-16 sm:h-16 rounded border border-gray-300 cursor-pointer hover:border-black"
                         />
+                    </div>
+
+                    <div className="bg-slate-100 p-5 rounded-md mt-4">
+                        {/* Header with Icon */}
+                        <div className="flex items-center font-bold text-lg mb-3">
+                            <FaCommentAlt className="mr-2" />
+                            LƯU Ý KHI MUA HÀNG
+                        </div>
+
+                        {/* Bullet Points */}
+                        <ul className="text-gray-800 list-disc pl-7 space-y-2">
+                            <li>
+                                Vui lòng chuyển khoản 100% đơn hàng có <b>sản phẩm PRE-ORDER</b>.
+                            </li>
+                            <li>
+                                Giá sản phẩm <b>PRE-ORDER</b> cập nhật hàng tuần, Voc Records sẽ liên hệ nếu có chênh
+                                lệch.
+                            </li>
+                            <li>
+                                Thời gian vận chuyển: Sản phẩm <b>CÒN HÀNG 1-5 ngày</b>, sản phẩm{' '}
+                                <b>PRE-ORDER 2-4 tuần</b>.
+                            </li>
+                            <li>
+                                <b>KHÔNG HỦY / HOÀN TIỀN</b> sản phẩm PRE-ORDER.
+                            </li>
+                        </ul>
+
+                        {/* Return Policy Link */}
+                        <div className="mt-3 ml-7 font-bold cursor-pointer underline">QUY ĐỊNH ĐỔI TRẢ</div>
                     </div>
                 </div>
 
@@ -82,23 +111,23 @@ const ProductDetail = () => {
                     <p className="mt-4 text-black text-sm sm:text-base">{product?.description}</p>
 
                     {/* Product Specifications */}
-                    <div className="mt-6 border-t border-gray-300 pt-4">
-                        <h2 className="text-lg font-bold mb-4">THÔNG TIN ĐĨA</h2>
+                    <div className="mt-6 pt-10 pb-16">
+                        <h2 className="text-lg font-bold pb-2 mb-6 border-b-[2px]  border-gray-400">THÔNG TIN ĐĨA</h2>
                         <div className="grid grid-cols-2 gap-y-2 text-gray-800">
                             <span className="font-semibold">Trọng lượng</span>
-                            <span>5 kg</span>
+                            <span className="">5 kg</span>
 
                             <span className="font-semibold">Năm Sản Xuất</span>
-                            <span>2014</span>
+                            <span>{product?.manufactureYear}</span>
 
                             <span className="font-semibold">Thể Loại</span>
                             <span>Electronic, Pop</span>
 
                             <span className="font-semibold">Định Dạng</span>
-                            <span>Đĩa Mới</span>
+                            <span>{product?.platform}</span>
 
                             <span className="font-semibold">Hãng Phát Hành</span>
-                            <span>Big Machine Records</span>
+                            <span>{product?.studioName}</span>
 
                             <span className="font-semibold flex items-center">
                                 Tình Trạng Đĩa <FaInfoCircle className="ml-1 text-gray-500" />
@@ -109,7 +138,7 @@ const ProductDetail = () => {
                             <span>M</span>
 
                             <span className="font-semibold">Quốc Gia</span>
-                            <span>US</span>
+                            <span>{product?.region}</span>
 
                             <span className="font-semibold">Mã Đĩa</span>
                             <span className="text-gray-500">602455542144</span>

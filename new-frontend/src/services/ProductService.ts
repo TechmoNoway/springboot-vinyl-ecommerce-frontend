@@ -40,3 +40,13 @@ export const getProductByTitle = (title: string) => {
         return null;
     }
 };
+
+export const searchProductsByTitle = (title: string) => {
+    try {
+        const res = API.get(`api/v1/products/searchProductsByTitle?title=${title}`);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
