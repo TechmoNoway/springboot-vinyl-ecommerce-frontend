@@ -2,19 +2,30 @@ import { FaHeart, FaShoppingBag } from 'react-icons/fa';
 import { Button } from '../ui/button';
 import { IProduct } from 'types';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 interface Props {
     product: IProduct;
 }
 
 const ProductCard = ({ product }: Props) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+
     return (
         <>
             <div className="relative group w-64 my-3 text-center">
                 <Link to={`/product/${product.title}`} className="block">
                     {/* Product Image */}
                     <div className="relative">
-                        <img src={product.posterUrl} alt={product.title} className="w-full rounded shadow-lg" />
+                        <img
+                            src={product.posterUrl}
+                            alt={product.title}
+                            loading="lazy"
+                            onLoad={() => setIsLoaded(true)}
+                            className={`w-full rounded shadow-lg transition-opacity duration-500 ${
+                                isLoaded ? 'opacity-100' : 'opacity-0'
+                            }`}
+                        />
                     </div>
                 </Link>
 

@@ -1,6 +1,7 @@
+import { Button } from '@/components/ui/button';
 import { getProductByTitle } from '@/services/ProductService';
 import { useEffect, useState } from 'react';
-import { FaHeart, FaShoppingCart, FaVolumeUp } from 'react-icons/fa';
+import { FaHeart, FaInfoCircle, FaShoppingCart, FaVolumeUp } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { IProduct } from 'types';
 
@@ -28,83 +29,94 @@ const ProductDetail = () => {
     }, [title]);
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="container px-4 sm:px-6 md:px-10 xl:px-36 py-6">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start">
                 {/* Left: Product Image */}
-                <div className="flex flex-col items-center">
-                    <img src={product?.posterUrl} alt="1989 (Taylor's Version)" className="w-80 rounded shadow-lg" />
-                    <p className="text-sm text-gray-500 mt-2">
-                        Hình ảnh minh họa. Vui lòng xem chi tiết chính xác tại mục mô tả sản phẩm
-                    </p>
+                <div className="w-full lg:w-1/2 flex flex-col items-center lg:pr-8">
+                    <div className="border border-gray-300 w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] xl:max-w-[590px]">
+                        <img src={product?.posterUrl} alt={product?.title} className="w-full h-auto object-cover" />
+                        <p className="text-xs sm:text-sm text-gray-500 py-2 text-center">
+                            Hình ảnh minh họa. Vui lòng xem chi tiết chính xác tại mục mô tả sản phẩm.
+                        </p>
+                    </div>
 
                     {/* Thumbnail Preview */}
                     <div className="mt-4 flex space-x-2">
                         <img
                             src="/your-product-thumbnail.jpg"
                             alt="Thumbnail"
-                            className="w-16 h-16 rounded border border-gray-300 cursor-pointer hover:border-black"
+                            className="w-14 h-14 sm:w-16 sm:h-16 rounded border border-gray-300 cursor-pointer hover:border-black"
                         />
                     </div>
                 </div>
 
                 {/* Right: Product Details */}
-                <div>
-                    <h1 className="text-2xl font-bold">1989 (TAYLOR'S VERSION) [2 LP]</h1>
-                    <p className="text-lg text-gray-600">TAYLOR SWIFT</p>
-                    <p className="text-xl font-bold mt-2">1,360,000 ₫</p>
+                <div className="w-full lg:w-1/2 flex flex-col space-y-4 mt-6 lg:mt-0">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-center lg:text-left">{product?.title}</h1>
+                    <p className="text-lg text-black text-center lg:text-left">{product?.artist}</p>
+                    <p className="text-center lg:text-left">Đĩa mới</p>
 
-                    {/* Availability */}
-                    <span className="bg-green-200 text-green-700 text-sm font-bold px-2 py-1 rounded">CÒN HÀNG</span>
+                    {/* Price & Availability */}
+                    <div className="flex items-center justify-center lg:justify-start space-x-2">
+                        <p className="text-xl font-bold">{product?.price.toLocaleString('en-US')} ₫</p>
+                        <span className="text-green-600 text-xs sm:text-sm px-2 py-1 uppercase font-bold bg-green-100">
+                            CÒN HÀNG
+                        </span>
+                    </div>
 
                     {/* Product Actions */}
-                    <div className="flex space-x-2 mt-4">
-                        <button className="flex items-center bg-yellow-400 border border-black px-4 py-2 font-bold hover:bg-yellow-500">
-                            <FaShoppingCart className="mr-2" />
-                            THÊM VÀO GIỎ HÀNG
-                        </button>
-                        <button className="border px-4 py-2 hover:bg-gray-100">
-                            <FaHeart />
-                        </button>
-                        <button className="border px-4 py-2 hover:bg-gray-100">
-                            <FaVolumeUp />
-                        </button>
+                    <div className="flex flex-wrap justify-center lg:justify-start space-x-3 mt-4 border-t border-b py-4">
+                        <Button className="bg-white px-4 flex items-center space-x-2 hover:bg-gray-100 rounded-none border-[1px] border-black hover:border-black shadow-[4px_4px_0px_#000000]">
+                            <FaVolumeUp className="text-black" />
+                        </Button>
+                        <Button className="bg-white px-4 flex items-center space-x-2 hover:bg-gray-100 rounded-none border-[1px] border-black hover:border-black shadow-[4px_4px_0px_#000000]">
+                            <FaHeart className="text-black" />
+                        </Button>
+                        <Button className="bg-[#FFF27E] hover:bg-[#FFF27E] border-[1px] border-black hover:border-black px-6 sm:px-10 flex items-center rounded-none shadow-[4px_4px_0px_#000000] text-black">
+                            <FaShoppingCart />
+                            <p className="font-bold ml-2 text-xs sm:text-sm">THÊM VÀO GIỎ HÀNG</p>
+                        </Button>
                     </div>
 
                     {/* Description */}
-                    <p className="mt-6 text-gray-700">
-                        Album "Taylor Swift – 1989 (Taylor’s Version)” là một bộ sưu tập các hit đỉnh cao của nữ ca sĩ
-                        tài năng Taylor Swift...
-                    </p>
+                    <p className="mt-4 text-black text-sm sm:text-base">{product?.description}</p>
 
                     {/* Product Specifications */}
-                    <div className="mt-6">
-                        <h2 className="text-lg font-bold">THÔNG TIN ĐĨA</h2>
-                        <ul className="mt-2 space-y-1 text-gray-700">
-                            <li>
-                                <strong>Trọng lượng:</strong> 5 kg
-                            </li>
-                            <li>
-                                <strong>Năm Sản Xuất:</strong> 2014
-                            </li>
-                            <li>
-                                <strong>Thể Loại:</strong> Electronic, Pop
-                            </li>
-                            <li>
-                                <strong>Định Dạng:</strong> Đĩa Mới
-                            </li>
-                            <li>
-                                <strong>Hãng Phát Hành:</strong> Big Machine Records
-                            </li>
-                            <li>
-                                <strong>Tình Trạng Đĩa:</strong> M
-                            </li>
-                            <li>
-                                <strong>Tình Trạng Vỏ:</strong> M
-                            </li>
-                            <li>
-                                <strong>Quốc Gia:</strong> US
-                            </li>
-                        </ul>
+                    <div className="mt-6 border-t border-gray-300 pt-4">
+                        <h2 className="text-lg font-bold mb-4">THÔNG TIN ĐĨA</h2>
+                        <div className="grid grid-cols-2 gap-y-2 text-gray-800">
+                            <span className="font-semibold">Trọng lượng</span>
+                            <span>5 kg</span>
+
+                            <span className="font-semibold">Năm Sản Xuất</span>
+                            <span>2014</span>
+
+                            <span className="font-semibold">Thể Loại</span>
+                            <span>Electronic, Pop</span>
+
+                            <span className="font-semibold">Định Dạng</span>
+                            <span>Đĩa Mới</span>
+
+                            <span className="font-semibold">Hãng Phát Hành</span>
+                            <span>Big Machine Records</span>
+
+                            <span className="font-semibold flex items-center">
+                                Tình Trạng Đĩa <FaInfoCircle className="ml-1 text-gray-500" />
+                            </span>
+                            <span>M</span>
+
+                            <span className="font-semibold">Tình Trạng Vỏ</span>
+                            <span>M</span>
+
+                            <span className="font-semibold">Quốc Gia</span>
+                            <span>US</span>
+
+                            <span className="font-semibold">Mã Đĩa</span>
+                            <span className="text-gray-500">602455542144</span>
+
+                            <span className="font-semibold">Số Lượng</span>
+                            <span>2 x Vinyl (LP, Album)</span>
+                        </div>
                     </div>
                 </div>
             </div>
