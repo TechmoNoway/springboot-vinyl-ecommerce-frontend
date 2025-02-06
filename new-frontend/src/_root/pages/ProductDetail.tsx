@@ -29,7 +29,7 @@ const ProductDetail = () => {
     }, [title]);
 
     return (
-        <div className="container px-4 sm:px-6 md:px-10 xl:px-36 py-10">
+        <div className="px-4 sm:px-6 md:px-10 xl:px-80 py-10">
             <div className="flex flex-col lg:flex-row items-center lg:items-start">
                 {/* Left: Product Image */}
                 <div className="w-full lg:w-1/2 flex flex-col items-center lg:pr-8">
@@ -49,7 +49,7 @@ const ProductDetail = () => {
                         />
                     </div>
 
-                    <div className="bg-slate-100 p-5 rounded-md mt-4">
+                    <div className="bg-slate-100 p-5 mt-4">
                         {/* Header with Icon */}
                         <div className="flex items-center font-bold text-lg mb-3">
                             <FaCommentAlt className="mr-2" />

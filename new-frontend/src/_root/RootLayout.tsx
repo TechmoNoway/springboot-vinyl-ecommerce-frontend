@@ -8,7 +8,7 @@ const RootLayout = () => {
             <div className="flex flex-col w-full">
                 <Header />
 
-                <section className="flex flex-1">
+                <section className="">
                     <Outlet />
                 </section>
 

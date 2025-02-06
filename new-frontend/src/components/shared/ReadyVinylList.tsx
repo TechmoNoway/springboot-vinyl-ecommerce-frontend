@@ -24,7 +24,7 @@ const ReadyVinylList = () => {
 
     return (
         <>
-            <section className="my-8 px-8 md:px-40 lg:px-40 xl:px-48 flex flex-col items-center justify-center">
+            <section className="my-8 px-8 md:px-40 lg:px-40 xl:px-80 flex flex-col items-center justify-center">
                 <div className="w-full flex flex-col justify-between">
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p className="font-bold text-xl uppercase">ĐĨA THAN SẴN SÀNG</p>

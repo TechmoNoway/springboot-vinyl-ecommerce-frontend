@@ -7,6 +7,7 @@ function App() {
     return (
         <main className="w-screen">
             <Routes>
+                
                 {/* Public Routes */}
                 {/* <Route element={<AuthLayout />}>
                     <Route path="/sign-in" element={<SignInForm />} />
