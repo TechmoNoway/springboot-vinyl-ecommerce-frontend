@@ -1,11 +1,12 @@
 import { FaSearch, FaShoppingCart, FaUser } from 'react-icons/fa';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { ChangeEvent, useEffect, useState, useRef } from 'react';
 import { searchProductsByTitle } from '@/services/ProductService';
 import { IProduct } from 'types';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card';
+import { useCart } from '@/context/CartContext';
 // import useDebounce from '@/hooks/useDebounce';
 
 const Header = () => {
@@ -14,6 +15,8 @@ const Header = () => {
     const [searchResults, setSearchResults] = useState<IProduct[]>([]);
     const [isListVisible, setIsListVisible] = useState(true);
     const listRef = useRef<HTMLUListElement>(null);
+    const navigate = useNavigate();
+    const { dispatch } = useCart();
 
     // const debouncedSearchInput = useDebounce(searchInput, 500);
 
@@ -60,6 +63,10 @@ const Header = () => {
     const handleFocus = () => {
         setIsListVisible(true);
     };
+
+     const addToCart = () => {
+         dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
+     };
 
     return (
         <>
@@ -166,42 +173,43 @@ const Header = () => {
                                     </span>
                                 </div>
                             </HoverCardTrigger>
-                            <HoverCardContent>
-                                <div className="bg-white p-5 shadow-md rounded-md w-80">
-                                    {/* Item Count */}
-                                    <div className="text-gray-800 font-bold mb-3">1 ITEM</div>
+                            <HoverCardContent className="bg-white p-5 shadow-md rounded-none w-80 mt-2" align="end">
+                                {/* Item Count */}
+                                <div className="text-gray-800 font-bold mb-3">1 ITEM</div>
 
-                                    <hr className="border-gray-300" />
+                                <hr className="border-gray-300" />
 
-                                    {/* Product Info */}
-                                    <div className="flex justify-between items-center py-3">
-                                        <div>
-                                            <p className="font-bold">Adele - 25</p>
-                                            <p className="text-gray-600">1 × 960,000 đ</p>
-                                        </div>
-                                        <img
-                                            src="/images/adele-album.jpg"
-                                            alt="Adele - 25"
-                                            className="w-14 h-14 object-cover"
-                                        />
+                                {/* Product Info */}
+                                <div className="flex justify-between items-center py-3">
+                                    <div>
+                                        <p className="font-bold">Adele - 25</p>
+                                        <p className="text-gray-600">1 × 960,000 đ</p>
                                     </div>
-
-                                    <hr className="border-gray-300" />
-
-                                    {/* Subtotal */}
-                                    <div className="flex justify-between font-bold text-lg py-3">
-                                        <span>TỔNG SỐ PHỤ:</span>
-                                        <span>960,000 đ</span>
-                                    </div>
-
-                                    {/* Buttons */}
-                                    <button className="w-full border-2 border-black py-2 font-bold mb-2 hover:bg-gray-200">
-                                        XEM GIỎ HÀNG
-                                    </button>
-                                    <button className="w-full bg-black text-white py-2 font-bold hover:bg-gray-800">
-                                        THANH TOÁN
-                                    </button>
+                                    <img
+                                        src="/images/adele-album.jpg"
+                                        alt="Adele - 25"
+                                        className="w-14 h-14 object-cover"
+                                    />
                                 </div>
+
+                                <hr className="border-gray-300" />
+
+                                {/* Subtotal */}
+                                <div className="flex justify-between py-3">
+                                    <span className="font-semibold">TỔNG SỐ PHỤ:</span>
+                                    <span className="font-semibold">960,000 đ</span>
+                                </div>
+
+                                {/* Buttons */}
+                                <Button
+                                    onClick={() => navigate('/cart')}
+                                    className="w-full bg-white border-2 border-black py-2 font-bold mb-2 hover:bg-gray-white text-black rounded-none hover:border-black mt-4"
+                                >
+                                    XEM GIỎ HÀNG
+                                </Button>
+                                <Button className="w-full bg-black text-white py-2 font-bold hover:bg-black rounded-none hover:border-black">
+                                    THANH TOÁN
+                                </Button>
                             </HoverCardContent>
                         </HoverCard>
 

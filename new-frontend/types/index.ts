@@ -62,3 +62,11 @@ export type Category = {
     categoryId: number;
     categoryName: string;
 };
+
+export interface CartItem {
+    id: string;
+    name: string;
+    price: number;
+    quantity: number;
+    image?: string;
+}
