@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import { IProduct } from 'types';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useCart } from '@/context/CartContext';
 
 interface Props {
     product: IProduct;
@@ -10,6 +11,23 @@ interface Props {
 
 const ProductCard = ({ product }: Props) => {
     const [isLoaded, setIsLoaded] = useState(false);
+    const { cart, dispatch } = useCart();
+
+    const addToCart = () => {
+        if (product?.id) {
+            const existingCartItem = cart.find((item) => item.id === product?.id);
+            if (existingCartItem) {
+                dispatch({
+                    type: 'UPDATE_QUANTITY',
+                    payload: { ...existingCartItem, quantity: existingCartItem.quantity + 1 },
+                });
+            } else {
+                dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
+            }
+        } else {
+            console.error('Product ID is undefined');
+        }
+    };
 
     return (
         <>
@@ -35,7 +53,10 @@ const ProductCard = ({ product }: Props) => {
                         <FaHeart className="text-gray-600" />
                     </Button>
 
-                    <Button className="bg-[#FFF27E] hover:bg-[#FFF27E] border-[1px] border-black hover:border-black px-2 flex items-center rounded-none shadow-[4px_4px_0px_#000000]">
+                    <Button
+                        onClick={addToCart}
+                        className="bg-[#FFF27E] hover:bg-[#FFF27E] border-[1px] border-black hover:border-black px-2 flex items-center rounded-none shadow-[4px_4px_0px_#000000]"
+                    >
                         <FaShoppingBag className="text-black" />
                         <span className="text-black text-[10px]" onClick={() => console.log('Added to cart')}>
                             THÊM VÀO GIỎ HÀNG

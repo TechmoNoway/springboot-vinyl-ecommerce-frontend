@@ -16,14 +16,16 @@ const Header = () => {
     const [isListVisible, setIsListVisible] = useState(true);
     const listRef = useRef<HTMLUListElement>(null);
     const navigate = useNavigate();
-    const { dispatch } = useCart();
+    const { cart, dispatch } = useCart();
+
+    console.log(cart);
 
     // const debouncedSearchInput = useDebounce(searchInput, 500);
 
     useEffect(() => {
         const handleScroll = () => {
             const scrollTop = window.scrollY;
-            const newOpacity = Math.max(1 - scrollTop / 200, 0.85);
+            const newOpacity = Math.max(1 - scrollTop / 200, 0.9);
             setOpacity(newOpacity);
         };
 
@@ -64,9 +66,7 @@ const Header = () => {
         setIsListVisible(true);
     };
 
-     const addToCart = () => {
-         dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
-     };
+    const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
     return (
         <>
@@ -174,42 +174,58 @@ const Header = () => {
                                 </div>
                             </HoverCardTrigger>
                             <HoverCardContent className="bg-white p-5 shadow-md rounded-none w-80 mt-2" align="end">
-                                {/* Item Count */}
-                                <div className="text-gray-800 font-bold mb-3">1 ITEM</div>
+                                {cart.length === 0 ? (
+                                    <>
+                                        <p>Your cart is empty.</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        {/* Item Count */}
+                                        <div className="text-gray-800 font-bold mb-3">{cart.length} ITEMS</div>
 
-                                <hr className="border-gray-300" />
+                                        <hr className="border-gray-300" />
 
-                                {/* Product Info */}
-                                <div className="flex justify-between items-center py-3">
-                                    <div>
-                                        <p className="font-bold">Adele - 25</p>
-                                        <p className="text-gray-600">1 × 960,000 đ</p>
-                                    </div>
-                                    <img
-                                        src="/images/adele-album.jpg"
-                                        alt="Adele - 25"
-                                        className="w-14 h-14 object-cover"
-                                    />
-                                </div>
+                                        {cart.map((item, index) => (
+                                            <div key={index}>
+                                                {/* Product Info */}
+                                                <div className="flex justify-between items-center py-3">
+                                                    <div>
+                                                        <p className="font-semibold">{item.title}</p>
+                                                        <p className="text-gray-600">
+                                                            {item.quantity} × {item.price.toLocaleString('en-US')} đ
+                                                        </p>
+                                                    </div>
+                                                    <img
+                                                        src={item.posterUrl}
+                                                        alt={item.title}
+                                                        className="w-14 h-14 object-cover"
+                                                    />
+                                                </div>
 
-                                <hr className="border-gray-300" />
+                                                <hr className="border-gray-300" />
+                                            </div>
+                                        ))}
 
-                                {/* Subtotal */}
-                                <div className="flex justify-between py-3">
-                                    <span className="font-semibold">TỔNG SỐ PHỤ:</span>
-                                    <span className="font-semibold">960,000 đ</span>
-                                </div>
+                                        {/* Subtotal */}
+                                        <div className="flex justify-between py-3">
+                                            <span className="font-semibold">TỔNG SỐ PHỤ:</span>
+                                            <span className="font-semibold">
+                                                {totalPrice.toLocaleString('en-US')} đ
+                                            </span>
+                                        </div>
 
-                                {/* Buttons */}
-                                <Button
-                                    onClick={() => navigate('/cart')}
-                                    className="w-full bg-white border-2 border-black py-2 font-bold mb-2 hover:bg-gray-white text-black rounded-none hover:border-black mt-4"
-                                >
-                                    XEM GIỎ HÀNG
-                                </Button>
-                                <Button className="w-full bg-black text-white py-2 font-bold hover:bg-black rounded-none hover:border-black">
-                                    THANH TOÁN
-                                </Button>
+                                        {/* Buttons */}
+                                        <Button
+                                            onClick={() => navigate('/cart')}
+                                            className="w-full bg-white border-2 border-black py-2 font-bold mb-2 hover:bg-gray-white text-black rounded-none hover:border-black mt-4"
+                                        >
+                                            XEM GIỎ HÀNG
+                                        </Button>
+                                        <Button className="w-full bg-black text-white py-2 font-bold hover:bg-black rounded-none hover:border-black">
+                                            THANH TOÁN
+                                        </Button>
+                                    </>
+                                )}
                             </HoverCardContent>
                         </HoverCard>
 

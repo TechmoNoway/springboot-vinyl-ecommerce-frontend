@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/context/CartContext';
 import { getProductByTitle } from '@/services/ProductService';
 import { useEffect, useState } from 'react';
 import { FaCommentAlt, FaHeart, FaInfoCircle, FaShoppingCart, FaVolumeUp } from 'react-icons/fa';
@@ -8,6 +9,7 @@ import { IProduct } from 'types';
 const ProductDetail = () => {
     const params = useParams();
     const title = params.title;
+    const { cart, dispatch } = useCart();
 
     const [product, setProduct] = useState<IProduct>();
 
@@ -21,6 +23,22 @@ const ProductDetail = () => {
             }
         } else {
             console.error('Title is undefined');
+        }
+    };
+
+    const addToCart = () => {
+        if (product?.id) {
+            const existingCartItem = cart.find((item) => item.id === product?.id);
+            if (existingCartItem) {
+                dispatch({
+                    type: 'UPDATE_QUANTITY',
+                    payload: { ...existingCartItem, quantity: existingCartItem.quantity + 1 },
+                });
+            } else {
+                dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
+            }
+        } else {
+            console.error('Product ID is undefined');
         }
     };
 
@@ -101,7 +119,10 @@ const ProductDetail = () => {
                         <Button className="bg-white px-4 flex items-center space-x-2 hover:bg-gray-100 rounded-none border-[1px] border-black hover:border-black shadow-[4px_4px_0px_#000000]">
                             <FaHeart className="text-black" />
                         </Button>
-                        <Button className="bg-[#FFF27E] hover:bg-[#FFF27E] border-[1px] border-black hover:border-black px-6 sm:px-10 flex items-center rounded-none shadow-[4px_4px_0px_#000000] text-black">
+                        <Button
+                            onClick={addToCart}
+                            className="bg-[#FFF27E] hover:bg-[#FFF27E] border-[1px] border-black hover:border-black px-6 sm:px-10 flex items-center rounded-none shadow-[4px_4px_0px_#000000] text-black"
+                        >
                             <FaShoppingCart />
                             <p className="font-bold ml-2 text-xs sm:text-sm">THÊM VÀO GIỎ HÀNG</p>
                         </Button>

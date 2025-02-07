@@ -63,10 +63,26 @@ export type Category = {
     categoryName: string;
 };
 
-export interface CartItem {
-    id: string;
-    name: string;
+export type CartItem = {
+    id: number;
+    title: string;
     price: number;
+    stockQuantity: number;
+    posterUrl: string;
+    region: string;
+    artist: string;
+    releaseYear: string;
+    status: string;
+    platform: string;
+    demoAudioUrl: string;
+    studioName: string;
+    manufactureYear: string;
+    stockStatus: string;
+    description: string;
+    mood: string;
+    createdAt: string;
+    updatedAt: string;
+    tracklistId: number;
+    categories: Category[];
     quantity: number;
-    image?: string;
-}
+};

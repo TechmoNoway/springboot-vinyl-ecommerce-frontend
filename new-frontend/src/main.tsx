@@ -3,10 +3,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
 import App from './App.tsx';
 import ScrollToTop from './utils/ScrollToTop.tsx';
+import { CartProvider } from './context/CartContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
     <Router>
-        <ScrollToTop />
-        <App />
+        <CartProvider>
+            <ScrollToTop />
+            <App />
+        </CartProvider>
     </Router>,
 );

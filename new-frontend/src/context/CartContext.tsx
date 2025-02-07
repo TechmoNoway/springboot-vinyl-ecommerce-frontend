@@ -4,8 +4,8 @@ import { CartItem } from 'types';
 // Define action types
 type CartAction =
     | { type: 'ADD_TO_CART'; payload: CartItem }
-    | { type: 'REMOVE_FROM_CART'; payload: string }
-    | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } };
+    | { type: 'REMOVE_FROM_CART'; payload: number }
+    | { type: 'UPDATE_QUANTITY'; payload: { id: number; quantity: number } };
 
 // Cart reducer function
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
