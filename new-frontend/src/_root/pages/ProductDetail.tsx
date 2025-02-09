@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
+import { useToast } from '@/hooks/use-toast';
 import { getProductByTitle } from '@/services/ProductService';
 import { useEffect, useState } from 'react';
 import { FaCommentAlt, FaHeart, FaInfoCircle, FaShoppingCart, FaVolumeUp } from 'react-icons/fa';
@@ -10,6 +11,7 @@ const ProductDetail = () => {
     const params = useParams();
     const title = params.title;
     const { cart, dispatch } = useCart();
+    const { toast } = useToast();
 
     const [product, setProduct] = useState<IProduct>();
 
@@ -34,10 +36,20 @@ const ProductDetail = () => {
                     type: 'UPDATE_QUANTITY',
                     payload: { ...existingCartItem, quantity: existingCartItem.quantity + 1 },
                 });
+                toast({
+                    variant: 'default',
+                    title: 'Nice!',
+                    description: 'Product added to cart.',
+                });
             } else {
                 dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
             }
         } else {
+            toast({
+                variant: 'destructive',
+                title: 'Opps! Something went wrong',
+                description: 'Please add your product again.',
+            });
             console.error('Product ID is undefined');
         }
     };

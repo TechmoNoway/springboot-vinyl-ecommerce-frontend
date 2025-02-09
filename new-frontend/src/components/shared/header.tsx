@@ -16,9 +16,7 @@ const Header = () => {
     const [isListVisible, setIsListVisible] = useState(true);
     const listRef = useRef<HTMLUListElement>(null);
     const navigate = useNavigate();
-    const { cart, dispatch } = useCart();
-
-    console.log(cart);
+    const { cart } = useCart();
 
     // const debouncedSearchInput = useDebounce(searchInput, 500);
 
@@ -169,22 +167,22 @@ const Header = () => {
                                 <div className="relative">
                                     <FaShoppingCart className="text-white cursor-pointer w-5 h-5" />
                                     <span className="absolute -top-2 -right-2 bg-red-500 text-xs text-white rounded-full px-1">
-                                        0
+                                        {cart.length}
                                     </span>
                                 </div>
                             </HoverCardTrigger>
                             <HoverCardContent className="bg-white p-5 shadow-md rounded-none w-80 mt-2" align="end">
+                                {/* Item Count */}
+                                <div className="text-gray-800 font-bold mb-3">{cart.length} ITEMS</div>
+
+                                <hr className="border-gray-300" />
+                                
                                 {cart.length === 0 ? (
                                     <>
                                         <p>Your cart is empty.</p>
                                     </>
                                 ) : (
                                     <>
-                                        {/* Item Count */}
-                                        <div className="text-gray-800 font-bold mb-3">{cart.length} ITEMS</div>
-
-                                        <hr className="border-gray-300" />
-
                                         {cart.map((item, index) => (
                                             <div key={index}>
                                                 {/* Product Info */}

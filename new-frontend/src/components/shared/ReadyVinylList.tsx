@@ -52,19 +52,25 @@ const ReadyVinylList = () => {
                 <div className="flex justify-center items-center space-x-4">
                     <p>Theo dõi VỌC RECORDS trên:</p>
 
-                    <a href="/" className="text-gray-400 text-xl pl-3">
+                    <a href="https://www.facebook.com/vocrecords.vn/" className="text-gray-400 text-xl pl-3">
                         <FaFacebook />
                     </a>
-                    <a href="/" className="text-gray-400 text-xl">
+                    <a href="https://www.instagram.com/vocrecords.vn/" className="text-gray-400 text-xl">
                         <FaInstagram />
                     </a>
-                    <a href="/" className="text-gray-400 text-xl">
+                    <a href="https://www.tiktok.com/@vocrecords.vn" className="text-gray-400 text-xl">
                         <FaTiktok />
                     </a>
-                    <a href="/" className="text-gray-400 text-xl">
+                    <a
+                        href="https://www.youtube.com/channel/UCcU5TObWmxHLA308cupIJOQ"
+                        className="text-gray-400 text-xl"
+                    >
                         <FaYoutube />
                     </a>
-                    <a href="/" className="text-gray-400 text-xl">
+                    <a
+                        href="https://open.spotify.com/user/wqjqkylu7kqe2p7ey5ei2k9sr?nd=1&dlsi=b37cdaf26fa64f7b"
+                        className="text-gray-400 text-xl"
+                    >
                         <FaSpotify />
                     </a>
                 </div>

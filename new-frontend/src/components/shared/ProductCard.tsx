@@ -4,6 +4,7 @@ import { IProduct } from 'types';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface Props {
     product: IProduct;
@@ -12,6 +13,7 @@ interface Props {
 const ProductCard = ({ product }: Props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const { cart, dispatch } = useCart();
+    const { toast } = useToast();
 
     const addToCart = () => {
         if (product?.id) {
@@ -21,10 +23,20 @@ const ProductCard = ({ product }: Props) => {
                     type: 'UPDATE_QUANTITY',
                     payload: { ...existingCartItem, quantity: existingCartItem.quantity + 1 },
                 });
+                toast({
+                    variant: 'default',
+                    title: 'Nice!',
+                    description: 'Product added to cart.',
+                });
             } else {
                 dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
             }
         } else {
+            toast({
+                variant: 'destructive',
+                title: 'Opps! Something went wrong',
+                description: 'Please add your product again.',
+            });
             console.error('Product ID is undefined');
         }
     };

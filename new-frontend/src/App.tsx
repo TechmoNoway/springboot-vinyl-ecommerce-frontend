@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
 import RootLayout from './_root/RootLayout';
-import { Cart, Home, ProductDetail } from './_root/pages';
+import { Cart, Checkout, Home, ProductDetail } from './_root/pages';
 
 function App() {
     return (
@@ -17,6 +17,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/product/:title" element={<ProductDetail />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
                 </Route>
             </Routes>
 
