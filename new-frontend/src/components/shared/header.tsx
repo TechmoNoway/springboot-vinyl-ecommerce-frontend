@@ -176,7 +176,7 @@ const Header = () => {
                                 <div className="text-gray-800 font-bold mb-3">{cart.length} ITEMS</div>
 
                                 <hr className="border-gray-300" />
-                                
+
                                 {cart.length === 0 ? (
                                     <>
                                         <p>Your cart is empty.</p>
@@ -219,7 +219,10 @@ const Header = () => {
                                         >
                                             XEM GIỎ HÀNG
                                         </Button>
-                                        <Button className="w-full bg-black text-white py-2 font-bold hover:bg-black rounded-none hover:border-black">
+                                        <Button
+                                            onClick={() => navigate('/checkout')}
+                                            className="w-full bg-black text-white py-2 font-bold hover:bg-black rounded-none hover:border-black"
+                                        >
                                             THANH TOÁN
                                         </Button>
                                     </>

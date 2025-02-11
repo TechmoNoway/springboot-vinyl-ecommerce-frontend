@@ -42,8 +42,8 @@ const CartPage = () => {
                 <>
                     <h2 className="text-2xl font-bold mb-4">GIỎ HÀNG</h2>
                     {/* Cart Items Section */}
-                    <div className="flex space-x-5 mt-9">
-                        <div className="w-8/12 flex flex-col border-r-[1px] border-l-[1px] border-b-[1px] border-t-2 border-gray-200 px-4 py-7">
+                    <div className="flex flex-col lg:flex-row space-y-5 lg:space-y-0 lg:space-x-5 mt-9">
+                        <div className="w-full lg:w-8/12 flex flex-col border-r-[1px] border-l-[1px] border-b-[1px] border-t-2 border-gray-200 px-4 py-7">
                             <table className="w-full border-collapse">
                                 <thead>
                                     <tr className="border-b">
@@ -129,7 +129,10 @@ const CartPage = () => {
                             {/* Continue Shopping & Update Cart */}
                             <div className="flex-grow"></div>
                             <div className="flex justify-between mt-4 w-full items-end">
-                                <Button className="border px-4 py-2 rounded-none bg-white hover:bg-white border-zinc-400 hover:border-zinc-400 text-zinc-500 shadow-sm">
+                                <Button
+                                    onClick={() => navigate('/')}
+                                    className="border px-4 py-2 rounded-none bg-white hover:bg-white border-zinc-400 hover:border-zinc-400 text-zinc-500 shadow-sm"
+                                >
                                     TIẾP TỤC MUA HÀNG
                                 </Button>
                                 <Button className="border px-4 py-2 rounded-none bg-white hover:bg-white border-zinc-400 hover:border-zinc-400 text-zinc-500 shadow-sm">
@@ -138,7 +141,7 @@ const CartPage = () => {
                             </div>
                         </div>
 
-                        <div className="w-4/12">
+                        <div className="w-full lg:w-4/12">
                             {/* Shipping Cost Selection */}
                             <div className="bg-gray-100 p-4">
                                 <p className="font-bold text-sm py-3">DỰ TOÁN VẬN CHUYỂN VÀ THUẾ</p>
@@ -189,7 +192,10 @@ const CartPage = () => {
                                     <span className="font-normal">Tổng Cộng:</span>
                                     <span>{totalPrice.toLocaleString()} đ</span>
                                 </div>
-                                <Button className="w-full bg-black text-white py-2 mt-4 rounded-none hover:border-black hover:bg-black">
+                                <Button
+                                    onClick={() => navigate('/checkout')}
+                                    className="w-full bg-black text-white py-2 mt-4 rounded-none hover:border-black hover:bg-black"
+                                >
                                     TIẾN HÀNH THANH TOÁN
                                 </Button>
                             </div>
