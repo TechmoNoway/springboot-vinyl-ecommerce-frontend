@@ -5,11 +5,14 @@ import { CartItem } from 'types';
 type CartAction =
     | { type: 'ADD_TO_CART'; payload: CartItem }
     | { type: 'REMOVE_FROM_CART'; payload: number }
-    | { type: 'UPDATE_QUANTITY'; payload: { id: number; quantity: number } };
+    | { type: 'UPDATE_QUANTITY'; payload: { id: number; quantity: number } }
+    | { type: 'CLEAR_CART' }; // New action to clear the cart
+
+const CART_EXPIRATION_TIME = 2 * 24 * 60 * 60 * 1000; // 2 days in milliseconds
 
 // Cart reducer function
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
-    let newCart;
+    let newCart: CartItem[];
     switch (action.type) {
         case 'ADD_TO_CART':
             newCart = [...state, action.payload];
@@ -22,11 +25,22 @@ const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
                 item.id === action.payload.id ? { ...item, quantity: action.payload.quantity } : item,
             );
             break;
+        case 'CLEAR_CART':
+            newCart = [];
+            break;
         default:
             return state;
     }
 
-    localStorage.setItem('cart', JSON.stringify(newCart)); // Persist cart in local storage
+    // Persist cart and timestamp in local storage
+    if (newCart.length > 0) {
+        localStorage.setItem('cart', JSON.stringify(newCart));
+        localStorage.setItem('cartTimestamp', JSON.stringify(Date.now()));
+    } else {
+        localStorage.removeItem('cart');
+        localStorage.removeItem('cartTimestamp');
+    }
+
     return newCart;
 };
 
@@ -42,7 +56,19 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [cart, dispatch] = useReducer(cartReducer, [], () => {
         const storedCart = localStorage.getItem('cart');
-        return storedCart ? JSON.parse(storedCart) : [];
+        const storedTimestamp = localStorage.getItem('cartTimestamp');
+
+        if (storedCart && storedTimestamp) {
+            const savedTime = JSON.parse(storedTimestamp);
+            if (Date.now() - savedTime > CART_EXPIRATION_TIME) {
+                // Cart expired, clear it
+                localStorage.removeItem('cart');
+                localStorage.removeItem('cartTimestamp');
+                return [];
+            }
+            return JSON.parse(storedCart);
+        }
+        return [];
     });
 
     return <CartContext.Provider value={{ cart, dispatch }}>{children}</CartContext.Provider>;

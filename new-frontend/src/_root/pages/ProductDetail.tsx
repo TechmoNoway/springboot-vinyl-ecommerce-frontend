@@ -37,7 +37,7 @@ const ProductDetail = () => {
                     payload: { ...existingCartItem, quantity: existingCartItem.quantity + 1 },
                 });
                 toast({
-                    variant: 'default',
+                    variant: 'success',
                     title: 'Nice!',
                     description: 'Product added to cart.',
                 });

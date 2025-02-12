@@ -1,15 +1,9 @@
+import ProductList from '@/components/shared/ProductList';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
 
-const ProductList = () => {
+const Shop = () => {
     const [priceRange, setPriceRange] = useState([0, 24900000]);
-
-    const products = [
-        { id: 1, title: 'LET IT BE BLUE', img: '/vinyl1.png' },
-        { id: 2, title: 'LET IT BE BLUE (BLUE VINYL)', img: '/vinyl2.png' },
-        { id: 3, title: 'ACTION (LP)', img: '/vinyl3.png' },
-        { id: 4, title: 'X - THE GODLESS VOID', img: '/vinyl4.png' },
-        { id: 5, title: 'WEIRD: THE AL YANKOVIC', img: '/vinyl5.png' },
-    ];
 
     return (
         <div className="max-w-7xl mx-auto p-6">
@@ -25,35 +19,87 @@ const ProductList = () => {
             <div className="bg-gray-300 h-40 flex items-center justify-center text-2xl font-bold mt-4">ĐĨA THAN</div>
 
             {/* Filter Section */}
-            <div className="mt-6 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                <select className="p-3 border w-full">
-                    {' '}
-                    <option>THỂ LOẠI</option>{' '}
-                </select>
-                <select className="p-3 border w-full">
-                    {' '}
-                    <option>ĐỊNH DẠNG</option>{' '}
-                </select>
-                <select className="p-3 border w-full">
-                    {' '}
-                    <option>THỜI KỲ</option>{' '}
-                </select>
-                <select className="p-3 border w-full">
-                    {' '}
-                    <option>TÌNH TRẠNG KHO</option>{' '}
-                </select>
-                <select className="p-3 border w-full">
-                    {' '}
-                    <option>HÃNG PHÁT HÀNH</option>{' '}
-                </select>
-                <select className="p-3 border w-full">
-                    {' '}
-                    <option>TÂM TRẠNG</option>{' '}
-                </select>
-                <select className="p-3 border w-full">
-                    {' '}
-                    <option>PHÁT HÀNH</option>{' '}
-                </select>
+            <div className="mt-6 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="THỂ LOẠI" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="ĐỊNH DẠNG" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="THỜI KỲ" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="TÌNH TRẠNG KHO" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="HÃNG PHÁT HÀNH" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="TÂM TRẠNG" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="PHÁT HÀNH" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select>
+                    <SelectTrigger className="px-3 py-6 border w-full rounded-none">
+                        <SelectValue placeholder="TÌNH TRẠNG ĐĨA" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
 
             {/* Price Range Slider */}
@@ -65,39 +111,46 @@ const ProductList = () => {
                     max="24900000"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([0, Number(e.target.value)])}
-                    className="w-full accent-yellow-500"
+                    className="w-[700px] accent-yellow-500"
                 />
                 <span className="font-bold">{priceRange[1].toLocaleString()} đ</span>
             </div>
 
             {/* Sorting and View Controls */}
             <div className="flex justify-between items-center mt-6">
-                <div className="flex items-center space-x-3">
-                    <span className="font-bold">SẮP XẾP BỞI:</span>
-                    <select className="border p-2">
-                        <option>Thứ tự mặc định</option>
-                    </select>
+                <div className="flex items-center">
+                    <p className="font-semibold w-44 text-sm">SẮP XẾP BỞI:</p>
+                    <Select>
+                        <SelectTrigger className="py-2 border border-black hover:border-black rounded-none">
+                            <SelectValue placeholder="THỨ TỰ MẶC ĐỊNH" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="default">THỨ TỰ MẶC ĐỊNH</SelectItem>
+                            <SelectItem value="desc">GIÁ (TĂNG DẦN)</SelectItem>
+                            <SelectItem value="asc">GIÁ (GIẢM DẦN)</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <span className="font-bold">HIỂN THỊ:</span>
-                    <select className="border p-2">
-                        <option>30</option>
-                    </select>
+                    <span className="text-sm font-semibold w-16">HIỂN THỊ:</span>
+                    <Select>
+                        <SelectTrigger className="border w-16 border-black hover:border-black rounded-none">
+                            <SelectValue placeholder="30" />
+                        </SelectTrigger>
+                        <SelectContent className="">
+                            <SelectItem value="30">30</SelectItem>
+                            <SelectItem value="60">60</SelectItem>
+                            <SelectItem value="90">90</SelectItem>
+                        </SelectContent>
+                    </Select>
                     <button className="border p-2 bg-gray-200">🔲</button>
                 </div>
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-6">
-                {products.map((product) => (
-                    <div key={product.id} className="text-center">
-                        <img src={product.img} alt={product.title} className="w-full rounded-md shadow-md" />
-                        <h3 className="mt-2 font-bold">{product.title}</h3>
-                    </div>
-                ))}
-            </div>
+            <ProductList type="Horizontal" />
         </div>
     );
 };
 
-export default ProductList;
+export default Shop;

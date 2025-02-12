@@ -43,7 +43,7 @@ const ProductCard = ({ product }: Props) => {
 
     return (
         <>
-            <div className="relative group w-64 my-3 text-center">
+            <div className="relative group my-3 text-center">
                 <Link to={`/product/${product.title}`} className="block">
                     {/* Product Image */}
                     <div className="relative">

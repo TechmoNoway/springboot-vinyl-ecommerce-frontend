@@ -106,9 +106,12 @@ const Header = () => {
                     </button>
                     <div className="hidden w-full md:block md:w-auto" id="navbar-default">
                         <nav className="hidden md:flex space-x-6 text-sm uppercase font-semibold">
-                            <a href="#" className="text-white hover:text-yellow-300 text-[15px] font-semibold">
+                            <Link
+                                to={'/product-category/vinyl'}
+                                className="text-white hover:text-yellow-300 text-[15px] font-semibold"
+                            >
                                 Đĩa Than
-                            </a>
+                            </Link>
                             <a href="#" className="text-white hover:text-yellow-300 text-[15px] font-semibold">
                                 Mâm Đĩa
                             </a>
