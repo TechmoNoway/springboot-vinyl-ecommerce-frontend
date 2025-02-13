@@ -1,4 +1,13 @@
 import ProductList from '@/components/shared/ProductList';
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useState } from 'react';
 
@@ -148,7 +157,31 @@ const Shop = () => {
             </div>
 
             {/* Product Grid */}
-            <ProductList type="Horizontal" />
+            <ProductList listSize={30} type="Horizontal" />
+
+            <Pagination className="mt-6">
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious href="#" className="text-base" />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink href="#" className="text-base" isActive>
+                            1
+                        </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationLink href="#" className="text-base">
+                            2
+                        </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationEllipsis />
+                    </PaginationItem>
+                    <PaginationItem>
+                        <PaginationNext href="#" className="text-base" />
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
         </div>
     );
 };

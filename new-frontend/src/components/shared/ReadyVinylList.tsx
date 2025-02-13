@@ -1,5 +1,5 @@
 import { FaFacebook, FaInstagram, FaSpotify, FaTiktok, FaYoutube } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import { getReadyProducts } from '@/services/ProductService';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,7 @@ import { IProduct } from '../../../types/index';
 import { Button } from '../ui/button';
 
 const ReadyVinylList = () => {
+    const navigate = useNavigate();
     const [readyDiscList, setReadyDiscList] = useState<IProduct[]>([]);
 
     const fetchReadyDiscList = async () => {
@@ -44,7 +45,10 @@ const ReadyVinylList = () => {
                 </div>
 
                 <div className="w-full flex justify-center items-center mt-4 mb-20">
-                    <Button className="flex items-center justify-center bg-white hover:bg-white hover:border-black border-black px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] font-bold hover:underline shadow-[4px_4px_0px_#000000]">
+                    <Button
+                        onClick={() => navigate('/product-category/vinyl')}
+                        className="flex items-center justify-center bg-white hover:bg-white hover:border-black border-black px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] font-bold hover:underline shadow-[4px_4px_0px_#000000]"
+                    >
                         Khám phá danh sách đĩa than của vọc
                     </Button>
                 </div>
