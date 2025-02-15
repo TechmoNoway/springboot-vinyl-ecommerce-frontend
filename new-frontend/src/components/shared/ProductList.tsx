@@ -1,39 +1,16 @@
-import { getAllProducts } from '@/services/ProductService';
-import { useEffect, useState } from 'react';
 import { IProduct } from 'types';
 import ProductCard from './ProductCard';
 
 interface Props {
     type: string;
-    listSize: number;
-    category: string | null;
-    platform: string | null;
-    stockStatus: string | null;
-    studio: string | null;
-    manufactureYear: string | null;
-    status: string | null;
+    products: IProduct[];
 }
 
-const ProductList = ({ type, listSize }: Props) => {
-    const [productList, setProductList] = useState<IProduct[]>([]);
-
-    const fetchProductList = async () => {
-        try {
-            const response = await getAllProducts();
-            setProductList(response?.data.data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    useEffect(() => {
-        fetchProductList();
-    }, []);
-
+const ProductList = ({ type, products }: Props) => {
     return (
         <>
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols- xl:grid-cols-5 mt-6">
-                {productList?.map((product) => (
+            <div className={`mt-4 ${type === 'Horizontal' ? 'grid grid-cols-3 gap-4' : 'grid grid-cols-1 gap-4'}`}>
+                {products?.map((product: IProduct) => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>

@@ -50,3 +50,24 @@ export const searchProductsByTitle = (title: string) => {
         return null;
     }
 };
+
+export const getAllProductsFilteredAndSorted = (
+    title: string | null,
+    category: string | null,
+    platform: string | null,
+    stockStatus: string | null,
+    studioName: string | null,
+    manufactureYear: string | null,
+    status: string | null,
+    sortType: string,
+) => {
+    try {
+        const res = API.get(
+            `api/v1/products/getAllProductsFilteredAndSorted?title=${title}&category=${category}&platform=${platform}&stockStatus=${stockStatus}&studioName=${studioName}&manufactureYear=${manufactureYear}&status=${status}&sortType=${sortType}`,
+        );
+        return res;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};

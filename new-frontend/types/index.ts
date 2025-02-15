@@ -55,10 +55,10 @@ export type IProduct = {
     createdAt: string;
     updatedAt: string;
     tracklistId: number;
-    categories: Category[];
+    categories: ICategory[];
 };
 
-export type Category = {
+export type ICategory = {
     categoryId: number;
     categoryName: string;
 };
@@ -83,6 +83,6 @@ export type CartItem = {
     createdAt: string;
     updatedAt: string;
     tracklistId: number;
-    categories: Category[];
+    categories: ICategory[];
     quantity: number;
 };
