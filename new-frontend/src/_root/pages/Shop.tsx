@@ -8,10 +8,11 @@ import {
     PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 import { getAllCategories } from '@/services/CategoryService';
 import { getAllProductsFilteredAndSorted } from '@/services/ProductService';
-import { useEffect, useState } from 'react';
-import { ICategory, IProduct } from 'types';
+import { useCallback, useEffect, useState } from 'react';
+import { ICategoryList } from 'types';
 
 const STUDIO_NAMES = [
     'SONY_MUSIC',
@@ -32,11 +33,10 @@ const MANUFACTURE_YEARS = [
 ];
 
 const Shop = () => {
-    const [products, setProducts] = useState<IProduct[]>([]);
     const [state, setState] = useState({
         priceRange: [0, 24900000],
         currentPage: 1,
-        itemsPerPage: 30,
+        itemsPerPage: 15,
         products: [],
         title: '',
         category: '',
@@ -46,10 +46,11 @@ const Shop = () => {
         manufactureYear: '',
         status: '',
         sortType: 'DEFAULT',
+        categories: [],
+        totalPages: 0,
     });
-    const [categories, setCategories] = useState<ICategory[]>([]);
 
-    const handleGetProducts = async () => {
+    const handleGetProducts = useCallback(async () => {
         const response = await getAllProductsFilteredAndSorted(
             state.title,
             state.category,
@@ -66,16 +67,33 @@ const Shop = () => {
             state.currentPage * state.itemsPerPage,
         );
 
-        setProducts(currentProducts);
-    };
+        setState((prevState) => ({
+            ...prevState,
+            products: currentProducts,
+            totalPages: Math.ceil(response?.data.data.length / state.itemsPerPage),
+        }));
+    }, [
+        state.title,
+        state.category,
+        state.platform,
+        state.stockStatus,
+        state.studioName,
+        state.manufactureYear,
+        state.status,
+        state.sortType,
+        state.currentPage,
+        state.itemsPerPage,
+    ]);
 
     const handleGetCategories = async () => {
         const response = await getAllCategories();
+        console.log(response);
 
-        setCategories(response?.data.data);
+        setState((prevState) => ({
+            ...prevState,
+            categories: response?.data.data,
+        }));
     };
-
-    const totalPages = Math.ceil(products.length / state.itemsPerPage);
 
     const handlePageChange = (page: number) => {
         setState((prevState) => ({
@@ -84,9 +102,18 @@ const Shop = () => {
         }));
     };
 
+    const handleStateItemChange = (stateItem: string, stateValue: string | number | boolean) => {
+        setState((prevState) => ({
+            ...prevState,
+            [stateItem]: stateValue,
+            currentPage: 1, // Reset to first page when category changes
+        }));
+    };
+
     useEffect(() => {
         handleGetProducts();
     }, [
+        handleGetProducts,
         state.currentPage,
         state.itemsPerPage,
         state.sortType,
@@ -118,18 +145,21 @@ const Shop = () => {
 
             {/* Filter Section */}
             <div className="mt-6 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
-                <Select>
+                {/* Filter Category Selects */}
+                <Select onValueChange={(value) => handleStateItemChange('category', value)}>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="THỂ LOẠI" />
                     </SelectTrigger>
                     <SelectContent>
-                        {categories.map((item, index) => (
-                            <SelectItem value={item.categoryName} key={index}>
-                                {item.categoryName}
+                        {state.categories.map((item: ICategoryList, index) => (
+                            <SelectItem value={item.name} key={index}>
+                                {item.name}
                             </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
+
+                {/* Filter Platform Selects */}
                 <Select>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="ĐỊNH DẠNG" />
@@ -140,7 +170,9 @@ const Shop = () => {
                         <SelectItem value="system">System</SelectItem>
                     </SelectContent>
                 </Select>
-                <Select>
+
+                {/* Filter Manufacture Year */}
+                <Select onValueChange={(value) => handleStateItemChange('manufactureYear', value)}>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="THỜI KỲ" />
                     </SelectTrigger>
@@ -169,7 +201,7 @@ const Shop = () => {
                     <SelectContent>
                         {STUDIO_NAMES.map((item, index) => (
                             <SelectItem key={index} value={item}>
-                                Light
+                                {item}
                             </SelectItem>
                         ))}
                     </SelectContent>
@@ -209,19 +241,20 @@ const Shop = () => {
             {/* Price Range Slider */}
             <div className="mt-4 flex items-center space-x-4">
                 <span className="font-bold">KHOẢNG GIÁ</span>
-                <input
-                    type="range"
-                    min="0"
-                    max="24900000"
-                    value={state.priceRange[1]}
+                <Slider
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={state.priceRange}
                     onChange={(e) =>
                         setState((prevState) => ({
                             ...prevState,
-                            priceRange: [0, Number(e.target.value)],
+                            priceRange: [0, Number((e.target as HTMLInputElement).value)],
                         }))
                     }
                     className="w-[700px] accent-yellow-500"
                 />
+
                 <span className="font-bold">{state.priceRange[1].toLocaleString()} đ</span>
             </div>
 
@@ -229,42 +262,27 @@ const Shop = () => {
             <div className="flex justify-between items-center mt-6">
                 <div className="flex items-center">
                     <p className="font-semibold w-44 text-sm">SẮP XẾP BỞI:</p>
-                    <Select>
+                    <Select onValueChange={(value) => handleStateItemChange('sortType', value)}>
                         <SelectTrigger className="py-2 border border-black hover:border-black rounded-none">
                             <SelectValue placeholder="THỨ TỰ MẶC ĐỊNH" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="DEFAULT">THỨ TỰ MẶC ĐỊNH</SelectItem>
-                            <SelectItem value="DESC">GIÁ (TĂNG DẦN)</SelectItem>
-                            <SelectItem value="ASC">GIÁ (GIẢM DẦN)</SelectItem>
+                            <SelectItem value="ASC">GIÁ (TĂNG DẦN)</SelectItem>
+                            <SelectItem value="DESC">GIÁ (GIẢM DẦN)</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
                 <div className="flex items-center space-x-4">
                     <span className="text-sm font-semibold w-16">HIỂN THỊ:</span>
-                    <Select>
+                    <Select onValueChange={(value) => handleStateItemChange('itemsPerPage', value)} defaultValue="15">
                         <SelectTrigger className="border w-16 border-black hover:border-black rounded-none">
-                            <SelectValue placeholder="30" />
+                            <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="">
-                            <SelectItem
-                                value="30"
-                                onClick={() => setState((prevState) => ({ ...prevState, itemsPerPage: 30 }))}
-                            >
-                                30
-                            </SelectItem>
-                            <SelectItem
-                                value="60"
-                                onClick={() => setState((prevState) => ({ ...prevState, itemsPerPage: 60 }))}
-                            >
-                                60
-                            </SelectItem>
-                            <SelectItem
-                                value="90"
-                                onClick={() => setState((prevState) => ({ ...prevState, itemsPerPage: 90 }))}
-                            >
-                                90
-                            </SelectItem>
+                        <SelectContent>
+                            <SelectItem value="15">15</SelectItem>
+                            <SelectItem value="20">20</SelectItem>
+                            <SelectItem value="25">25</SelectItem>
                         </SelectContent>
                     </Select>
                     <button className="border p-2 bg-gray-200">🔲</button>
@@ -272,7 +290,7 @@ const Shop = () => {
             </div>
 
             {/* Product Grid */}
-            <ProductList products={products} type="Horizontal" />
+            <ProductList products={state.products} type="Horizontal" />
 
             <Pagination className="mt-6">
                 <PaginationContent>
@@ -283,7 +301,7 @@ const Shop = () => {
                             onClick={() => handlePageChange(Math.max(state.currentPage - 1, 1))}
                         />
                     </PaginationItem>
-                    {[...Array(totalPages)].map((_, index) => (
+                    {[...Array(state.totalPages)].map((_, index) => (
                         <PaginationItem key={index}>
                             <PaginationLink
                                 href="#"
@@ -299,7 +317,7 @@ const Shop = () => {
                         <PaginationNext
                             href="#"
                             className="text-base"
-                            onClick={() => handlePageChange(Math.min(state.currentPage + 1, totalPages))}
+                            onClick={() => handlePageChange(Math.min(state.currentPage + 1, state.totalPages))}
                         />
                     </PaginationItem>
                 </PaginationContent>

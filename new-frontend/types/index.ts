@@ -63,6 +63,11 @@ export type ICategory = {
     categoryName: string;
 };
 
+export type ICategoryList = {
+    id: number;
+    name: string;
+};
+
 export type CartItem = {
     id: number;
     title: string;
