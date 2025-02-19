@@ -46,6 +46,7 @@ export type IProduct = {
     releaseYear: string;
     status: string;
     platform: string;
+    set: string;
     demoAudioUrl: string;
     studioName: string;
     manufactureYear: string;

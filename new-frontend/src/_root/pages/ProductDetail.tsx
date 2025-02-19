@@ -19,6 +19,8 @@ const ProductDetail = () => {
         if (title) {
             const response = await getProductByTitle(title);
             if (response?.data.data) {
+                console.log(response.data.data);
+
                 setProduct(response.data.data);
             } else {
                 console.error('Failed to fetch product');
@@ -177,7 +179,7 @@ const ProductDetail = () => {
                             <span className="text-gray-500">602455542144</span>
 
                             <span className="font-semibold">Số Lượng</span>
-                            <span>2 x Vinyl (LP, Album)</span>
+                            <span>{product?.set}</span>
                         </div>
                     </div>
                 </div>

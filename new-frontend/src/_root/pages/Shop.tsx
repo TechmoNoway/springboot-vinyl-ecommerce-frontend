@@ -8,7 +8,6 @@ import {
     PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
 import { getAllCategories } from '@/services/CategoryService';
 import { getAllProductsFilteredAndSorted } from '@/services/ProductService';
 import { useCallback, useEffect, useState } from 'react';
@@ -32,9 +31,13 @@ const MANUFACTURE_YEARS = [
     1964, 1963, 1962, 1961, 1960,
 ];
 
+const STOCK_STATUS = ['HẾT HÀNG', 'PREORDER', 'CÒN HÀNG', 'LIÊN HỆ', 'ĐANG VỀ'];
+
+const PLATFORMS = ['CASSETTE', '7INCH SINGLE', 'ĐĨA VINTAGE', 'ĐĨA MỚI'];
+
 const Shop = () => {
     const [state, setState] = useState({
-        priceRange: [0, 24900000],
+        priceRange: [0, 10000000],
         currentPage: 1,
         itemsPerPage: 15,
         products: [],
@@ -160,14 +163,16 @@ const Shop = () => {
                 </Select>
 
                 {/* Filter Platform Selects */}
-                <Select>
+                <Select onValueChange={(value) => handleStateItemChange('platform', value)}>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="ĐỊNH DẠNG" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
+                        {PLATFORMS.map((item, index) => (
+                            <SelectItem key={index} value={item}>
+                                {item}
+                            </SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
 
@@ -184,17 +189,23 @@ const Shop = () => {
                         ))}
                     </SelectContent>
                 </Select>
-                <Select>
+
+                {/* Filter Stock Status */}
+                <Select onValueChange={(value) => handleStateItemChange('stockStatus', value)}>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="TÌNH TRẠNG KHO" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
+                        {STOCK_STATUS.map((item, index) => (
+                            <SelectItem key={index} value={item.toString()}>
+                                {item}
+                            </SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
-                <Select>
+
+                {/* Filter Studio Name */}
+                <Select onValueChange={(value) => handleStateItemChange('studioName', value)}>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="HÃNG PHÁT HÀNH" />
                     </SelectTrigger>
@@ -206,50 +217,41 @@ const Shop = () => {
                         ))}
                     </SelectContent>
                 </Select>
+
                 <Select>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="TÂM TRẠNG" />
                     </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                    </SelectContent>
+                    <SelectContent></SelectContent>
                 </Select>
+
                 <Select>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="PHÁT HÀNH" />
                     </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                    </SelectContent>
+                    <SelectContent></SelectContent>
                 </Select>
+
                 <Select>
                     <SelectTrigger className="px-3 py-6 border w-full rounded-none">
                         <SelectValue placeholder="TÌNH TRẠNG ĐĨA" />
                     </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                    </SelectContent>
+                    <SelectContent></SelectContent>
                 </Select>
             </div>
 
             {/* Price Range Slider */}
             <div className="mt-4 flex items-center space-x-4">
                 <span className="font-bold">KHOẢNG GIÁ</span>
-                <Slider
-                    min={0}
-                    max={100}
-                    step={1}
-                    value={state.priceRange}
+                <input
+                    type="range"
+                    min="0"
+                    max="10000000"
+                    value={state.priceRange[1]}
                     onChange={(e) =>
                         setState((prevState) => ({
                             ...prevState,
-                            priceRange: [0, Number((e.target as HTMLInputElement).value)],
+                            priceRange: [0, Number(e.target.value)],
                         }))
                     }
                     className="w-[700px] accent-yellow-500"
