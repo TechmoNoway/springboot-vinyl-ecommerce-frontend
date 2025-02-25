@@ -40,12 +40,8 @@ export const AuthProvider: React.FC<{
   useEffect(() => {
     const checkAuth = async () => {
       if (!token) {
-        try {
-          if (location.pathname !== "/checkout") {
-            console.log()
-          }
-        } catch (error) {
-          console.log(error);
+        if (location.pathname !== "/checkout") {
+          console.log();
         }
       } else {
         interface DecodedToken {
