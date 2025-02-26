@@ -51,17 +51,20 @@ const LoginSignup = () => {
       password: values.password,
     });
 
-    console.log(response);
+    if (response?.data.success === true) {
+      localStorage.setItem(
+        "access_token",
+        response.data.data.accessToken
+      );
 
-    // if (response?.data.success === true) {
-    //   navigate("/");
-    // } else {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Opps! Wrong credential",
-    //     description: "Please try again.",
-    //   });
-    // }
+      navigate("/profile");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Opps! Wrong credential",
+        description: "Please try again.",
+      });
+    }
   }
 
   return (
@@ -71,7 +74,7 @@ const LoginSignup = () => {
         <div className="w-full md:w-1/2 md:pr-6 md:border-r mb-6 md:mb-0">
           <h2 className="text-xl font-semibold mb-4">ĐĂNG NHẬP</h2>
           {/* Facebook Login Button */}
-          <Button className="w-full flex items-center justify-center border border-black hover:border-black hover:bg-black hover:text-white rounded-md py-2 mb-4 bg-white text-black font-semibold">
+          <Button className="flex items-center justify-center border border-black hover:border-black hover:bg-black hover:text-white rounded-md py-2 mb-4 bg-white text-black font-semibold">
             <img
               src="https://cdn-icons-png.flaticon.com/512/124/124010.png"
               alt="Facebook"
@@ -126,7 +129,7 @@ const LoginSignup = () => {
               <div className="flex items-center justify-between">
                 <button
                   type="submit"
-                  className="bg-black text-white py-2 px-6 rounded-md"
+                  className="bg-black text-white py-2 px-6 rounded-md hover:bg-white hover:border-black hover:text-black"
                 >
                   ĐĂNG NHẬP
                 </button>
@@ -171,7 +174,7 @@ const LoginSignup = () => {
           {/* Signup Button */}
           <Button
             onClick={() => handleRegisterEmail(registeringEmail)}
-            className="bg-black text-white py-2 px-6 rounded-md w-full"
+            className="bg-black text-white py-2 px-6 rounded-md w-full hover:bg-white hover:border-black hover:text-black"
           >
             ĐĂNG KÝ
           </Button>

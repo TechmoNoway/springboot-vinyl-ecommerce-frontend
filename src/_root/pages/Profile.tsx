@@ -1,25 +1,49 @@
-import React from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useDispatch, useSelector } from "react-redux";
+
+interface RootState {
+  auth: {
+    user: {
+      firstName: string;
+      lastName: string;
+      displayName: string;
+      email: string;
+    };
+  };
+}
 
 const Profile = () => {
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state: RootState) => state.auth);
+
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 p-10">
       <div className="flex w-full max-w-4xl bg-white shadow-md rounded-lg p-6">
         {/* Sidebar */}
         <div className="w-1/3 border-r pr-6">
-          <h2 className="font-semibold text-gray-700 mb-4">
-            THÔNG TIN TÀI KHOẢN
-          </h2>
-          <ul className="space-y-2 text-gray-600">
-            <li className="hover:text-black cursor-pointer">
+          <ul className="text-gray-600">
+            <li className="font-semibold text-gray-700 cursor-pointer border-b-[1px] border-gray-300 py-4 hover:bg-zinc-200 px-2">
+              THÔNG TIN TÀI KHOẢN
+            </li>
+            <li className="hover:text-black cursor-pointer border-b-[1px] border-gray-300 py-4 hover:bg-zinc-200 px-2">
               WISHLIST
             </li>
-            <li className="hover:text-black cursor-pointer">
+            <li className="hover:text-black cursor-pointer border-b-[1px] border-gray-300 py-4 hover:bg-zinc-200 px-2">
               THEO DÕI ĐƠN HÀNG
             </li>
-            <li className="hover:text-black cursor-pointer">
+            <li className="hover:text-black cursor-pointer border-b-[1px] border-gray-300 py-4 hover:bg-zinc-200 px-2">
               ĐỊA CHỈ NHẬN HÀNG
             </li>
-            <li className="hover:text-black cursor-pointer font-semibold">
+            <li
+              onClick={handleLogout}
+              className="hover:text-black cursor-pointer py-4 hover:bg-zinc-200 px-2"
+            >
               THOÁT
             </li>
           </ul>
@@ -35,7 +59,7 @@ const Profile = () => {
               </label>
               <input
                 type="text"
-                className="w-full border rounded-md px-3 py-2 mt-1 mb-4"
+                className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
               />
             </div>
             <div className="w-1/2">
@@ -44,7 +68,7 @@ const Profile = () => {
               </label>
               <input
                 type="text"
-                className="w-full border rounded-md px-3 py-2 mt-1 mb-4"
+                className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
               />
             </div>
           </div>
@@ -56,7 +80,7 @@ const Profile = () => {
             </label>
             <input
               type="text"
-              className="w-full border rounded-md px-3 py-2 mt-1 mb-4"
+              className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
             <p className="text-xs text-gray-500 italic">
               Tên này sẽ hiển thị trong trang Tài khoản và phần Đánh
@@ -71,7 +95,7 @@ const Profile = () => {
             </label>
             <input
               type="email"
-              className="w-full border rounded-md px-3 py-2 mt-1 mb-4"
+              className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
           </div>
 
@@ -86,7 +110,7 @@ const Profile = () => {
             </label>
             <input
               type="password"
-              className="w-full border rounded-md px-3 py-2 mt-1 mb-4"
+              className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
           </div>
 
@@ -96,7 +120,7 @@ const Profile = () => {
             </label>
             <input
               type="password"
-              className="w-full border rounded-md px-3 py-2 mt-1 mb-4"
+              className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
           </div>
 
@@ -106,7 +130,7 @@ const Profile = () => {
             </label>
             <input
               type="password"
-              className="w-full border rounded-md px-3 py-2 mt-1 mb-4"
+              className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
           </div>
 

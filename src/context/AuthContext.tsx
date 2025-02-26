@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<{
 }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<unknown>(null);
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("token")
+    localStorage.getItem("access_token")
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,23 +39,15 @@ export const AuthProvider: React.FC<{
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!token) {
-        if (location.pathname !== "/checkout") {
-          console.log();
-        }
-      } else {
+      if (token) {
         interface DecodedToken {
           exp: number;
           sub: string;
         }
         const decodedToken: DecodedToken =
           jwtDecode<DecodedToken>(token);
-        console.log(decodedToken.exp);
-        console.log(decodedToken.sub);
 
         const currentUnixTimestamp = Math.floor(Date.now() / 1000);
-
-        console.log(currentUnixTimestamp);
 
         if (
           decodedToken.exp &&
@@ -78,8 +70,8 @@ export const AuthProvider: React.FC<{
           }
         } else {
           dispatch(logoutAction());
-          if (location.pathname !== "/sign-in") {
-            localStorage.removeItem("token");
+          if (location.pathname !== "/login-signup") {
+            localStorage.removeItem("access_token");
             localStorage.removeItem("info");
             localStorage.removeItem("persist:root");
             toast({
@@ -87,7 +79,6 @@ export const AuthProvider: React.FC<{
               title: "Opps! Your last login session expired",
               description: "Please login again.",
             });
-            navigate("/sign-in");
           }
         }
       }
@@ -97,23 +88,23 @@ export const AuthProvider: React.FC<{
   }, [token, dispatch, navigate, location]);
 
   const login = (newToken: string) => {
-    localStorage.setItem("token", newToken);
+    localStorage.setItem("access_token", newToken);
     setToken(newToken);
   };
 
   const loginWithGoogle = (newToken: string) => {
-    localStorage.setItem("token", newToken);
+    localStorage.setItem("access_token", newToken);
     setToken(newToken);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
     localStorage.removeItem("info");
     localStorage.removeItem("persist:root");
     setToken(null);
     setCurrentUser(null);
     dispatch(logoutAction());
-    navigate("/sign-in");
+    navigate("/login-signup");
   };
 
   return (
