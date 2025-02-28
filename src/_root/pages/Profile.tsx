@@ -1,25 +1,40 @@
 import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../../services/UserService";
 
 interface RootState {
   auth: {
-    user: {
-      firstName: string;
-      lastName: string;
-      displayName: string;
-      email: string;
-    };
+    id: number;
+    email: string;
+    phone: string;
+    gender: string;
+    birthday: string;
+    fullname: string;
+    address: string;
+    createdAt: string;
+    updatedAt: string;
   };
 }
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const [userProfile, setUserProfile] = useState<IUser>({});
   const currentUser = useSelector((state: RootState) => state.auth);
 
-  const { logout } = useAuth();
+  const { logout, updateUser } = useAuth();
 
   const handleLogout = () => {
     logout();
+  };
+
+  const hanldeUpdateUser = () => {};
+
+  console.log(currentUser);
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserProfile({ ...userProfile, [name]: value });
   };
 
   return (
@@ -55,16 +70,17 @@ const Profile = () => {
           <div className="flex gap-4">
             <div className="w-1/2">
               <label className="block text-sm font-medium">
-                First name <span className="text-red-500">*</span>
+                Fullname <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                value={currentUser.fullname}
                 className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
               />
             </div>
             <div className="w-1/2">
               <label className="block text-sm font-medium">
-                Last name <span className="text-red-500">*</span>
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -73,19 +89,15 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Display Name */}
+          {/* Address */}
           <div>
             <label className="block text-sm font-medium">
-              Tên hiển thị *
+              Address *
             </label>
             <input
               type="text"
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
-            <p className="text-xs text-gray-500 italic">
-              Tên này sẽ hiển thị trong trang Tài khoản và phần Đánh
-              giá sản phẩm
-            </p>
           </div>
 
           {/* Email Address */}
@@ -94,6 +106,7 @@ const Profile = () => {
               Email address <span className="text-red-500">*</span>
             </label>
             <input
+              value={currentUser.email}
               type="email"
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />

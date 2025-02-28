@@ -22,11 +22,10 @@ export type IUser = {
   id: number;
   username: string;
   email: string;
+  address: string;
   avatarUrl: string;
   phoneNumber: string;
   birthdate: string;
-  isActive: boolean;
-  isBlocked: boolean;
 };
 
 export type IProduct = {

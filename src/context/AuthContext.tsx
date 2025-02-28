@@ -9,8 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 import { setUser, logout as logoutAction } from "../redux/authSlice";
-import { useToast } from "@/hooks/use-toast";
-import { getCurrentUser } from "@/services/UserService";
+import { getUserByEmail } from "@/services/UserService";
 
 interface AuthContextProps {
   //TODO: Define the type of currentUser
@@ -35,7 +34,6 @@ export const AuthProvider: React.FC<{
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -53,8 +51,10 @@ export const AuthProvider: React.FC<{
           decodedToken.exp &&
           decodedToken.exp > currentUnixTimestamp
         ) {
-          const userdetailResponse = await getCurrentUser(
-            parseInt(decodedToken.sub as string)
+          console.log(decodedToken.sub);
+
+          const userdetailResponse = await getUserByEmail(
+            decodedToken.sub
           );
 
           if (userdetailResponse?.data.data) {
@@ -74,12 +74,18 @@ export const AuthProvider: React.FC<{
             localStorage.removeItem("access_token");
             localStorage.removeItem("info");
             localStorage.removeItem("persist:root");
-            toast({
-              variant: "destructive",
-              title: "Opps! Your last login session expired",
-              description: "Please login again.",
-            });
           }
+        }
+      } else {
+        if (
+          location.pathname === "/profile" ||
+          location.pathname === "/checkout" ||
+          location.pathname === "/payment/vietqr/:amount"
+        ) {
+          dispatch(logoutAction());
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("info");
+          localStorage.removeItem("persist:root");
         }
       }
     };

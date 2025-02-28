@@ -36,6 +36,45 @@ const authSlice = createSlice({
       state.birthdate = action.payload.birthdate;
       state.address = action.payload.address;
     },
+    updateUser: (
+      state,
+      action: PayloadAction<Partial<AuthState>>
+    ) => {
+      const {
+        id,
+        email,
+        avatarUrl,
+        phone,
+        gender,
+        fullname,
+        birthdate,
+        address,
+      } = action.payload;
+      if (id !== undefined) {
+        state.id = id;
+      }
+      if (email !== undefined) {
+        state.email = email;
+      }
+      if (avatarUrl !== undefined) {
+        state.avatarUrl = avatarUrl;
+      }
+      if (phone !== undefined) {
+        state.phone = phone;
+      }
+      if (gender !== undefined) {
+        state.gender = gender;
+      }
+      if (fullname !== undefined) {
+        state.fullname = fullname;
+      }
+      if (birthdate !== undefined) {
+        state.birthdate = birthdate;
+      }
+      if (address !== undefined) {
+        state.address = address;
+      }
+    },
     logout: (state) => {
       state.id = 0;
       state.email = "";

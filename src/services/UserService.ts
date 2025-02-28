@@ -5,9 +5,9 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const API = axios.create({ baseURL: apiBaseUrl });
 
 API.interceptors.request.use((req) => {
-  if (localStorage.getItem("token")) {
-    req.headers.Authorization = `Bearer ${JSON.parse(
-      localStorage.getItem("token") ?? ""
+  if (localStorage.getItem("access_token")) {
+    req.headers.Authorization = `Bearer ${localStorage.getItem(
+      "access_token"
     )}`;
   }
   return req;
