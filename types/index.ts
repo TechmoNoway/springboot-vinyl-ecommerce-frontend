@@ -20,12 +20,13 @@ export type IUpdateUser = {
 
 export type IUser = {
   id: number;
-  username: string;
   email: string;
-  address: string;
   avatarUrl: string;
-  phoneNumber: string;
-  birthdate: string;
+  phone: string;
+  gender: string;
+  fullname: string;
+  address: string;
+  birthday: string;
 };
 
 export type IProduct = {

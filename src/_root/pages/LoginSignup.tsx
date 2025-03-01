@@ -42,7 +42,20 @@ const LoginSignup = () => {
   const handleRegisterEmail = async (email: string) => {
     const response = await register(email);
 
-    console.log(response);
+    if (response?.data.success === true) {
+      toast({
+        variant: "success",
+        title: "Success!",
+        description: "Please check your email for the password.",
+      });
+      navigate("/profile");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Opps! Something went wrong",
+        description: "Please try again.",
+      });
+    }
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {

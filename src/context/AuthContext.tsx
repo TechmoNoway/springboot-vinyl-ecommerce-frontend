@@ -51,8 +51,6 @@ export const AuthProvider: React.FC<{
           decodedToken.exp &&
           decodedToken.exp > currentUnixTimestamp
         ) {
-          console.log(decodedToken.sub);
-
           const userdetailResponse = await getUserByEmail(
             decodedToken.sub
           );
@@ -69,12 +67,16 @@ export const AuthProvider: React.FC<{
             setCurrentUser(currentUserInfo);
           }
         } else {
-          dispatch(logoutAction());
-          if (location.pathname !== "/login-signup") {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("info");
-            localStorage.removeItem("persist:root");
+          if (
+            location.pathname === "/profile" ||
+            location.pathname === "/checkout" ||
+            location.pathname === "/payment/vietqr/:amount"
+          ) {
+            dispatch(logoutAction());
           }
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("info");
+          localStorage.removeItem("persist:root");
         }
       } else {
         if (
@@ -82,11 +84,11 @@ export const AuthProvider: React.FC<{
           location.pathname === "/checkout" ||
           location.pathname === "/payment/vietqr/:amount"
         ) {
-          dispatch(logoutAction());
-          localStorage.removeItem("access_token");
           localStorage.removeItem("info");
           localStorage.removeItem("persist:root");
         }
+        localStorage.removeItem("info");
+        localStorage.removeItem("persist:root");
       }
     };
 

@@ -1,25 +1,52 @@
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../services/UserService";
+import { IUser } from "types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 interface RootState {
   auth: {
     id: number;
     email: string;
+    avatarUrl: string;
     phone: string;
     gender: string;
-    birthday: string;
     fullname: string;
     address: string;
-    createdAt: string;
-    updatedAt: string;
+    birthday: string;
   };
 }
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const [userProfile, setUserProfile] = useState<IUser>({});
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [userProfile, setUserProfile] = useState<IUser>({
+    id: 0,
+    email: "",
+    avatarUrl: "",
+    phone: "",
+    gender: "",
+    fullname: "",
+    address: "",
+    birthday: "",
+  });
   const currentUser = useSelector((state: RootState) => state.auth);
 
   const { logout, updateUser } = useAuth();
@@ -36,6 +63,14 @@ const Profile = () => {
     const { name, value } = e.target;
     setUserProfile({ ...userProfile, [name]: value });
   };
+
+  const onSelectChange = (name: string, value: string) => {
+    setUserProfile({ ...userProfile, [name]: value });
+  };
+
+  useEffect(() => {
+    setUserProfile(currentUser);
+  }, [currentUser.email !== ""]);
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 p-10">
@@ -74,16 +109,21 @@ const Profile = () => {
               </label>
               <input
                 type="text"
-                value={currentUser.fullname}
+                value={userProfile?.fullname || ""}
+                name="fullname"
+                onChange={onInputChange}
                 className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
               />
             </div>
             <div className="w-1/2">
               <label className="block text-sm font-medium">
-                Email <span className="text-red-500">*</span>
+                Email Address <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                value={userProfile?.email || ""}
+                name="email"
+                onChange={onInputChange}
                 className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
               />
             </div>
@@ -92,24 +132,87 @@ const Profile = () => {
           {/* Address */}
           <div>
             <label className="block text-sm font-medium">
-              Address *
+              Address <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
+              value={userProfile?.address || ""}
+              name="address"
+              onChange={onInputChange}
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
           </div>
 
-          {/* Email Address */}
+          {/* Phone */}
           <div>
             <label className="block text-sm font-medium">
-              Email address <span className="text-red-500">*</span>
+              Phone <span className="text-red-500">*</span>
             </label>
             <input
-              value={currentUser.email}
-              type="email"
+              type="text"
+              value={userProfile?.phone || ""}
+              name="address"
+              onChange={onInputChange}
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
             />
+          </div>
+
+          {/* Birthdate and gender */}
+          <div className="flex gap-4">
+            <div className="w-1/2">
+              <label className="block text-sm font-medium">
+                Birthdate <span className="text-red-500">*</span>
+              </label>
+              <Popover>
+                <PopoverTrigger asChild className="">
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
+                    )}
+                  >
+                    {date ? (
+                      format(date, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    selected={date}
+                    onDayClick={setDate}
+                    mode="default"
+                    disabled={(date) =>
+                      date > new Date() ||
+                      date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="w-1/2">
+              <label className="block text-sm font-medium">
+                Gender <span className="text-red-500">*</span>
+              </label>
+              <Select
+                onValueChange={(value) =>
+                  onSelectChange("gender", value)
+                }
+                defaultValue={userProfile.gender}
+              >
+                <SelectTrigger className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Password Change Section */}
