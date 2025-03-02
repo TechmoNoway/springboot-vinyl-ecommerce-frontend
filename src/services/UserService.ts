@@ -43,12 +43,12 @@ export const getUserByEmail = (email: string) => {
   }
 };
 
-// export const updateUser = (userform: IUpdateUser) => {
-//     try {
-//         const res = API.put(`api/v1/users/updateUser`, userform);
-//         return res;
-//     } catch (error) {
-//         console.log(error);
-//         return null;
-//     }
-// };
+export const updateUser = (userform: IUpdateUser) => {
+    try {
+        const res = API.put(`api/v1/users/updateUser`, userform);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};

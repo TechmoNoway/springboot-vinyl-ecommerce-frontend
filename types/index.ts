@@ -14,8 +14,8 @@ export type IUpdateUser = {
   username: string;
   email: string;
   avatarUrl: string;
-  phoneNumber: string;
-  birthdate: Date | undefined;
+  phone: string;
+  birthday: Date | undefined;
 };
 
 export type IUser = {

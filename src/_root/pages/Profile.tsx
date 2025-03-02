@@ -55,7 +55,9 @@ const Profile = () => {
     logout();
   };
 
-  const hanldeUpdateUser = () => {};
+  const hanldeUpdateUser = async () => {
+    const response = await updateUser
+  };
 
   console.log(currentUser);
 
