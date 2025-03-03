@@ -10,12 +10,14 @@ export type IGoogleLoginForm = {
 };
 
 export type IUpdateUser = {
-  userId: number;
-  username: string;
+  id: number;
   email: string;
   avatarUrl: string;
   phone: string;
-  birthday: Date | undefined;
+  gender: string;
+  fullname: string;
+  address: string;
+  birthday: string;
 };
 
 export type IUser = {

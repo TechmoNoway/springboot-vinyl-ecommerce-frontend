@@ -2,7 +2,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../../services/UserService";
-import { IUser } from "types";
+import { IUpdateUser } from "types";
 import {
   Select,
   SelectContent,
@@ -20,6 +20,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface RootState {
   auth: {
@@ -36,8 +37,9 @@ interface RootState {
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const { toast } = useToast();
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [userProfile, setUserProfile] = useState<IUser>({
+  const [userProfile, setUserProfile] = useState<IUpdateUser>({
     id: 0,
     email: "",
     avatarUrl: "",
@@ -49,14 +51,29 @@ const Profile = () => {
   });
   const currentUser = useSelector((state: RootState) => state.auth);
 
-  const { logout, updateUser } = useAuth();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();
   };
 
   const hanldeUpdateUser = async () => {
-    const response = await updateUser
+    const response = await updateUser(userProfile);
+
+    if (response?.data.success === true) {
+      updateUser(userProfile);
+      toast({
+        variant: "success",
+        title: "Success!",
+        description: "Update user successfully.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Opps! Something went wrong",
+        description: "Please try again.",
+      });
+    }
   };
 
   console.log(currentUser);
@@ -253,7 +270,10 @@ const Profile = () => {
           </div>
 
           {/* Save Button */}
-          <button className="bg-black text-white py-2 px-6 rounded-md">
+          <button
+            onClick={hanldeUpdateUser}
+            className="bg-black text-white py-2 px-6 rounded-md"
+          >
             SAVE CHANGES
           </button>
         </div>

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { IUpdateUser } from "types";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -44,11 +45,11 @@ export const getUserByEmail = (email: string) => {
 };
 
 export const updateUser = (userform: IUpdateUser) => {
-    try {
-        const res = API.put(`api/v1/users/updateUser`, userform);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
+  try {
+    const res = API.put(`api/v1/users/updateUser`, userform);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
