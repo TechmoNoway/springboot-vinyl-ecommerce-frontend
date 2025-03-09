@@ -17,7 +17,8 @@ interface AuthContextProps {
   token: string | null;
   login: (token: string) => void;
   loginWithGoogle: (token: string) => void;
-  logout: () => void;
+  logoutWithNavigate: () => void;
+  logoutWithoutNavigate: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(
@@ -67,28 +68,10 @@ export const AuthProvider: React.FC<{
             setCurrentUser(currentUserInfo);
           }
         } else {
-          if (
-            location.pathname === "/profile" ||
-            location.pathname === "/checkout" ||
-            location.pathname === "/payment/vietqr/:amount"
-          ) {
-            dispatch(logoutAction());
-          }
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("info");
-          localStorage.removeItem("persist:root");
+          logoutWithoutNavigate();
         }
       } else {
-        if (
-          location.pathname === "/profile" ||
-          location.pathname === "/checkout" ||
-          location.pathname === "/payment/vietqr/:amount"
-        ) {
-          localStorage.removeItem("info");
-          localStorage.removeItem("persist:root");
-        }
-        localStorage.removeItem("info");
-        localStorage.removeItem("persist:root");
+        logoutWithoutNavigate();
       }
     };
 
@@ -105,7 +88,16 @@ export const AuthProvider: React.FC<{
     setToken(newToken);
   };
 
-  const logout = () => {
+  const logoutWithoutNavigate = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("info");
+    localStorage.removeItem("persist:root");
+    setToken(null);
+    setCurrentUser(null);
+    dispatch(logoutAction());
+  };
+
+  const logoutWithNavigate = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("info");
     localStorage.removeItem("persist:root");
@@ -117,7 +109,14 @@ export const AuthProvider: React.FC<{
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, token, login, loginWithGoogle, logout }}
+      value={{
+        currentUser,
+        token,
+        login,
+        loginWithGoogle,
+        logoutWithNavigate,
+        logoutWithoutNavigate,
+      }}
     >
       {children}
     </AuthContext.Provider>

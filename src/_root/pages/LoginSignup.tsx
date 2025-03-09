@@ -11,10 +11,17 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 import { login, register } from "@/services/AuthService";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
+
+// const override: CSSProperties = {
+//   display: "block",
+//   margin: "0 auto",
+//   borderColor: "red",
+// };
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -36,6 +43,8 @@ const LoginSignup = () => {
     },
   });
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [color, setColor] = useState("#ffffff");
   const [registeringEmail, setRegisteringEmail] =
     useState<string>("");
 
@@ -65,13 +74,22 @@ const LoginSignup = () => {
     });
 
     if (response?.data.success === true) {
+      setLoading(true);
       localStorage.setItem(
         "access_token",
         response.data.data.accessToken
       );
-
-      navigate("/profile");
+      setTimeout(() => {
+        setLoading(false);
+        navigate("/profile");
+        toast({
+          variant: "success",
+          title: "Success!",
+          description: "Please check your email for the password.",
+        });
+      }, 3000);
     } else {
+      setLoading(false);
       toast({
         variant: "destructive",
         title: "Opps! Wrong credential",
@@ -140,12 +158,30 @@ const LoginSignup = () => {
 
               {/* Login Button & Remember Me */}
               <div className="flex items-center justify-between">
-                <button
-                  type="submit"
-                  className="bg-black text-white py-2 px-6 rounded-md hover:bg-white hover:border-black hover:text-black"
-                >
-                  ĐĂNG NHẬP
-                </button>
+                {loading ? (
+                  <button
+                    type="submit"
+                    className="bg-black text-white py-2 px-6 rounded-md hover:bg-white hover:border-black hover:text-black"
+                  >
+                    <ClipLoader
+                      color={color}
+                      loading={loading}
+                      cssOverride={override}
+                      size={20}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                      speedMultiplier={1}
+                    />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="bg-black text-white py-2 px-6 rounded-md hover:bg-white hover:border-black hover:text-black"
+                  >
+                    ĐĂNG NHẬP
+                  </button>
+                )}
+
                 <label className="flex items-center text-sm">
                   <input type="checkbox" className="mr-2" />
                   Ghi nhớ mật khẩu

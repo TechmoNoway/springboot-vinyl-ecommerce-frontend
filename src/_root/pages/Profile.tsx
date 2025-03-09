@@ -21,6 +21,7 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface RootState {
   auth: {
@@ -50,11 +51,11 @@ const Profile = () => {
     birthday: "",
   });
   const currentUser = useSelector((state: RootState) => state.auth);
-
-  const { logout } = useAuth();
+  const { logoutWithNavigate } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
+    logoutWithNavigate();
   };
 
   const hanldeUpdateUser = async () => {
@@ -90,6 +91,13 @@ const Profile = () => {
   useEffect(() => {
     setUserProfile(currentUser);
   }, [currentUser.email !== ""]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      navigate("/login-signup");
+    }
+  }, []);
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 p-10">

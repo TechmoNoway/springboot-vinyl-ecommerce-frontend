@@ -17,12 +17,6 @@ function App() {
   return (
     <main className="w-screen">
       <Routes>
-        {/* Public Routes */}
-        {/* <Route element={<AuthLayout />}>
-                    <Route path="/sign-in" element={<SignInForm />} />
-                    <Route path="/sign-up" element={<SignupForm />} />
-                </Route> */}
-
         <Route element={<RootLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/product/:title" element={<ProductDetail />} />
