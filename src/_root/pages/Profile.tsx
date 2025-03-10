@@ -77,8 +77,6 @@ const Profile = () => {
     }
   };
 
-  console.log(currentUser);
-
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserProfile({ ...userProfile, [name]: value });
@@ -94,7 +92,7 @@ const Profile = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    if (!token) {
+    if (token === "" || token === null) {
       navigate("/login-signup");
     }
   }, []);

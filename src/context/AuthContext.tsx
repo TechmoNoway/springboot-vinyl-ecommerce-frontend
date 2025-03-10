@@ -10,12 +10,13 @@ import { jwtDecode } from "jwt-decode";
 
 import { setUser, logout as logoutAction } from "../redux/authSlice";
 import { getUserByEmail } from "@/services/UserService";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuthContextProps {
   //TODO: Define the type of currentUser
   currentUser: unknown;
   token: string | null;
-  login: (token: string) => void;
+  normalLogin: (token: string) => void;
   loginWithGoogle: (token: string) => void;
   logoutWithNavigate: () => void;
   logoutWithoutNavigate: () => void;
@@ -35,14 +36,25 @@ export const AuthProvider: React.FC<{
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (token) {
+      if (!token) {
+        try {
+          dispatch(logoutAction());
+          if (location.pathname === "/profile") {
+            navigate("/login-signup");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
         interface DecodedToken {
           exp: number;
           sub: string;
         }
+
         const decodedToken: DecodedToken =
           jwtDecode<DecodedToken>(token);
 
@@ -58,27 +70,61 @@ export const AuthProvider: React.FC<{
 
           if (userdetailResponse?.data.data) {
             const currentUserInfo = userdetailResponse.data.data;
-
-            localStorage.setItem(
-              "info",
-              JSON.stringify(currentUserInfo.id)
-            );
-
             dispatch(setUser(currentUserInfo));
             setCurrentUser(currentUserInfo);
+          } else {
+            dispatch(logoutAction());
+            if (location.pathname === "/profile") {
+              localStorage.removeItem("access_token");
+              localStorage.removeItem("info");
+              localStorage.removeItem("persist:root");
+              toast({
+                variant: "destructive",
+                title: "Opps! Your last login session expired",
+                description: "Please login again.",
+              });
+              navigate("/login-signup");
+            } else {
+              localStorage.removeItem("access_token");
+              localStorage.removeItem("info");
+              localStorage.removeItem("persist:root");
+              toast({
+                variant: "destructive",
+                title: "Opps! Your last login session expired",
+                description: "Please login again.",
+              });
+            }
           }
         } else {
-          logoutWithoutNavigate();
+          dispatch(logoutAction());
+          if (location.pathname === "/profile") {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("info");
+            localStorage.removeItem("persist:root");
+            toast({
+              variant: "destructive",
+              title: "Opps! Your last login session expired",
+              description: "Please login again.",
+            });
+            navigate("/login-signup");
+          } else {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("info");
+            localStorage.removeItem("persist:root");
+            toast({
+              variant: "destructive",
+              title: "Opps! Your last login session expired",
+              description: "Please login again.",
+            });
+          }
         }
-      } else {
-        logoutWithoutNavigate();
       }
     };
 
     checkAuth();
   }, [token, dispatch, navigate, location]);
 
-  const login = (newToken: string) => {
+  const normalLogin = (newToken: string) => {
     localStorage.setItem("access_token", newToken);
     setToken(newToken);
   };
@@ -112,7 +158,7 @@ export const AuthProvider: React.FC<{
       value={{
         currentUser,
         token,
-        login,
+        normalLogin,
         loginWithGoogle,
         logoutWithNavigate,
         logoutWithoutNavigate,

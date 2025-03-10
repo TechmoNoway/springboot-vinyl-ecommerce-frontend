@@ -11,11 +11,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { CSSProperties, useState } from "react";
+import { useState } from "react";
 import { login, register } from "@/services/AuthService";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useAuth } from "@/context/AuthContext";
 
 // const override: CSSProperties = {
 //   display: "block",
@@ -35,6 +36,7 @@ const formSchema = z.object({
 const LoginSignup = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { normalLogin } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,7 +46,6 @@ const LoginSignup = () => {
   });
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [color, setColor] = useState("#ffffff");
   const [registeringEmail, setRegisteringEmail] =
     useState<string>("");
 
@@ -73,12 +74,11 @@ const LoginSignup = () => {
       password: values.password,
     });
 
+    console.log(response);
+
     if (response?.data.success === true) {
       setLoading(true);
-      localStorage.setItem(
-        "access_token",
-        response.data.data.accessToken
-      );
+      normalLogin(JSON.stringify(response.data.data.accessToken));
       setTimeout(() => {
         setLoading(false);
         navigate("/profile");
@@ -161,12 +161,11 @@ const LoginSignup = () => {
                 {loading ? (
                   <button
                     type="submit"
-                    className="bg-black text-white py-2 px-6 rounded-md hover:bg-white hover:border-black hover:text-black"
+                    className="bg-black text-white py-2 px-14 rounded-md hover:bg-white hover:border-black hover:text-black"
                   >
                     <ClipLoader
-                      color={color}
+                      color={"#ffffff"}
                       loading={loading}
-                      cssOverride={override}
                       size={20}
                       aria-label="Loading Spinner"
                       data-testid="loader"
