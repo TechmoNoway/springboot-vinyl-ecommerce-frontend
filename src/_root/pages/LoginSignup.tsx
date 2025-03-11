@@ -36,7 +36,7 @@ const formSchema = z.object({
 const LoginSignup = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { normalLogin } = useAuth();
+  const { stateLogin } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,7 +78,7 @@ const LoginSignup = () => {
 
     if (response?.data.success === true) {
       setLoading(true);
-      normalLogin(JSON.stringify(response.data.data.accessToken));
+      stateLogin(JSON.stringify(response.data.data.accessToken));
       setTimeout(() => {
         setLoading(false);
         navigate("/profile");

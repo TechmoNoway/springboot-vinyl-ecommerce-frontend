@@ -7,7 +7,7 @@ interface AuthState {
   phone: string;
   gender: string;
   fullname: string;
-  birthdate: string;
+  birthday: Date | undefined;
   address: string;
 }
 
@@ -18,7 +18,7 @@ const initialState: AuthState = {
   phone: "",
   gender: "",
   fullname: "",
-  birthdate: "",
+  birthday: undefined,
   address: "",
 };
 
@@ -33,10 +33,10 @@ const authSlice = createSlice({
       state.phone = action.payload.phone;
       state.gender = action.payload.gender;
       state.fullname = action.payload.fullname;
-      state.birthdate = action.payload.birthdate;
+      state.birthday = action.payload.birthday;
       state.address = action.payload.address;
     },
-    updateUser: (
+    updateUserState: (
       state,
       action: PayloadAction<Partial<AuthState>>
     ) => {
@@ -47,7 +47,7 @@ const authSlice = createSlice({
         phone,
         gender,
         fullname,
-        birthdate,
+        birthday,
         address,
       } = action.payload;
       if (id !== undefined) {
@@ -68,8 +68,8 @@ const authSlice = createSlice({
       if (fullname !== undefined) {
         state.fullname = fullname;
       }
-      if (birthdate !== undefined) {
-        state.birthdate = birthdate;
+      if (birthday !== undefined) {
+        state.birthday = birthday;
       }
       if (address !== undefined) {
         state.address = address;
@@ -82,11 +82,11 @@ const authSlice = createSlice({
       state.phone = "";
       state.gender = "";
       state.fullname = "";
-      state.birthdate = "";
+      state.birthday = undefined;
       state.address = "";
     },
   },
 });
 
-export const { setUser, logout } = authSlice.actions;
+export const { setUser, logout, updateUserState } = authSlice.actions;
 export default authSlice.reducer;

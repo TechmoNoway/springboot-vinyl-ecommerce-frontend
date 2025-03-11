@@ -1,7 +1,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../../services/UserService";
+import { updateUserInfo } from "../../services/UserService";
 import { IUpdateUser } from "types";
 import {
   Select,
@@ -22,6 +22,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { updateUserState } from "@/redux/authSlice";
 
 interface RootState {
   auth: {
@@ -32,14 +33,13 @@ interface RootState {
     gender: string;
     fullname: string;
     address: string;
-    birthday: string;
+    birthday: Date | undefined;
   };
 }
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
-  const [date, setDate] = useState<Date | undefined>(undefined);
   const [userProfile, setUserProfile] = useState<IUpdateUser>({
     id: 0,
     email: "",
@@ -48,7 +48,7 @@ const Profile = () => {
     gender: "",
     fullname: "",
     address: "",
-    birthday: "",
+    birthday: undefined,
   });
   const currentUser = useSelector((state: RootState) => state.auth);
   const { logoutWithNavigate } = useAuth();
@@ -59,12 +59,14 @@ const Profile = () => {
   };
 
   const hanldeUpdateUser = async () => {
-    const response = await updateUser(userProfile);
+    const response = await updateUserInfo(userProfile);
 
     if (response?.data.success === true) {
-      updateUser(userProfile);
+      console.log(userProfile);
+
+      dispatch(updateUserState(userProfile));
       toast({
-        variant: "success",
+        variant: "default",
         title: "Success!",
         description: "Update user successfully.",
       });
@@ -86,6 +88,13 @@ const Profile = () => {
     setUserProfile({ ...userProfile, [name]: value });
   };
 
+  const onPhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    if (/^\d*$/.test(value)) {
+      setUserProfile({ ...userProfile, [name]: value });
+    }
+  };
+
   useEffect(() => {
     setUserProfile(currentUser);
   }, [currentUser.email !== ""]);
@@ -96,6 +105,8 @@ const Profile = () => {
       navigate("/login-signup");
     }
   }, []);
+
+  console.log(currentUser);
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 p-10">
@@ -176,9 +187,11 @@ const Profile = () => {
             <input
               type="text"
               value={userProfile?.phone || ""}
-              name="address"
-              onChange={onInputChange}
+              name="phone"
+              onChange={onPhoneChange}
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
+              inputMode="numeric"
+              pattern="[0-9]*"
             />
           </div>
 
@@ -196,8 +209,8 @@ const Profile = () => {
                       "w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
                     )}
                   >
-                    {date ? (
-                      format(date, "PPP")
+                    {userProfile.birthday ? (
+                      format(new Date(userProfile.birthday), "PPP")
                     ) : (
                       <span>Pick a date</span>
                     )}
@@ -207,8 +220,17 @@ const Profile = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
-                    selected={date}
-                    onDayClick={setDate}
+                    selected={
+                      userProfile.birthday
+                        ? new Date(userProfile.birthday)
+                        : undefined
+                    }
+                    onDayClick={(date) =>
+                      setUserProfile({
+                        ...userProfile,
+                        birthday: date,
+                      })
+                    }
                     mode="default"
                     disabled={(date) =>
                       date > new Date() ||
@@ -227,7 +249,7 @@ const Profile = () => {
                 onValueChange={(value) =>
                   onSelectChange("gender", value)
                 }
-                defaultValue={userProfile.gender}
+                value={userProfile.gender}
               >
                 <SelectTrigger className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white">
                   <SelectValue />

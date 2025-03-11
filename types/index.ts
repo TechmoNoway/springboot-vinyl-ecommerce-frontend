@@ -17,7 +17,7 @@ export type IUpdateUser = {
   gender: string;
   fullname: string;
   address: string;
-  birthday: string;
+  birthday: Date | undefined;
 };
 
 export type IUser = {

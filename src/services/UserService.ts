@@ -44,9 +44,9 @@ export const getUserByEmail = (email: string) => {
   }
 };
 
-export const updateUser = (userform: IUpdateUser) => {
+export const updateUserInfo = (userform: IUpdateUser) => {
   try {
-    const res = API.put(`api/v1/users/updateUser`, userform);
+    const res = API.put(`api/v1/users/updateUserInfo`, userform);
     return res;
   } catch (error) {
     console.log(error);

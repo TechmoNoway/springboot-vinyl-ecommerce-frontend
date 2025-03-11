@@ -16,10 +16,11 @@ interface AuthContextProps {
   //TODO: Define the type of currentUser
   currentUser: unknown;
   token: string | null;
-  normalLogin: (token: string) => void;
+  stateLogin: (token: string) => void;
   loginWithGoogle: (token: string) => void;
   logoutWithNavigate: () => void;
   logoutWithoutNavigate: () => void;
+  updateUserState: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(
@@ -124,7 +125,7 @@ export const AuthProvider: React.FC<{
     checkAuth();
   }, [token, dispatch, navigate, location]);
 
-  const normalLogin = (newToken: string) => {
+  const stateLogin = (newToken: string) => {
     localStorage.setItem("access_token", newToken);
     setToken(newToken);
   };
@@ -153,15 +154,22 @@ export const AuthProvider: React.FC<{
     navigate("/login-signup");
   };
 
+  // cosnt updateUserState = () => {
+  //   dispatch(updateUserState())
+  // }
+
+  const updateUserState = () => {};
+
   return (
     <AuthContext.Provider
       value={{
         currentUser,
         token,
-        normalLogin,
+        stateLogin,
         loginWithGoogle,
         logoutWithNavigate,
         logoutWithoutNavigate,
+        updateUserState,
       }}
     >
       {children}
