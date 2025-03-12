@@ -85,7 +85,7 @@ const LoginSignup = () => {
         toast({
           variant: "success",
           title: "Success!",
-          description: "Please check your email for the password.",
+          description: "Login successfully.",
         });
       }, 3000);
     } else {

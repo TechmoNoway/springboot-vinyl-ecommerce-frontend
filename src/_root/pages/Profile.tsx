@@ -1,7 +1,10 @@
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserInfo } from "../../services/UserService";
+import {
+  changePassword,
+  updateUserInfo,
+} from "../../services/UserService";
 import { IUpdateUser } from "types";
 import {
   Select,
@@ -28,7 +31,6 @@ interface RootState {
   auth: {
     id: number;
     email: string;
-    avatarUrl: string;
     phone: string;
     gender: string;
     fullname: string;
@@ -43,13 +45,18 @@ const Profile = () => {
   const [userProfile, setUserProfile] = useState<IUpdateUser>({
     id: 0,
     email: "",
-    avatarUrl: "",
     phone: "",
     gender: "",
     fullname: "",
     address: "",
     birthday: undefined,
   });
+  const [changePasswordForm, setChangePasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+
   const currentUser = useSelector((state: RootState) => state.auth);
   const { logoutWithNavigate } = useAuth();
   const navigate = useNavigate();
@@ -62,13 +69,50 @@ const Profile = () => {
     const response = await updateUserInfo(userProfile);
 
     if (response?.data.success === true) {
-      console.log(userProfile);
-
       dispatch(updateUserState(userProfile));
       toast({
         variant: "default",
         title: "Success!",
         description: "Update user successfully.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Opps! Something went wrong",
+        description: "Please try again.",
+      });
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (
+      changePasswordForm.newPassword !==
+      changePasswordForm.confirmNewPassword
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Opps! Something went wrong",
+        description:
+          "New password and confirm password do not match.",
+      });
+      return;
+    }
+
+    const requestForm = {
+      userID: userProfile.id,
+      currentPassword: changePasswordForm.currentPassword,
+      newPassword: changePasswordForm.newPassword,
+    };
+
+    console.log(requestForm);
+
+    const response = await changePassword(requestForm);
+
+    if (response?.data.success === true) {
+      toast({
+        variant: "default",
+        title: "Success!",
+        description: "Change password successfully.",
       });
     } else {
       toast({
@@ -95,6 +139,13 @@ const Profile = () => {
     }
   };
 
+  const onPasswordInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setChangePasswordForm({ ...changePasswordForm, [name]: value });
+  };
+
   useEffect(() => {
     setUserProfile(currentUser);
   }, [currentUser.email !== ""]);
@@ -105,8 +156,6 @@ const Profile = () => {
       navigate("/login-signup");
     }
   }, []);
-
-  console.log(currentUser);
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 p-10">
@@ -262,8 +311,15 @@ const Profile = () => {
             </div>
           </div>
 
+          <button
+            onClick={hanldeUpdateUser}
+            className="bg-black text-white py-2 px-6 rounded-md"
+          >
+            SAVE CHANGES
+          </button>
+
           {/* Password Change Section */}
-          <h3 className="font-semibold text-gray-700 mt-6 mb-2">
+          <h3 className="font-semibold text-gray-700 mt-14 mb-2">
             PASSWORD CHANGE
           </h3>
 
@@ -274,6 +330,8 @@ const Profile = () => {
             <input
               type="password"
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
+              name="currentPassword"
+              onChange={onPasswordInputChange}
             />
           </div>
 
@@ -284,6 +342,8 @@ const Profile = () => {
             <input
               type="password"
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
+              name="newPassword"
+              onChange={onPasswordInputChange}
             />
           </div>
 
@@ -294,15 +354,17 @@ const Profile = () => {
             <input
               type="password"
               className="w-full border rounded-md px-3 py-2 mt-1 mb-4 bg-white"
+              name="confirmNewPassword"
+              onChange={onPasswordInputChange}
             />
           </div>
 
           {/* Save Button */}
           <button
-            onClick={hanldeUpdateUser}
+            onClick={handleChangePassword}
             className="bg-black text-white py-2 px-6 rounded-md"
           >
-            SAVE CHANGES
+            SAVE PASSWORD
           </button>
         </div>
       </div>

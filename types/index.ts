@@ -12,7 +12,6 @@ export type IGoogleLoginForm = {
 export type IUpdateUser = {
   id: number;
   email: string;
-  avatarUrl: string;
   phone: string;
   gender: string;
   fullname: string;
@@ -23,7 +22,6 @@ export type IUpdateUser = {
 export type IUser = {
   id: number;
   email: string;
-  avatarUrl: string;
   phone: string;
   gender: string;
   fullname: string;
@@ -87,4 +85,10 @@ export type CartItem = {
   tracklistId: number;
   categories: ICategory[];
   quantity: number;
+};
+
+export type IChangePassword = {
+  userID: number;
+  currentPassword: string;
+  newPassword: string;
 };

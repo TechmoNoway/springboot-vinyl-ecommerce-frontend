@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IUpdateUser } from "types";
+import { IChangePassword, IUpdateUser } from "types";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -44,9 +44,19 @@ export const getUserByEmail = (email: string) => {
   }
 };
 
-export const updateUserInfo = (userform: IUpdateUser) => {
+export const updateUserInfo = (userForm: IUpdateUser) => {
   try {
-    const res = API.put(`api/v1/users/updateUserInfo`, userform);
+    const res = API.put(`api/v1/users/updateUserInfo`, userForm);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+export const changePassword = (password: IChangePassword) => {
+  try {
+    const res = API.put(`api/v1/users/changePassword`, password);
     return res;
   } catch (error) {
     console.log(error);

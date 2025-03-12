@@ -3,7 +3,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface AuthState {
   id: number;
   email: string;
-  avatarUrl: string;
   phone: string;
   gender: string;
   fullname: string;
@@ -14,7 +13,6 @@ interface AuthState {
 const initialState: AuthState = {
   id: 0,
   email: "",
-  avatarUrl: "",
   phone: "",
   gender: "",
   fullname: "",
@@ -29,7 +27,6 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<AuthState>) => {
       state.id = action.payload.id;
       state.email = action.payload.email;
-      state.avatarUrl = action.payload.avatarUrl;
       state.phone = action.payload.phone;
       state.gender = action.payload.gender;
       state.fullname = action.payload.fullname;
@@ -43,7 +40,6 @@ const authSlice = createSlice({
       const {
         id,
         email,
-        avatarUrl,
         phone,
         gender,
         fullname,
@@ -55,9 +51,6 @@ const authSlice = createSlice({
       }
       if (email !== undefined) {
         state.email = email;
-      }
-      if (avatarUrl !== undefined) {
-        state.avatarUrl = avatarUrl;
       }
       if (phone !== undefined) {
         state.phone = phone;
@@ -78,7 +71,6 @@ const authSlice = createSlice({
     logout: (state) => {
       state.id = 0;
       state.email = "";
-      state.avatarUrl = "";
       state.phone = "";
       state.gender = "";
       state.fullname = "";

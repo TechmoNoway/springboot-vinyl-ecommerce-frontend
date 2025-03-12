@@ -79,22 +79,17 @@ export const AuthProvider: React.FC<{
               localStorage.removeItem("access_token");
               localStorage.removeItem("info");
               localStorage.removeItem("persist:root");
-              toast({
-                variant: "destructive",
-                title: "Opps! Your last login session expired",
-                description: "Please login again.",
-              });
               navigate("/login-signup");
             } else {
               localStorage.removeItem("access_token");
               localStorage.removeItem("info");
               localStorage.removeItem("persist:root");
-              toast({
-                variant: "destructive",
-                title: "Opps! Your last login session expired",
-                description: "Please login again.",
-              });
             }
+            toast({
+              variant: "destructive",
+              title: "Opps! Your last login session expired",
+              description: "Please login again.",
+            });
           }
         } else {
           dispatch(logoutAction());
@@ -102,21 +97,12 @@ export const AuthProvider: React.FC<{
             localStorage.removeItem("access_token");
             localStorage.removeItem("info");
             localStorage.removeItem("persist:root");
-            toast({
-              variant: "destructive",
-              title: "Opps! Your last login session expired",
-              description: "Please login again.",
-            });
+
             navigate("/login-signup");
           } else {
             localStorage.removeItem("access_token");
             localStorage.removeItem("info");
             localStorage.removeItem("persist:root");
-            toast({
-              variant: "destructive",
-              title: "Opps! Your last login session expired",
-              description: "Please login again.",
-            });
           }
         }
       }
