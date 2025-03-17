@@ -92,3 +92,33 @@ export type IChangePassword = {
   currentPassword: string;
   newPassword: string;
 };
+
+export type IOrderItem = {
+  productId: number;
+  quantity: number;
+  price: number;
+};
+
+export type IOrder = {
+  customerId: number;
+  totalPrice: number;
+  status: string;
+  fullname: string;
+  customerAddress: string;
+  customerPhone: string;
+  note: string;
+  email: string;
+  items: IOrderItem[];
+};
+
+export type ICurrentUser = {
+  auth: {
+    id: number;
+    email: string;
+    phone: string;
+    gender: string;
+    fullname: string;
+    address: string;
+    birthday: Date | undefined;
+  };
+};

@@ -5,7 +5,7 @@ import {
   changePassword,
   updateUserInfo,
 } from "../../services/UserService";
-import { IUpdateUser } from "types";
+import { ICurrentUser, IUpdateUser } from "types";
 import {
   Select,
   SelectContent,
@@ -27,18 +27,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { updateUserState } from "@/redux/authSlice";
 
-interface RootState {
-  auth: {
-    id: number;
-    email: string;
-    phone: string;
-    gender: string;
-    fullname: string;
-    address: string;
-    birthday: Date | undefined;
-  };
-}
-
 const Profile = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
@@ -57,7 +45,9 @@ const Profile = () => {
     confirmNewPassword: "",
   });
 
-  const currentUser = useSelector((state: RootState) => state.auth);
+  const currentUser = useSelector(
+    (state: ICurrentUser) => state.auth
+  );
   const { logoutWithNavigate } = useAuth();
   const navigate = useNavigate();
 

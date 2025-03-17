@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -11,63 +11,53 @@ const API = axios.create({ baseURL: apiBaseUrl });
 //     return req;
 // });
 
-export const getAllProducts = () => {
-    try {
-        const res = API.get(`api/v1/products/getAllProducts`);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
-};
-
 export const getReadyProducts = () => {
-    try {
-        const res = API.get(`api/v1/products/getReadyProducts`);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
+  try {
+    const res = API.get(`api/v1/products/ready`);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 export const getProductByTitle = (title: string) => {
-    try {
-        const res = API.get(`api/v1/products/getProductByTitle?title=${title}`);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
+  try {
+    const res = API.get(`api/v1/products/title?title=${title}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 export const searchProductsByTitle = (title: string) => {
-    try {
-        const res = API.get(`api/v1/products/searchProductsByTitle?title=${title}`);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
+  try {
+    const res = API.get(`api/v1/products/search?title=${title}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 export const getAllProductsFilteredAndSorted = (
-    title: string | null,
-    category: string | null,
-    platform: string | null,
-    stockStatus: string | null,
-    studioName: string | null,
-    manufactureYear: string | null,
-    status: string | null,
-    sortType: string,
+  title: string | null,
+  category: string | null,
+  platform: string | null,
+  stockStatus: string | null,
+  studioName: string | null,
+  manufactureYear: string | null,
+  status: string | null,
+  sortType: string | "DEFAULT"
 ) => {
-    try {
-        const res = API.get(
-            `api/v1/products/getAllProductsFilteredAndSorted?title=${title}&category=${category}&platform=${platform}&stockStatus=${stockStatus}&studioName=${studioName}&manufactureYear=${manufactureYear}&status=${status}&sortType=${sortType}`,
-        );
-        return res;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
+  try {
+    const res = API.get(
+      `api/v1/products?title=${title}&category=${category}&platform=${platform}&stockStatus=${stockStatus}&studioName=${studioName}&manufactureYear=${manufactureYear}&status=${status}&sortType=${sortType}`
+    );
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
