@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{
       if (!token) {
         try {
           dispatch(logoutAction());
-          if (location.pathname === "/profile") {
+          if (location.pathname === "/account-details") {
             navigate("/login-signup");
           }
         } catch (error) {
@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{
             setCurrentUser(currentUserInfo);
           } else {
             dispatch(logoutAction());
-            if (location.pathname === "/profile") {
+            if (location.pathname === "/account-details") {
               localStorage.removeItem("access_token");
               localStorage.removeItem("info");
               localStorage.removeItem("persist:root");
@@ -93,7 +93,7 @@ export const AuthProvider: React.FC<{
           }
         } else {
           dispatch(logoutAction());
-          if (location.pathname === "/profile") {
+          if (location.pathname === "/account-details") {
             localStorage.removeItem("access_token");
             localStorage.removeItem("info");
             localStorage.removeItem("persist:root");

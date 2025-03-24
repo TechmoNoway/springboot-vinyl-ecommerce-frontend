@@ -303,7 +303,7 @@ const Header = () => {
                   </p>
                 </div>
                 <div
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate("/account-details")}
                   className="flex items-center space-x-3 p-4 text-white hover:bg-white hover:text-black cursor-pointer"
                 >
                   <FaUserCircle className="w-5 h-5" />

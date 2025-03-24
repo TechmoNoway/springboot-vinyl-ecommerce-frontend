@@ -18,12 +18,6 @@ import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useAuth } from "@/context/AuthContext";
 
-// const override: CSSProperties = {
-//   display: "block",
-//   margin: "0 auto",
-//   borderColor: "red",
-// };
-
 const formSchema = z.object({
   email: z.string().min(2, {
     message: "Username must be at least 10 characters.",
@@ -58,7 +52,7 @@ const LoginSignup = () => {
         title: "Success!",
         description: "Please check your email for the password.",
       });
-      navigate("/profile");
+      navigate("/account-details");
     } else {
       toast({
         variant: "destructive",
@@ -81,7 +75,7 @@ const LoginSignup = () => {
       stateLogin(JSON.stringify(response.data.data.accessToken));
       setTimeout(() => {
         setLoading(false);
-        navigate("/profile");
+        navigate("/account-details");
         toast({
           variant: "success",
           title: "Success!",
@@ -161,7 +155,7 @@ const LoginSignup = () => {
                 {loading ? (
                   <button
                     type="submit"
-                    className="bg-black text-white py-2 px-14 rounded-md hover:bg-white hover:border-black hover:text-black"
+                    className="bg-black flex justify-center items-center text-white py-2 px-14 rounded-md hover:bg-white hover:border-black hover:text-black"
                   >
                     <ClipLoader
                       color={"#ffffff"}

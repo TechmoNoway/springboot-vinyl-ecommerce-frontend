@@ -12,6 +12,8 @@ import {
   Shop,
 } from "./_root/pages";
 import QRPayment from "./_root/pages/QRPayment";
+import AccountDetails from "./components/shared/AccountDetails";
+import AccountOrders from "./components/shared/AccountOrders";
 
 function App() {
   return (
@@ -24,7 +26,17 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/product-category/vinyl" element={<Shop />} />
           <Route path="/login-signup" element={<LoginSignup />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/account-details" element={<Profile />} />
+          <Route element={<Profile />}>
+            <Route
+              path="/account/details"
+              element={<AccountDetails />}
+            />
+            <Route
+              path="/account/orders"
+              element={<AccountOrders />}
+            />
+          </Route>
           <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
         <Route
