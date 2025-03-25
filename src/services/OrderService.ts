@@ -23,3 +23,13 @@ export const placeOrder = (orderForm: IOrder) => {
     return null;
   }
 };
+
+export const getOrders = (userId: number) => {
+  try {
+    const res = API.get(`api/v1/orders/${userId}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

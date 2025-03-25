@@ -6,6 +6,7 @@ import {
   Checkout,
   Home,
   LoginSignup,
+  OrderDetails,
   ProductDetail,
   Profile,
   ResetPassword,
@@ -14,6 +15,8 @@ import {
 import QRPayment from "./_root/pages/QRPayment";
 import AccountDetails from "./components/shared/AccountDetails";
 import AccountOrders from "./components/shared/AccountOrders";
+import AccountAddresses from "./components/shared/AccountAddresses";
+import AccountWishlist from "./components/shared/AccountWishlist";
 
 function App() {
   return (
@@ -26,6 +29,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/product-category/vinyl" element={<Shop />} />
           <Route path="/login-signup" element={<LoginSignup />} />
+          <Route path="/order-details" element={<OrderDetails />} />
           <Route path="/account-details" element={<Profile />} />
           <Route element={<Profile />}>
             <Route
@@ -35,6 +39,14 @@ function App() {
             <Route
               path="/account/orders"
               element={<AccountOrders />}
+            />
+            <Route
+              path="/account/wishlist"
+              element={<AccountWishlist />}
+            />
+            <Route
+              path="/account/addresses"
+              element={<AccountAddresses />}
             />
           </Route>
           <Route path="/reset-password" element={<ResetPassword />} />

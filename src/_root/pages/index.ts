@@ -6,3 +6,4 @@ export { default as Shop } from "./Shop";
 export { default as LoginSignup } from "./LoginSignup";
 export { default as Profile } from "./Profile";
 export { default as ResetPassword } from "./ResetPassword";
+export { default as OrderDetails } from "./OrderDetails";

@@ -1,10 +1,5 @@
+const AccountWishlist = () => {
+  return <div>This is the AccountWishList Page</div>;
+};
 
-const AccountWishList = () => {
-  return (
-    <div>
-      This is the AccountWishList Page
-    </div>
-  )
-}
-
-export default AccountWishList
+export default AccountWishlist;

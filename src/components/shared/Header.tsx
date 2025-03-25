@@ -208,8 +208,8 @@ const Header = () => {
             <HoverCard>
               <HoverCardTrigger>
                 <div className="relative">
-                  <FaShoppingCart className="text-white cursor-pointer w-5 h-5" />
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-xs text-white rounded-full px-1">
+                  <FaShoppingCart className="text-white cursor-pointer w-5 h-5 mx-1" />
+                  <span className="absolute -top-2 -right-1 bg-red-500 text-xs text-white rounded-full px-1">
                     {cart.length}
                   </span>
                 </div>
@@ -284,7 +284,7 @@ const Header = () => {
             </HoverCard>
             <HoverCard>
               <HoverCardTrigger>
-                <FaUser className="text-white cursor-pointer w-5 h-5" />
+                <FaUser className="text-white cursor-pointer w-5 h-5 mx-1" />
               </HoverCardTrigger>
               <HoverCardContent
                 className="bg-black border-none mr-4 rounded-none p-0 w-52"
@@ -296,14 +296,17 @@ const Header = () => {
                     Wishlist
                   </p>
                 </div>
-                <div className="flex items-center space-x-3 p-4 broder-b border-[1px]-white text-white hover:bg-white hover:text-black cursor-pointer">
+                <div
+                  className="flex items-center space-x-3 p-4 broder-b border-[1px]-white text-white hover:bg-white hover:text-black cursor-pointer"
+                  onClick={() => navigate("/account/orders")}
+                >
                   <ShoppingBasket className="w-5 h-5" />
                   <p className="uppercase font-semibold text-sm">
                     Order Checkout
                   </p>
                 </div>
                 <div
-                  onClick={() => navigate("/account-details")}
+                  onClick={() => navigate("/account/details")}
                   className="flex items-center space-x-3 p-4 text-white hover:bg-white hover:text-black cursor-pointer"
                 >
                   <FaUserCircle className="w-5 h-5" />

@@ -52,7 +52,7 @@ const LoginSignup = () => {
         title: "Success!",
         description: "Please check your email for the password.",
       });
-      navigate("/account-details");
+      navigate("/account/details");
     } else {
       toast({
         variant: "destructive",
@@ -75,7 +75,7 @@ const LoginSignup = () => {
       stateLogin(JSON.stringify(response.data.data.accessToken));
       setTimeout(() => {
         setLoading(false);
-        navigate("/account-details");
+        navigate("/account/details");
         toast({
           variant: "success",
           title: "Success!",

@@ -44,6 +44,29 @@ const Checkout = () => {
   };
 
   const handleConfirmOrder = async () => {
+    // Check if required fields are filled
+    const requiredFields = [
+      { field: "fullname", label: "Họ và tên" },
+      { field: "phone", label: "Số điện thoại" },
+      { field: "email", label: "Email" },
+      { field: "city", label: "Tỉnh/Thành phố" },
+      { field: "district", label: "Quận/Huyện" },
+      { field: "street", label: "Địa chỉ" },
+      { field: "houseNumber", label: "Số nhà" },
+    ];
+
+    for (const { field, label } of requiredFields) {
+      if (!addressForm[field as keyof typeof addressForm]?.trim()) {
+        toast({
+          variant: "destructive",
+          title: "Thiếu thông tin",
+          description: `Vui lòng điền ${label}`,
+        });
+        return; // Stop execution if any required field is empty
+      }
+    }
+
+    // Proceed with order if all fields are filled
     if (shippingDetails.paymentMethod === "chuyen-khoan") {
       navigate(`/payment/chuyen-khoan/${totalPrice}`);
     } else if (shippingDetails.paymentMethod === "vietqr") {
@@ -77,10 +100,7 @@ const Checkout = () => {
         });
       }
     }
-
-    console.log(shippingDetails.paymentMethod);
   };
-
   const onAddressFormChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
