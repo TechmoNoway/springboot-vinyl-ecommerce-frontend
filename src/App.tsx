@@ -29,7 +29,10 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/product-category/vinyl" element={<Shop />} />
           <Route path="/login-signup" element={<LoginSignup />} />
-          <Route path="/order-details" element={<OrderDetails />} />
+          <Route
+            path="/order-details/:id"
+            element={<OrderDetails />}
+          />
           <Route path="/account-details" element={<Profile />} />
           <Route element={<Profile />}>
             <Route

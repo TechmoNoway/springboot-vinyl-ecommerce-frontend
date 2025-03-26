@@ -33,3 +33,13 @@ export const getOrders = (userId: number) => {
     return null;
   }
 };
+
+export const getOrderById = (id: number) => {
+  try {
+    const res = API.get(`api/v1/orders/${id}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};

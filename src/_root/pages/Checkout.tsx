@@ -91,12 +91,12 @@ const Checkout = () => {
       const response = await placeOrder(request);
 
       if (response?.data.success === true) {
-        navigate("/order-success");
+        navigate("/order-details/" + response?.data.data.id);
       } else {
         toast({
           variant: "destructive",
           title: "Đặt hàng thất bại",
-          description: "Vui lòng thử lại sau",
+          description: "Vui lòng thử lại",
         });
       }
     }
