@@ -26,7 +26,7 @@ export const placeOrder = (orderForm: IOrder) => {
 
 export const getOrders = (userId: number) => {
   try {
-    const res = API.get(`api/v1/orders/${userId}`);
+    const res = API.get(`api/v1/orders/user/${userId}`);
     return res;
   } catch (error) {
     console.log(error);

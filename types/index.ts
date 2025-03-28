@@ -100,6 +100,7 @@ export type IOrderItem = {
 };
 
 export type IOrder = {
+  id: string;
   customerId: number;
   totalPrice: number;
   status: string;
@@ -108,6 +109,7 @@ export type IOrder = {
   customerPhone: string;
   note: string;
   email: string;
+  orderDate: string;
   items: IOrderItem[];
 };
 

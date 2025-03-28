@@ -11,7 +11,7 @@ const Profile = () => {
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 p-10">
-      <div className="flex w-full h-full max-w-[90rem] bg-white shadow-md rounded-lg p-6">
+      <div className="flex w-full h-full max-w-6xl bg-white shadow-md rounded-lg p-6">
         <div className="w-1/5 border-r pr-6">
           <ul className="text-gray-600">
             <li

@@ -5,12 +5,14 @@ import { placeOrder } from "@/services/OrderService";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
 import { ICurrentUser } from "types";
 
 const Checkout = () => {
   const { cart } = useCart();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [loading, setLoading] = useState<boolean>(false);
   const currentUser = useSelector(
     (state: ICurrentUser) => state.auth
   );
@@ -22,10 +24,10 @@ const Checkout = () => {
     fullname: "",
     phone: "",
     email: "",
-    city: "",
-    district: "",
-    street: "",
-    houseNumber: "",
+    city: "Ha Noi",
+    district: "Bach Mai",
+    street: "35 Le Dai Hanh",
+    houseNumber: "2313",
     note: "",
   });
 
@@ -33,6 +35,7 @@ const Checkout = () => {
     (total, item) => total + item.price * item.quantity,
     0
   );
+
   const totalPrice =
     cart.reduce(
       (total, item) => total + item.price * item.quantity,
@@ -44,15 +47,16 @@ const Checkout = () => {
   };
 
   const handleConfirmOrder = async () => {
-    // Check if required fields are filled
+    setLoading(true);
+
     const requiredFields = [
       { field: "fullname", label: "Họ và tên" },
       { field: "phone", label: "Số điện thoại" },
       { field: "email", label: "Email" },
-      { field: "city", label: "Tỉnh/Thành phố" },
-      { field: "district", label: "Quận/Huyện" },
-      { field: "street", label: "Địa chỉ" },
-      { field: "houseNumber", label: "Số nhà" },
+      // { field: "city", label: "Tỉnh/Thành phố" },
+      // { field: "district", label: "Quận/Huyện" },
+      // { field: "street", label: "Địa chỉ" },
+      // { field: "houseNumber", label: "Số nhà" },
     ];
 
     for (const { field, label } of requiredFields) {
@@ -62,11 +66,10 @@ const Checkout = () => {
           title: "Thiếu thông tin",
           description: `Vui lòng điền ${label}`,
         });
-        return; // Stop execution if any required field is empty
+        return;
       }
     }
 
-    // Proceed with order if all fields are filled
     if (shippingDetails.paymentMethod === "chuyen-khoan") {
       navigate(`/payment/chuyen-khoan/${totalPrice}`);
     } else if (shippingDetails.paymentMethod === "vietqr") {
@@ -89,10 +92,22 @@ const Checkout = () => {
       };
 
       const response = await placeOrder(request);
+      console.log(response);
 
       if (response?.data.success === true) {
-        navigate("/order-details/" + response?.data.data.id);
+        setTimeout(() => {
+          setLoading(false);
+          toast({
+            variant: "success",
+            title: "Đặt hàng thành công",
+            description: "Đơn hàng của bạn đã được ghi nhận",
+          });
+          localStorage.removeItem("cart");
+          localStorage.removeItem("cartTimestamp");
+          navigate("/order-details/" + response?.data.data);
+        }, 3000);
       } else {
+        setLoading(false);
         toast({
           variant: "destructive",
           title: "Đặt hàng thất bại",
@@ -101,6 +116,7 @@ const Checkout = () => {
       }
     }
   };
+
   const onAddressFormChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -319,12 +335,25 @@ const Checkout = () => {
           </div>
 
           {/* Checkout Button */}
-          <Button
-            onClick={handleConfirmOrder}
-            className="bg-black hover:bg-black hover:border-black text-white py-6 px-12 mt-4 text-lg font-bold rounded-none"
-          >
-            ĐẶT HÀNG
-          </Button>
+          {loading ? (
+            <Button className="bg-black hover:bg-black hover:border-black text-white py-6 px-12 mt-4 text-lg font-bold rounded-none">
+              <ClipLoader
+                color={"#ffffff"}
+                loading={loading}
+                size={20}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+                speedMultiplier={1}
+              />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleConfirmOrder}
+              className="bg-black hover:bg-black hover:border-black text-white py-6 px-12 mt-4 text-lg font-bold rounded-none"
+            >
+              ĐẶT HÀNG
+            </Button>
+          )}
         </div>
       </div>
     </div>

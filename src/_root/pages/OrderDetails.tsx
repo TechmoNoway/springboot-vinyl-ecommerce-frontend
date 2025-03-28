@@ -33,7 +33,9 @@ const OrderDetails = () => {
   const param = useParams();
 
   const fecthOrderDetails = async () => {
-    const response = await getOrderById(param.id);
+    const response = param.id
+      ? await getOrderById(parseInt(param.id))
+      : null;
 
     if (response?.data.success === true) {
       setOrder(response?.data.data);
