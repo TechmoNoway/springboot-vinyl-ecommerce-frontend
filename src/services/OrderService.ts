@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IOrder } from "types";
+import { IPlaceOrder } from "types";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -14,7 +14,7 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const placeOrder = (orderForm: IOrder) => {
+export const placeOrder = (orderForm: IPlaceOrder) => {
   try {
     const res = API.post(`api/v1/orders/place-order`, orderForm);
     return res;

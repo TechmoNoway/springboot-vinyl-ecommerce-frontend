@@ -71,7 +71,11 @@ const Checkout = () => {
     }
 
     if (shippingDetails.paymentMethod === "chuyen-khoan") {
-      navigate(`/payment/chuyen-khoan/${totalPrice}`);
+      toast({
+        variant: "destructive",
+        title: "Hiện chưa hỗ trợ phương thức này",
+        description: `Vui lòng chọn phương thức khác`,
+      });
     } else if (shippingDetails.paymentMethod === "vietqr") {
       navigate(`/payment/vietqr/${totalPrice}`);
     } else if (shippingDetails.paymentMethod === "cod") {
@@ -88,6 +92,8 @@ const Checkout = () => {
           productId: item.id,
           quantity: item.quantity,
           price: item.price,
+          productPosterUrl: item.posterUrl,
+          productTitle: item.title,
         })),
       };
 

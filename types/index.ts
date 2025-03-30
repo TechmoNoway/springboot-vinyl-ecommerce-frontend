@@ -95,6 +95,8 @@ export type IChangePassword = {
 
 export type IOrderItem = {
   productId: number;
+  productTitle: string;
+  productPosterUrl: string;
   quantity: number;
   price: number;
 };
@@ -110,6 +112,18 @@ export type IOrder = {
   note: string;
   email: string;
   orderDate: string;
+  items: IOrderItem[];
+};
+
+export type IPlaceOrder = {
+  customerId: number;
+  totalPrice: number;
+  status: string;
+  fullname: string;
+  customerAddress: string;
+  customerPhone: string;
+  note: string;
+  email: string;
   items: IOrderItem[];
 };
 

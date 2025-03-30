@@ -1,5 +1,4 @@
 import { getOrders } from "@/services/OrderService";
-import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -49,20 +48,8 @@ const AccountOrders = () => {
         </div>
       </div>
 
-      {orders.map((order) => (
-        // <div
-        //   key={index}
-        //   className="grid grid-cols-5 items-center text-start border-b border-border py-2 px-4 text-sm"
-        // >
-        //   <div>{item.id}</div>
-        //   <div>{format(new Date(item.orderDate), "PPP")}</div>
-        //   <div className="text-green-500">Đã thanh toán</div>
-        //   <div>{item.totalPrice.toLocaleString("en-US")}₫</div>
-        //   <button className="bg-primary text-xs font-semibold text-primary-foreground rounded-lg hover:bg-primary/80">
-        //     Kiểm Tra Đơn Hàng
-        //   </button>
-        // </div>
-        <OrderItem order={order} />
+      {orders.map((order, index) => (
+        <OrderItem order={order} key={index} />
       ))}
     </>
   );
