@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useAuth } from "@/context/AuthContext";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -99,14 +100,15 @@ const LoginSignup = () => {
         <div className="w-full md:w-1/2 md:pr-6 md:border-r mb-6 md:mb-0">
           <h2 className="text-xl font-semibold mb-4">ĐĂNG NHẬP</h2>
           {/* Facebook Login Button */}
-          <Button className="flex items-center justify-center border border-black hover:border-black hover:bg-black hover:text-white rounded-md py-2 mb-4 bg-white text-black font-semibold">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/124/124010.png"
-              alt="Facebook"
-              className="w-5 h-5 mr-2"
-            />
-            Continue with <span className="font-bold">Facebook</span>
-          </Button>
+          <div className="w-full flex space-x-2">
+            <Button className="w-1/2 flex items-center justify-center border border-black hover:border-black hover:bg-black hover:text-white rounded-md py-2 mb-4 bg-white text-black font-semibold">
+              <FaGoogle /> <span className="font-bold">Google</span>
+            </Button>
+            <Button className="w-1/2 flex items-center justify-center border border-black hover:border-black hover:bg-black hover:text-white rounded-md py-2 mb-4 bg-white text-black font-semibold">
+              <FaGithub />
+              <span className="font-bold">Github</span>
+            </Button>
+          </div>
 
           <Form {...form}>
             <form

@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { IOrder } from "types";
 import autoAnimate from "@formkit/auto-animate";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   order: IOrder;
 }
 
 const OrderItem = ({ order }: Props) => {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const parent = useRef(null);
 
@@ -34,7 +36,10 @@ const OrderItem = ({ order }: Props) => {
         <div>{format(new Date(order.orderDate), "PPP")}</div>
         <div className="text-green-500">Đã thanh toán</div>
         <div>{order.totalPrice.toLocaleString("en-US")}₫</div>
-        <button className="bg-primary text-xs font-semibold text-primary-foreground rounded-lg hover:bg-primary/80">
+        <button
+          onClick={() => navigate(`/order-details/${order.id}`)}
+          className="bg-primary text-xs font-semibold text-primary-foreground rounded-lg hover:bg-primary/80"
+        >
           Kiểm Tra Đơn Hàng
         </button>
       </div>

@@ -34,7 +34,7 @@ export const getOrders = (userId: number) => {
   }
 };
 
-export const getOrderById = (id: number) => {
+export const getOrderById = (id: string) => {
   try {
     const res = API.get(`api/v1/orders/${id}`);
     return res;

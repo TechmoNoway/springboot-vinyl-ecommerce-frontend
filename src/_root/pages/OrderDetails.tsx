@@ -1,7 +1,9 @@
 import { getOrderById } from "@/services/OrderService";
+import { addDays, format } from "date-fns";
 import { LucideMapPin, Smartphone, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { IOrder } from "types";
 
 const deliveryData = [
   {
@@ -28,17 +30,19 @@ const deliveryData = [
 ];
 
 const OrderDetails = () => {
-  const [order, setOrder] = useState({});
+  const [order, setOrder] = useState<IOrder>();
 
   const param = useParams();
 
-  const fecthOrderDetails = async () => {
-    const response = param.id
-      ? await getOrderById(parseInt(param.id))
-      : null;
+  console.log(param.id);
 
-    if (response?.data.success === true) {
-      setOrder(response?.data.data);
+  const fecthOrderDetails = async () => {
+    if (param.id) {
+      const response = await getOrderById(param.id);
+
+      if (response?.data.success === true) {
+        setOrder(response?.data.data);
+      }
     }
   };
 
@@ -46,14 +50,14 @@ const OrderDetails = () => {
 
   useEffect(() => {
     fecthOrderDetails();
-  }, []);
+  }, [param.id != undefined]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="bg-gray-100 p-6 py-20">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
         <h2 className="flex items-center space-x-1 text-lg font-semibold">
           <span className="text-gray-400">Mã đơn hàng</span>
-          <span className="text-gray-800">CP985122021</span>
+          <span className="text-gray-800">{order?.id}</span>
           <span className="ml-2 px-2 py-1 text-xs bg-lime-50 text-green-500 rounded">
             Đã giao hàng
           </span>
@@ -63,7 +67,7 @@ const OrderDetails = () => {
             <div className="mt-3">
               <p className="font-semibold">Tên sản phẩm:</p>
               <p className="text-gray-700 mt-1 text-sm font-semibold">
-                *** SL-VN16847
+                {order?.id}
               </p>
             </div>
 
@@ -72,7 +76,7 @@ const OrderDetails = () => {
               <div className="flex flex-col space-y-2 mt-2">
                 <div className="flex items-center space-x-1 text-xs">
                   <UserRound className="h-4 w-4" />
-                  <p className="font-semibold">*** LEE</p>
+                  <p className="font-semibold">Vinyl Records</p>
                 </div>
                 <div className="flex items-center space-x-1 text-xs">
                   <LucideMapPin className="h-4 w-4" />
@@ -93,18 +97,20 @@ const OrderDetails = () => {
               <div className="flex flex-col space-y-2 mt-2">
                 <div className="flex items-center space-x-1 text-xs">
                   <UserRound className="h-4 w-4" />
-                  <p className="font-semibold">*** LEE</p>
+                  <p className="font-semibold">{order?.fullname}</p>
                 </div>
                 <div className="flex items-center space-x-1 text-xs">
                   <LucideMapPin className="h-4 w-4" />
                   <p className="font-semibold">
-                    Quận 7, Tp. Hồ Chí Minh
+                    {order?.customerAddress}
                   </p>
                 </div>
 
                 <div className="flex items-center space-x-1 text-xs">
                   <Smartphone className="h-4 w-4" />
-                  <p className="font-semibold">090*******619</p>
+                  <p className="font-semibold">
+                    {order?.customerPhone}
+                  </p>
                 </div>
               </div>
             </div>
@@ -140,15 +146,19 @@ const OrderDetails = () => {
               <p className="text-sm font-semibold mb-2">
                 Dịch vụ: CPN 16:07
               </p>
-              <p>Thời gian giao hàng dự kiến: 18/03/2025</p>
               <p>
-                Sự cố giao hàng: Không liên hệ được với khách - 09:57
-                19/03/2025
+                Thời gian giao hàng dự kiến:{" "}
+                {order?.orderDate
+                  ? format(
+                      addDays(new Date(order.orderDate), 3),
+                      "dd/MM/yyyy"
+                    )
+                  : "Đang cập nhật"}
               </p>
               <p className="font-semibold">Hành trình vận đơn</p>
             </div>
-
-            <div className="overflow-x-auto">
+            <div>Fixing this feature</div>
+            {/* <div className="overflow-x-auto">
               <table className="min-w-full border border-gray-300">
                 <thead>
                   <tr className="bg-yellow-400 text-white">
@@ -159,8 +169,9 @@ const OrderDetails = () => {
                       Hành trình
                     </th>
                   </tr>
-                </thead>
-                <tbody>
+                </thead> */}
+
+            {/* <tbody>
                   {deliveryData.map((item, index) => (
                     <tr key={index} className="border">
                       <td className="border px-4 py-2">
@@ -171,9 +182,9 @@ const OrderDetails = () => {
                       </td>
                     </tr>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </tbody> */}
+            {/* </table>
+            </div> */}
           </div>
         </div>
       </div>
