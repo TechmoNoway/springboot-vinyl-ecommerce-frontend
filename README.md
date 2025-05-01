@@ -1,6 +1,6 @@
-# VOC Records - Vinyl E-commerce Frontend
+# VINYL Records - Vinyl E-commerce Frontend
 
-![VOC Records Logo](https://placehold.co/800x200/black/yellow?text=VOC+RECORDS)
+![VINYL Records Logo](https://placehold.co/800x200/black/yellow?text=VINYL+RECORDS)
 
 A modern e-commerce platform for vinyl records, built with React, TypeScript, and Vite. This project provides a complete shopping experience for vinyl enthusiasts, with features like product browsing, cart management, user authentication, and checkout processing.
 
@@ -170,6 +170,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-© 2024 VOC Records. All rights reserved.
+© 2024 VINYL Records. All rights reserved.
 
 Similar code found with 2 license types
