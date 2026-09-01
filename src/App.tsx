@@ -1,18 +1,19 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
 import RootLayout from "./_root/RootLayout";
 import {
+  Home,
+  Shop,
+  ProductDetail,
   Cart,
   Checkout,
-  Home,
-  LoginSignup,
   OrderDetails,
-  ProductDetail,
-  Profile,
+  LoginSignup,
   ResetPassword,
-  Shop,
+  Profile,
+  QRPayment,
+  AdminDashboard,
 } from "./_root/pages";
-import QRPayment from "./_root/pages/QRPayment";
 import AccountDetails from "./components/shared/AccountDetails";
 import AccountOrders from "./components/shared/AccountOrders";
 import AccountAddresses from "./components/shared/AccountAddresses";
@@ -20,7 +21,7 @@ import AccountWishlist from "./components/shared/AccountWishlist";
 
 function App() {
   return (
-    <main className="w-screen">
+    <main className="w-full min-h-screen">
       <Routes>
         <Route element={<RootLayout />}>
           <Route path="/" element={<Home />} />
@@ -29,35 +30,26 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/product-category/vinyl" element={<Shop />} />
           <Route path="/login-signup" element={<LoginSignup />} />
-          <Route
-            path="/order-details/:id"
-            element={<OrderDetails />}
-          />
-          <Route path="/account-details" element={<Profile />} />
-          <Route element={<Profile />}>
-            <Route
-              path="/account/details"
-              element={<AccountDetails />}
-            />
-            <Route
-              path="/account/orders"
-              element={<AccountOrders />}
-            />
-            <Route
-              path="/account/wishlist"
-              element={<AccountWishlist />}
-            />
-            <Route
-              path="/account/addresses"
-              element={<AccountAddresses />}
-            />
-          </Route>
+          <Route path="/order-details/:id" element={<OrderDetails />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+
+          {/* Account Nested Routes */}
+          <Route path="/account" element={<Profile />}>
+            <Route index element={<Navigate to="/account/details" replace />} />
+            <Route path="details" element={<AccountDetails />} />
+            <Route path="orders" element={<AccountOrders />} />
+            <Route path="wishlist" element={<AccountWishlist />} />
+            <Route path="addresses" element={<AccountAddresses />} />
+          </Route>
+          <Route path="/account-details" element={<Navigate to="/account/details" replace />} />
         </Route>
-        <Route
-          path="/payment/vietqr/:amount"
-          element={<QRPayment />}
-        />
+
+        {/* Standalone payment route */}
+        <Route path="/payment/vietqr/:amount" element={<QRPayment />} />
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       <Toaster />

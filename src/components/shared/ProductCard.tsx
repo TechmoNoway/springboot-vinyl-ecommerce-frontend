@@ -1,108 +1,201 @@
-import { FaHeart, FaShoppingBag } from 'react-icons/fa';
-import { Button } from '../ui/button';
-import { IProduct } from 'types';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { useCart } from '@/context/CartContext';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { IProduct } from "types";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
+import { useAudioPlayer } from "@/context/AudioPlayerContext";
+import { useToast } from "@/hooks/use-toast";
+import { Heart, ShoppingBag, Play, Pause, Disc } from "lucide-react";
+import VinylSpin from "./VinylSpin";
 
-interface Props {
-    product: IProduct;
+interface ProductCardProps {
+  product: IProduct;
 }
 
-const ProductCard = ({ product }: Props) => {
-    const [isLoaded, setIsLoaded] = useState(false);
-    const { cart, dispatch } = useCart();
-    const { toast } = useToast();
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { currentTrack, isPlaying, playTrack, togglePlay } = useAudioPlayer();
+  const { toast } = useToast();
 
-    const addToCart = () => {
-        if (product?.id) {
-            const existingCartItem = cart.find((item) => item.id === product?.id);
-            if (existingCartItem) {
-                dispatch({
-                    type: 'UPDATE_QUANTITY',
-                    payload: { ...existingCartItem, quantity: existingCartItem.quantity + 1 },
-                });
-                toast({
-                    variant: 'default',
-                    title: 'Nice!',
-                    description: 'Product added to cart.',
-                });
-            } else {
-                dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
-            }
-        } else {
-            toast({
-                variant: 'destructive',
-                title: 'Opps! Something went wrong',
-                description: 'Please add your product again.',
-            });
-            console.error('Product ID is undefined');
-        }
-    };
+  const isCurrentPlaying = currentTrack?.id === product.id && isPlaying;
+  const isFavorited = isInWishlist(product.id);
 
-    return (
-        <>
-            <div className="relative group my-3 text-center">
-                <Link to={`/product/${product.title}`} className="block">
-                    {/* Product Image */}
-                    <div className="relative">
-                        <img
-                            src={product.posterUrl}
-                            alt={product.title}
-                            loading="lazy"
-                            onLoad={() => setIsLoaded(true)}
-                            className={`w-full rounded shadow-lg transition-opacity duration-500 ${
-                                isLoaded ? 'opacity-100' : 'opacity-0'
-                            }`}
-                        />
-                    </div>
-                </Link>
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, 1);
+    toast({
+      title: "Đã thêm vào giỏ hàng!",
+      description: `${product.title} đã sẵn sàng trong giỏ hàng.`,
+    });
+  };
 
-                {/* Hover Buttons */}
-                <div className="absolute inset-0 flex justify-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity mt-28 h-10">
-                    <Button className="bg-white px-4 flex items-center space-x-2 hover:bg-gray-100 rounded-none border-[1px] border-black hover:border-black shadow-[4px_4px_0px_#000000]">
-                        <FaHeart className="text-gray-600" />
-                    </Button>
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleWishlist(product);
+    toast({
+      title: isFavorited ? "Đã bỏ khỏi Wishlist" : "Đã lưu vào Wishlist",
+      description: product.title,
+    });
+  };
 
-                    <Button
-                        onClick={addToCart}
-                        className="bg-[#FFF27E] hover:bg-[#FFF27E] border-[1px] border-black hover:border-black px-2 flex items-center rounded-none shadow-[4px_4px_0px_#000000]"
-                    >
-                        <FaShoppingBag className="text-black" />
-                        <span className="text-black text-[10px]" onClick={() => console.log('Added to cart')}>
-                            THÊM VÀO GIỎ HÀNG
-                        </span>
-                    </Button>
-                </div>
+  const handleAudioPreview = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentTrack?.id === product.id) {
+      togglePlay();
+    } else {
+      playTrack(product);
+    }
+  };
 
-                {/* Product Details */}
-                <div className="my-10">
-                    <Link to={`/product/${product.title}`}>
-                        <p className="text-gray-500 font-normal">{product.title}</p> {/* Album Name */}
-                        <h3 className="text-lg text-black">{product.artist}</h3> {/* Artist */}
-                        <p className="text-xl font-bold text-gray-900">{product.price.toLocaleString('en-US')} ₫</p>
-                        {/* Price */}
-                        {/* Stock & Size */}
-                        <div className="flex justify-center mt-2 space-x-2">
-                            <span
-                                className="text-green-600 rounded-none text-[10px] px-2 py-1 uppercase"
-                                style={{
-                                    background:
-                                        'linear-gradient(0deg, rgba(40, 168, 32, 0.15), rgba(40, 168, 32, 0.15)), #FFFFFF',
-                                }}
-                            >
-                                Còn hàng
-                            </span>
-                            <span className="bg-gray-200 text-gray-700 text-xs font-bold px-2 py-1 rounded-none">
-                                {product.status}
-                            </span>
-                        </div>
-                    </Link>
-                </div>
+  return (
+    <div
+      className="group relative bg-white border border-zinc-200/80 hover:border-amber-400/80 rounded-lg p-3 transition-all duration-300 hover:shadow-retro flex flex-col justify-between"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Vinyl Sleeve & Slide-out Disc Container */}
+      <div className="relative overflow-hidden aspect-square bg-[#1a1c22] rounded-md mb-3 flex items-center justify-center">
+        
+        {/* Slide-out Vinyl Disc */}
+        <div
+          className={`absolute transition-all duration-500 ease-out pointer-events-none ${
+            isHovered || isCurrentPlaying
+              ? "translate-x-12 rotate-45 opacity-95"
+              : "translate-x-0 opacity-0"
+          }`}
+          style={{ right: "-10px", top: "10px" }}
+        >
+          <VinylSpin
+            posterUrl={product.posterUrl}
+            isPlaying={isCurrentPlaying}
+            size="md"
+          />
+        </div>
+
+        {/* Sleeve Album Cover */}
+        <Link
+          to={`/product/${encodeURIComponent(product.title)}`}
+          className="relative z-10 w-full h-full block overflow-hidden rounded shadow-md"
+        >
+          <img
+            src={product.posterUrl || "https://images.unsplash.com/photo-1539185441755-769473a23570?w=500&q=80"}
+            alt={product.title}
+            loading="lazy"
+            onLoad={() => setImageLoaded(true)}
+            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-zinc-800 animate-pulse flex items-center justify-center">
+              <Disc className="w-8 h-8 text-zinc-600 animate-spin" />
             </div>
-        </>
-    );
+          )}
+        </Link>
+
+        {/* Floating Quick Action Buttons */}
+        <div className="absolute top-2 right-2 z-20 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          {/* Wishlist button */}
+          <button
+            onClick={handleToggleWishlist}
+            className={`p-2 rounded-full shadow-md transition-transform active:scale-90 ${
+              isFavorited
+                ? "bg-red-500 text-white"
+                : "bg-white/90 hover:bg-white text-zinc-700"
+            }`}
+            title={isFavorited ? "Bỏ yêu thích" : "Yêu thích"}
+          >
+            <Heart className={`w-4 h-4 ${isFavorited ? "fill-current" : ""}`} />
+          </button>
+
+          {/* Audio preview button */}
+          <button
+            onClick={handleAudioPreview}
+            className={`p-2 rounded-full shadow-md transition-transform active:scale-90 ${
+              isCurrentPlaying
+                ? "bg-amber-400 text-black animate-pulse"
+                : "bg-white/90 hover:bg-white text-zinc-800"
+            }`}
+            title={isCurrentPlaying ? "Tạm dừng" : "Nghe thử demo"}
+          >
+            {isCurrentPlaying ? (
+              <Pause className="w-4 h-4 fill-current" />
+            ) : (
+              <Play className="w-4 h-4 fill-current ml-0.5" />
+            )}
+          </button>
+        </div>
+
+        {/* Stock / Format Badge */}
+        <div className="absolute bottom-2 left-2 z-20 flex flex-wrap gap-1">
+          {product.stockStatus ? (
+            <span
+              className={`text-[10px] font-extrabold px-2 py-0.5 uppercase tracking-wider rounded ${
+                product.stockStatus.toLowerCase().includes("hết")
+                  ? "bg-red-600 text-white"
+                  : product.stockStatus.toLowerCase().includes("pre")
+                  ? "bg-indigo-600 text-white"
+                  : "bg-emerald-600 text-white"
+              }`}
+            >
+              {product.stockStatus}
+            </span>
+          ) : (
+            <span className="text-[10px] font-extrabold px-2 py-0.5 uppercase tracking-wider rounded bg-emerald-600 text-white">
+              CÒN HÀNG
+            </span>
+          )}
+          {product.platform && (
+            <span className="text-[10px] font-bold px-1.5 py-0.5 uppercase tracking-wider rounded bg-black/70 text-white backdrop-blur-sm">
+              {product.platform}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Info & Metadata */}
+      <div className="flex-1 flex flex-col justify-between pt-1">
+        <div>
+          <p className="text-xs text-zinc-500 font-semibold tracking-wide truncate">
+            {product.artist || "Nghệ sĩ Vocal/Band"}
+          </p>
+          <Link
+            to={`/product/${encodeURIComponent(product.title)}`}
+            className="font-bold text-sm text-zinc-900 hover:text-amber-600 transition-colors line-clamp-1 mt-0.5"
+            title={product.title}
+          >
+            {product.title}
+          </Link>
+
+          <div className="flex items-baseline justify-between mt-2">
+            <span className="text-base font-extrabold text-[#13151A]">
+              {product.price ? product.price.toLocaleString("vi-VN") : "0"} ₫
+            </span>
+            {product.releaseYear && (
+              <span className="text-[11px] text-zinc-400 font-medium">
+                {product.releaseYear}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Action Button: Add to Cart */}
+        <button
+          onClick={handleAddToCart}
+          className="mt-3 w-full bg-[#13151A] hover:bg-amber-400 hover:text-black text-white py-2 px-3 rounded-none font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-black shadow-retro-sm transition-all duration-200 active:translate-x-0.5 active:translate-y-0.5"
+        >
+          <ShoppingBag className="w-3.5 h-3.5" />
+          <span>THÊM VÀO GIỎ</span>
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default ProductCard;

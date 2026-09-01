@@ -1,45 +1,64 @@
-import axios from "axios";
+import apiClient from "./apiClient";
 import { IPlaceOrder } from "types";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-const API = axios.create({ baseURL: apiBaseUrl });
-
-API.interceptors.request.use((req) => {
-  if (localStorage.getItem("access_token")) {
-    req.headers.Authorization = `Bearer ${JSON.parse(
-      localStorage.getItem("access_token") ?? ""
-    )}`;
-  }
-  return req;
-});
-
-export const placeOrder = (orderForm: IPlaceOrder) => {
+// User / Checkout endpoints
+export const placeOrder = async (orderForm: IPlaceOrder) => {
   try {
-    const res = API.post(`api/v1/orders/place-order`, orderForm);
+    const res = await apiClient.post("/api/v1/orders/place-order", orderForm);
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("OrderService.placeOrder error:", error);
+    throw error;
   }
 };
 
-export const getOrders = (userId: number) => {
+export const getMyOrders = async () => {
   try {
-    const res = API.get(`api/v1/orders/user/${userId}`);
+    const res = await apiClient.get("/api/v1/orders/me");
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("OrderService.getMyOrders error:", error);
+    throw error;
   }
 };
 
-export const getOrderById = (id: string) => {
+export const getOrderById = async (id: string) => {
   try {
-    const res = API.get(`api/v1/orders/${id}`);
+    const res = await apiClient.get(`/api/v1/orders/${id}`);
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("OrderService.getOrderById error:", error);
+    throw error;
+  }
+};
+
+export const getOrdersByUserId = async (userId: number | string) => {
+  try {
+    const res = await apiClient.get(`/api/v1/orders/user/${userId}`);
+    return res;
+  } catch (error) {
+    console.error("OrderService.getOrdersByUserId error:", error);
+    throw error;
+  }
+};
+
+// Admin endpoints
+export const getAllOrders = async () => {
+  try {
+    const res = await apiClient.get("/api/v1/orders");
+    return res;
+  } catch (error) {
+    console.error("OrderService.getAllOrders error:", error);
+    throw error;
+  }
+};
+
+export const getAllOrderItems = async () => {
+  try {
+    const res = await apiClient.get("/api/v1/order-items");
+    return res;
+  } catch (error) {
+    console.error("OrderService.getAllOrderItems error:", error);
+    throw error;
   }
 };

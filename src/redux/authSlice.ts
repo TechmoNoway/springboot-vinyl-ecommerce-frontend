@@ -1,13 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface AuthState {
+export interface AuthState {
   id: number;
   email: string;
   phone: string;
   gender: string;
   fullname: string;
-  birthday: Date | undefined;
+  birthday: Date | string | undefined;
   address: string;
+  roles: string[];
+  role: string;
+  isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
@@ -18,55 +21,30 @@ const initialState: AuthState = {
   fullname: "",
   birthday: undefined,
   address: "",
+  roles: [],
+  role: "",
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<AuthState>) => {
-      state.id = action.payload.id;
-      state.email = action.payload.email;
-      state.phone = action.payload.phone;
-      state.gender = action.payload.gender;
-      state.fullname = action.payload.fullname;
-      state.birthday = action.payload.birthday;
-      state.address = action.payload.address;
+    setUser: (state, action: PayloadAction<Partial<AuthState>>) => {
+      if (action.payload.id !== undefined) state.id = action.payload.id;
+      if (action.payload.email !== undefined) state.email = action.payload.email;
+      if (action.payload.phone !== undefined) state.phone = action.payload.phone;
+      if (action.payload.gender !== undefined) state.gender = action.payload.gender;
+      if (action.payload.fullname !== undefined) state.fullname = action.payload.fullname;
+      if (action.payload.birthday !== undefined) state.birthday = action.payload.birthday;
+      if (action.payload.address !== undefined) state.address = action.payload.address;
+      if (action.payload.roles !== undefined) state.roles = action.payload.roles;
+      if (action.payload.role !== undefined) state.role = action.payload.role;
+      state.isAuthenticated = Boolean(state.email || state.id);
     },
-    updateUserState: (
-      state,
-      action: PayloadAction<Partial<AuthState>>
-    ) => {
-      const {
-        id,
-        email,
-        phone,
-        gender,
-        fullname,
-        birthday,
-        address,
-      } = action.payload;
-      if (id !== undefined) {
-        state.id = id;
-      }
-      if (email !== undefined) {
-        state.email = email;
-      }
-      if (phone !== undefined) {
-        state.phone = phone;
-      }
-      if (gender !== undefined) {
-        state.gender = gender;
-      }
-      if (fullname !== undefined) {
-        state.fullname = fullname;
-      }
-      if (birthday !== undefined) {
-        state.birthday = birthday;
-      }
-      if (address !== undefined) {
-        state.address = address;
-      }
+    updateUserState: (state, action: PayloadAction<Partial<AuthState>>) => {
+      Object.assign(state, action.payload);
+      state.isAuthenticated = Boolean(state.email || state.id);
     },
     logout: (state) => {
       state.id = 0;
@@ -76,6 +54,9 @@ const authSlice = createSlice({
       state.fullname = "";
       state.birthday = undefined;
       state.address = "";
+      state.roles = [];
+      state.role = "";
+      state.isAuthenticated = false;
     },
   },
 });

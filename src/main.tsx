@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App.tsx";
 import ScrollToTop from "./utils/ScrollToTop.tsx";
 import { CartProvider } from "./context/CartContext.tsx";
+import { WishlistProvider } from "./context/WishlistContext.tsx";
+import { AudioPlayerProvider } from "./context/AudioPlayerContext.tsx";
 import { Provider } from "react-redux";
 import { persistor, store } from "./redux/store.ts";
 import { PersistGate } from "redux-persist/integration/react";
@@ -15,8 +17,12 @@ createRoot(document.getElementById("root")!).render(
       <PersistGate loading={null} persistor={persistor}>
         <AuthProvider>
           <CartProvider>
-            <ScrollToTop />
-            <App />
+            <WishlistProvider>
+              <AudioPlayerProvider>
+                <ScrollToTop />
+                <App />
+              </AudioPlayerProvider>
+            </WishlistProvider>
           </CartProvider>
         </AuthProvider>
       </PersistGate>

@@ -1,17 +1,38 @@
-import axios from "axios";
+import apiClient from "./apiClient";
+import { IPaymentCreateRequest } from "types";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-const API = axios.create({ baseURL: apiBaseUrl });
-
-export const createQRPayment = (amount: string) => {
+export const createPayment = async (data: IPaymentCreateRequest) => {
   try {
-    const res = API.post(
-      `api/v1/payments/generate-vietqr?amount=${amount}`
+    const res = await apiClient.post("/api/v1/payments/create", data);
+    return res;
+  } catch (error) {
+    console.error("PaymentService.createPayment error:", error);
+    throw error;
+  }
+};
+
+export const getPaymentStatus = async (orderId: string) => {
+  try {
+    const res = await apiClient.get(`/api/v1/payments/${orderId}`);
+    return res;
+  } catch (error) {
+    console.error("PaymentService.getPaymentStatus error:", error);
+    throw error;
+  }
+};
+
+export const triggerPaymentWebhook = async (
+  provider: string,
+  payload: unknown
+) => {
+  try {
+    const res = await apiClient.post(
+      `/api/v1/payments/webhook/${provider}`,
+      payload
     );
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("PaymentService.triggerPaymentWebhook error:", error);
+    throw error;
   }
 };

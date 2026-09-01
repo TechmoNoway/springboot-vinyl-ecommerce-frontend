@@ -1,172 +1,217 @@
-import { FaMusic, FaTree, FaGift } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import { Button } from '../ui/button';
+import React from "react";
+import { Link } from "react-router-dom";
+import VinylSpin from "./VinylSpin";
+import {
+  Sparkles,
+  ArrowRight,
+  Disc3,
+  Volume2,
+  Headphones,
+  Award,
+} from "lucide-react";
 
-const Banner = () => {
-    return (
-        <>
-            <section className="w-full flex md:flex-row items-center justify-center bg-white">
-                {/* New Vinyl Section */}
-                <div className="w-1/2 flex flex-col flex-1 bg-white text-right items-end pt-12">
-                    <div className="pr-5">
-                        <h2 className="text-2xl font-bold uppercase hover:underline">Đĩa Mới &gt;</h2>
-                        <p className="text-gray-700 mt-2">Đĩa than nguyên seal mới toanh của bạn và chỉ riêng bạn</p>
+const Banner: React.FC = () => {
+  return (
+    <div className="space-y-12">
+      
+      {/* Hero Turntable Visualizer Showcase */}
+      <section className="relative overflow-hidden bg-[#13151A] text-white rounded-2xl mx-4 sm:mx-6 lg:mx-8 mt-6 border-2 border-zinc-800 shadow-2xl">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          {/* Left Hero Pitch */}
+          <div className="lg:col-span-7 space-y-6 z-10">
+            <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/40 text-amber-400 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Thế Giới Đĩa Than & Âm Thanh Analog Chuẩn Audiophile</span>
+            </div>
 
-                        <div className="mt-4 flex flex-col items-end space-y-5">
-                            <Button className="flex items-center justify-center bg-white hover:bg-white hover:border-black border-black px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] font-bold hover:underline shadow-[4px_4px_0px_#000000]">
-                                <FaMusic className="" /> Đĩa Mới Có Sẵn
-                            </Button>
-                            <Button className="flex items-center justify-center bg-[#D9534f] px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] border-black hover:border-black hover:bg-[#D9534f] hover:underline font-bold shadow-[4px_4px_0px_#000000]">
-                                <FaTree className="" /> Đĩa Giáng Sinh
-                            </Button>
-                        </div>
-                    </div>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-display tracking-tight text-white leading-tight">
+              Chạm Vào Âm Thanh <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500">
+                Nguyên Bản Của Ký Ức
+              </span>
+            </h1>
 
-                    <img
-                        src="https://vocrecords.vn/wp-content/uploads/2022/07/Photo-New-disc.png"
-                        alt="Left Vinyl Box"
-                        className="h-auto object-cover mt-5"
-                    />
-                </div>
+            <p className="text-zinc-300 text-sm sm:text-base leading-relaxed max-w-xl font-normal">
+              Khám phá hàng ngàn album đĩa than (Vinyl LP), băng cassette và phụ kiện mâm đĩa chính hãng. Tận hưởng độ chi tiết mộc mạc, dải trầm ấm áp mà định dạng digital không thể thay thế.
+            </p>
 
-                {/* Vintage Vinyl Section */}
-                <div className="w-1/2 flex-1 bg-gray-200 pt-12 flex-col">
-                    <div className="pl-5">
-                        <h2 className="text-2xl font-bold hover:underline uppercase">Đĩa Vintage &gt;</h2>
-                        <p className="text-gray-700 mt-2">
-                            Những chiếc đĩa than vượt năm tháng để đưa giai điệu nguyên bản tới đôi tai bạn
-                        </p>
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Link
+                to="/product-category/vinyl"
+                className="bg-amber-400 hover:bg-amber-300 text-black px-7 py-3.5 rounded-none font-extrabold text-xs uppercase tracking-wider shadow-retro hover:shadow-retro-lg transition-all flex items-center gap-2 border-2 border-black active:translate-x-0.5 active:translate-y-0.5"
+              >
+                <span>Sưu Tầm Đĩa Than Ngay</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/product-category/vinyl?platform=ĐĨA%20VINTAGE"
+                className="bg-transparent hover:bg-white/10 text-zinc-100 border border-zinc-500 px-6 py-3.5 rounded-none font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-2"
+              >
+                <Disc3 className="w-4 h-4 text-amber-400" />
+                <span>Xem Đĩa Xưa Vintage</span>
+              </Link>
+            </div>
 
-                        <div className="mt-5 space-y-5">
-                            <Button className="flex items-center justify-center bg-white px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] border-black font-bold hover:underline hover:border-black hover:bg-white shadow-[4px_4px_0px_#000000]">
-                                <span className="">🇻🇳</span> Đĩa Than Việt Nam
-                            </Button>
-                            <Button className="flex items-center justify-center bg-[#308300] px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] border-black font-bold hover:underline hover:border-black hover:bg-[#308300] shadow-[4px_4px_0px_#000000]">
-                                <FaGift className="" /> Đĩa Vintage Có Sẵn
-                            </Button>
-                        </div>
-                    </div>
+            {/* Value Props Bar */}
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-zinc-800 text-xs">
+              <div className="flex items-center space-x-2">
+                <Volume2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-zinc-300 font-medium">100% Phôi Đĩa Gốc</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Headphones className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-zinc-300 font-medium">Nghe Thử Demo</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Award className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-zinc-300 font-medium">Đóng Gói 3 Lớp Chuyên Dụng</span>
+              </div>
+            </div>
+          </div>
 
-                    <img
-                        src="https://vocrecords.vn/wp-content/uploads/2022/07/Photo-Vintage-disc.png"
-                        alt="Right Vinyl Box"
-                        className="h-auto object-cover mt-5"
-                    />
-                </div>
-            </section>
-
-            <section className="w-full flex justify-center bg-white">
-                <div className="flex flex-row-reverse w-1/2 bg-slate-100 pt-6 pr-8">
-                    <div className="flex flex-col items-end">
-                        <Link
-                            to="/"
-                            className="uppercase text-black font-bold text-2xl hover:underline hover:text-black"
-                        >
-                            <span>Cassette Zone </span>
-                        </Link>
-
-                        <p className="mt-4">Âm thanh analog trên băng cát-xét</p>
-
-                        <div className="mt-5 flex flex-col items-end space-y-5">
-                            <Button className="flex items-center justify-center bg-white px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] border-black font-bold hover:underline hover:border-black hover:bg-white shadow-[4px_4px_0px_#000000]">
-                                Thu băng cá nhân
-                            </Button>
-                            <Button className="flex items-center justify-center bg-[#f0ad4e] px-3 py-2 text-black uppercase w-full md:w-auto rounded-none border-[1px] border-black font-bold hover:underline hover:border-black hover:bg-[#f0ad4e] shadow-[4px_4px_0px_#000000]">
-                                Mua băng gốc
-                            </Button>
-                        </div>
-                    </div>
-
-                    <img
-                        src="https://vocrecords.vn/wp-content/uploads/2022/07/Mask-group.png"
-                        alt=""
-                        className="w-[265px] h-[176px] mt-20 mr-8"
-                    />
-                </div>
-
-                <div className="w-1/2 flex flex-row">
-                    <div className="relative w-1/2 pt-6 pl-5 flex flex-col">
-                        <Link
-                            to="/"
-                            className="uppercase text-black font-bold text-2xl hover:underline hover:text-black"
-                        >
-                            <span>MÂM ĐĨA </span>
-                        </Link>
-
-                        <Link to="/" className="mt-4 text-black font-normal">
-                            <p>Khám phá ngay</p>
-                        </Link>
-
-                        <img
-                            src="https://vocrecords.vn/wp-content/uploads/2022/07/Img-1-1.png"
-                            alt=""
-                            className="w-[226px] h-[183px]"
-                        />
-
-                        <img
-                            src="https://vocrecords.vn/wp-content/uploads/2022/07/Group-8.png"
-                            alt=""
-                            className="absolute top-3 right-3 w-[91px] h-[90px] hidden sm:block"
-                        />
-                    </div>
-
-                    <div className="w-1/2 pt-6 pl-5 flex flex-col bg-slate-100">
-                        <Link
-                            to="/"
-                            className="uppercase text-black font-bold text-2xl hover:underline hover:text-black"
-                        >
-                            <span>PHỤ KIỆN </span>
-                        </Link>
-
-                        <Link to="/" className="mt-4 text-black font-normal">
-                            <p>Khám phá ngay</p>
-                        </Link>
-
-                        <img
-                            src="https://vocrecords.vn/wp-content/uploads/2022/07/Img-3.png"
-                            alt=""
-                            className="w-[200px] h-[119px] ml-5 mt-16"
-                        />
-                    </div>
-                </div>
-            </section>
-
-            <section className="bg-[url('https://vocrecords.vn/wp-content/uploads/2022/07/Disc-photo.png')] bg-[#21272A] bg-no-repeat bg-top w-full pb-12 flex flex-col items-center text-white">
-                <h2 className="flex justify-center font-bold text-2xl text-white uppercase mt-16">
-                    1001 nỗi trăn trở của
-                </h2>
-
-                <img
-                    src="https://vocrecords.vn/wp-content/uploads/elementor/thumbs/Logo_ngang-resize-sat-pt01tz3zmsps5x7ng4h1zs82jrju1okgrnkruqs5n6.png"
-                    alt=""
-                    className="w-[318px] h-[53px] mt-4 flex items-center"
+          {/* Right: Spinning Turntable Visualizer */}
+          <div className="lg:col-span-5 flex justify-center items-center relative">
+            <div className="relative">
+              {/* Outer Turntable Platter Base */}
+              <div className="w-64 h-64 sm:w-80 sm:h-80 rounded-full bg-zinc-900 border-4 border-zinc-700/80 shadow-2xl flex items-center justify-center p-3 relative">
+                
+                {/* Spinning Disc */}
+                <VinylSpin
+                  isPlaying={true}
+                  size="xl"
+                  posterUrl="https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=600&q=80"
                 />
 
-                <p className="mt-24 font-semibold">"VỌC ƠI, CÒN ĐĨA NÀY HEM?"</p>
+                {/* Tonearm graphic placeholder */}
+                <div className="absolute top-2 right-2 w-16 h-32 border-r-4 border-t-4 border-amber-400/80 rounded-tr-3xl pointer-events-none transform rotate-12"></div>
+              </div>
 
-                <div className="w-full flex mt-20">
-                    <div className="w-1/2 flex justify-end px-5 py-2">
-                        <p className="text-sm">
-                            Mỗi lần bạn hỏi câu này là Vọc lại bồn chồn ghê
-                            <br /> gớm. Vọc muốn đĩa về nhanh nhanh để còn đem
-                            <br /> ra khoe cho oách, nên có ngón gì về (hoặc sắp
-                            <br /> về) là Vọc vác hết lên đây bày liền. Mời bạn vô
-                            <br /> lựa nha!
-                        </p>
-                    </div>
+              {/* Glowing Ambient Glow */}
+              <div className="absolute -inset-4 bg-amber-500/10 rounded-full blur-2xl -z-10"></div>
+            </div>
+          </div>
 
-                    <div className="w-1/2 flex px-10 border-l-[0.5px] py-2">
-                        <p className="text-sm">
-                            Nếu đĩa không sẵn hàng hoặc chưa có
-                            <br /> trên web thì bạn cứ nhắn tin để Vọc báo
-                            <br /> giá order riêng tư nha. Hứa danh dự sẽ rep
-                            <br /> nhanh và đẹp trai nhất!!
-                        </p>
-                    </div>
-                </div>
-            </section>
-        </>
-    );
+        </div>
+      </section>
+
+      {/* Mood / Genre Pill Badges */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <h2 className="text-sm font-black uppercase font-display tracking-wider text-zinc-900 flex items-center gap-2">
+            <Disc3 className="w-4 h-4 text-amber-500" />
+            <span>Khám Phá Theo Mood & Thể Loại</span>
+          </h2>
+          <Link
+            to="/product-category/vinyl"
+            className="text-xs font-bold text-amber-700 hover:underline uppercase"
+          >
+            Tất cả &gt;
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+          {[
+            { title: "Jazz & Blues", query: "Jazz", emoji: "🎷" },
+            { title: "Rock & Metal", query: "Rock", emoji: "🎸" },
+            { title: "Pop & Indie", query: "Pop", emoji: "✨" },
+            { title: "Nhạc Việt Xưa", query: "Việt", emoji: "🇻🇳" },
+            { title: "Classical & OST", query: "Classical", emoji: "🎻" },
+            { title: "City Pop Japan", query: "Japan", emoji: "🌆" },
+          ].map((item) => (
+            <Link
+              key={item.title}
+              to={`/product-category/vinyl?category=${encodeURIComponent(item.query)}`}
+              className="bg-white border-2 border-zinc-900 rounded-lg p-3 text-center shadow-retro-sm hover:shadow-retro hover:-translate-y-0.5 transition-all group"
+            >
+              <span className="text-xl block mb-1">{item.emoji}</span>
+              <span className="text-xs font-bold text-zinc-900 group-hover:text-amber-600 uppercase tracking-tight block truncate">
+                {item.title}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* 3-Column Visual Category Feature */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Card 1: New Vinyl */}
+          <Link
+            to="/product-category/vinyl?platform=ĐĨA%20MỚI"
+            className="relative h-64 rounded-xl overflow-hidden border-2 border-zinc-900 shadow-retro group"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=600&q=80"
+              alt="Đĩa than mới"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-6 flex flex-col justify-end text-white">
+              <span className="text-amber-400 text-[10px] font-black uppercase tracking-widest">
+                New Releases
+              </span>
+              <h3 className="text-xl font-black font-display mt-0.5">
+                ĐĨA THAN MỚI (SEALED)
+              </h3>
+              <p className="text-xs text-zinc-300 mt-1">
+                Các album vừa ra lò từ Sony Music, Universal Music & Blue Note.
+              </p>
+            </div>
+          </Link>
+
+          {/* Card 2: Vintage Vinyl */}
+          <Link
+            to="/product-category/vinyl?platform=ĐĨA%20VINTAGE"
+            className="relative h-64 rounded-xl overflow-hidden border-2 border-zinc-900 shadow-retro group"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
+              alt="Đĩa vintage"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-6 flex flex-col justify-end text-white">
+              <span className="text-amber-400 text-[10px] font-black uppercase tracking-widest">
+                Original Pressings
+              </span>
+              <h3 className="text-xl font-black font-display mt-0.5">
+                ĐĨA XƯA SƯU TẦM
+              </h3>
+              <p className="text-xs text-zinc-300 mt-1">
+                Bản ép đầu những năm 70s, 80s âm thanh thuần analog mộc mạc.
+              </p>
+            </div>
+          </Link>
+
+          {/* Card 3: Cassette & Gear */}
+          <Link
+            to="/product-category/vinyl?platform=CASSETTE"
+            className="relative h-64 rounded-xl overflow-hidden border-2 border-zinc-900 shadow-retro group"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=600&q=80"
+              alt="Băng cassette"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-6 flex flex-col justify-end text-white">
+              <span className="text-amber-400 text-[10px] font-black uppercase tracking-widest">
+                Cassette & Tape
+              </span>
+              <h3 className="text-xl font-black font-display mt-0.5">
+                BĂNG CASSETTE RETRO
+              </h3>
+              <p className="text-xs text-zinc-300 mt-1">
+                Ký ức Walkman với những cuộn băng cassette từ các nghệ sĩ đình đám.
+              </p>
+            </div>
+          </Link>
+
+        </div>
+      </section>
+
+    </div>
+  );
 };
 
 export default Banner;

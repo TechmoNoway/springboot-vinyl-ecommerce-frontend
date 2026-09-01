@@ -1,3 +1,5 @@
+import React, { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ProductList from "@/components/shared/ProductList";
 import {
   Pagination,
@@ -16,383 +18,525 @@ import {
 } from "@/components/ui/select";
 import { getAllCategories } from "@/services/CategoryService";
 import { getAllProductsFilteredAndSorted } from "@/services/ProductService";
-import { useCallback, useEffect, useState } from "react";
-import { ICategoryList } from "types";
+import { ICategoryList, IProduct } from "types";
+import {
+  Filter,
+  SlidersHorizontal,
+  X,
+  Disc3,
+  RotateCcw,
+} from "lucide-react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const STUDIO_NAMES = [
-  "SONY_MUSIC",
-  "HANSA",
-  "MUSIC ON VINYL",
-  "EVOSOUND",
-  "CLEOPATRA",
-  "COLUMBIA",
-  "ISLAND RECORDS",
+  "SONY MUSIC",
   "UNIVERSAL MUSIC GROUP",
+  "WARNER MUSIC",
+  "COLUMBIA",
+  "MUSIC ON VINYL",
+  "ISLAND RECORDS",
+  "BLUE NOTE",
+  "ATLANTIC",
+  "VIRGIN RECORDS",
 ];
 
 const MANUFACTURE_YEARS = [
-  2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011,
-  2010, 2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
-  1999, 1998, 1997, 1996, 1995, 1994, 1993, 1992, 1991, 1990, 1989,
-  1988, 1987, 1986, 1985, 1984, 1983, 1982, 1981, 1980, 1979, 1978,
-  1977, 1976, 1975, 1974, 1973, 1972, 1971, 1970, 1969, 1968, 1967,
-  1966, 1965, 1964, 1963, 1962, 1961, 1960,
+  "2024", "2023", "2022", "2020", "2015", "2010",
+  "2000", "1990", "1980", "1970", "1960"
 ];
 
-const STOCK_STATUS = [
-  "HẾT HÀNG",
-  "PREORDER",
-  "CÒN HÀNG",
-  "LIÊN HỆ",
-  "ĐANG VỀ",
+const STOCK_STATUS_LIST = [
+  { value: "CÒN HÀNG", label: "Còn hàng sẵn" },
+  { value: "PREORDER", label: "Pre-order" },
+  { value: "ĐANG VỀ", label: "Đang về tiệm" },
 ];
 
 const PLATFORMS = [
-  "CASSETTE",
-  "7INCH SINGLE",
-  "ĐĨA VINTAGE",
-  "ĐĨA MỚI",
+  { value: "ĐĨA MỚI", label: "Đĩa Than Mới (New Vinyl)" },
+  { value: "ĐĨA VINTAGE", label: "Đĩa Than Vintage (Pre-owned)" },
+  { value: "CASSETTE", label: "Băng Cassette" },
+  { value: "7INCH SINGLE", label: "Đĩa 7-inch Single" },
 ];
 
-const Shop = () => {
-  const [state, setState] = useState({
-    priceRange: [0, 10000000],
-    currentPage: 1,
-    itemsPerPage: 15,
-    products: [],
-    title: "",
-    category: "",
-    platform: "",
-    stockStatus: "",
-    studioName: "",
-    manufactureYear: "",
-    status: "",
-    sortType: "DEFAULT",
-    categories: [],
-    totalPages: 0,
-  });
+const Shop: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  // Filters from URL or default
+  const titleParam = searchParams.get("title") || "";
+  const categoryParam = searchParams.get("category") || "";
+  const platformParam = searchParams.get("platform") || "";
+  const stockStatusParam = searchParams.get("stockStatus") || "";
+  const studioNameParam = searchParams.get("studioName") || "";
+  const yearParam = searchParams.get("manufactureYear") || "";
+  const sortParam = searchParams.get("sortType") || "DEFAULT";
+
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [categories, setCategories] = useState<ICategoryList[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
+  const [maxPrice, setMaxPrice] = useState<number>(10000000);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 12;
+
+  // Fetch Categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await getAllCategories();
+        const data = res?.data?.data || res?.data || [];
+        setCategories(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error("Failed to load categories:", e);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Update a single filter query param
+  const handleFilterChange = (key: string, value: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (!value || value === "ALL" || value === "DEFAULT") {
+      newParams.delete(key);
+    } else {
+      newParams.set(key, value);
+    }
+    setSearchParams(newParams);
+    setCurrentPage(1);
+  };
+
+  // Reset all filters
+  const handleResetFilters = () => {
+    setSearchParams(new URLSearchParams());
+    setMaxPrice(10000000);
+    setCurrentPage(1);
+  };
+
+  // Fetch Products with filters
   const handleGetProducts = useCallback(async () => {
-    const response = await getAllProductsFilteredAndSorted(
-      state.title,
-      state.category,
-      state.platform,
-      state.stockStatus,
-      state.studioName,
-      state.manufactureYear,
-      state.status,
-      state.sortType
-    );
+    setLoading(true);
+    try {
+      const res = await getAllProductsFilteredAndSorted(
+        titleParam || null,
+        categoryParam || null,
+        platformParam || null,
+        stockStatusParam || null,
+        studioNameParam || null,
+        yearParam || null,
+        null,
+        sortParam
+      );
 
-    const currentProducts = response?.data.data.slice(
-      (state.currentPage - 1) * state.itemsPerPage,
-      state.currentPage * state.itemsPerPage
-    );
+      let data: IProduct[] = res?.data?.data || res?.data || [];
+      if (!Array.isArray(data)) data = [];
 
-    console.log(currentProducts);
+      // Filter by max price client-side if changed
+      if (maxPrice < 10000000) {
+        data = data.filter((p) => p.price <= maxPrice);
+      }
 
-    setState((prevState) => ({
-      ...prevState,
-      products: currentProducts,
-      totalPages: Math.ceil(
-        response?.data.data.length / state.itemsPerPage
-      ),
-    }));
+      setProducts(data);
+    } catch (err) {
+      console.error("Failed to load products:", err);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
   }, [
-    state.title,
-    state.category,
-    state.platform,
-    state.stockStatus,
-    state.studioName,
-    state.manufactureYear,
-    state.status,
-    state.sortType,
-    state.currentPage,
-    state.itemsPerPage,
+    titleParam,
+    categoryParam,
+    platformParam,
+    stockStatusParam,
+    studioNameParam,
+    yearParam,
+    sortParam,
+    maxPrice,
   ]);
-
-  const handleGetCategories = async () => {
-    const response = await getAllCategories();
-    console.log(response);
-
-    setState((prevState) => ({
-      ...prevState,
-      categories: response?.data.data,
-    }));
-  };
-
-  const handlePageChange = (page: number) => {
-    setState((prevState) => ({
-      ...prevState,
-      currentPage: page,
-    }));
-  };
-
-  const handleStateItemChange = (
-    stateItem: string,
-    stateValue: string | number | boolean
-  ) => {
-    setState((prevState) => ({
-      ...prevState,
-      [stateItem]: stateValue,
-      currentPage: 1, // Reset to first page when category changes
-    }));
-  };
 
   useEffect(() => {
     handleGetProducts();
-  }, [
-    handleGetProducts,
-    state.currentPage,
-    state.itemsPerPage,
-    state.sortType,
-    state.title,
-    state.category,
-    state.platform,
-    state.stockStatus,
-    state.studioName,
-    state.manufactureYear,
-    state.status,
-  ]);
+  }, [handleGetProducts]);
 
-  useEffect(() => {
-    handleGetCategories();
-  }, []);
+  // Paging calculations
+  const totalPages = Math.ceil(products.length / itemsPerPage) || 1;
+  const currentProducts = products.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      {/* Navigation Tabs */}
-      <div className="flex space-x-8 border-b pb-3 text-lg font-bold">
-        <span className="border-b-4 border-gray-800 pb-2">
-          ĐĨA THAN
-        </span>
-        <span className="text-gray-500">MÂM ĐĨA</span>
-        <span className="text-gray-500">MÁY CASSETTE</span>
-        <span className="text-gray-500">PHỤ KIỆN</span>
-      </div>
-
-      {/* Banner Section */}
-      <div className="bg-gray-300 h-40 flex items-center justify-center text-2xl font-bold mt-4">
-        ĐĨA THAN
-      </div>
-
-      {/* Filter Section */}
-      <div className="mt-6 grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4">
-        {/* Filter Category Selects */}
-        <Select
-          onValueChange={(value) =>
-            handleStateItemChange("category", value)
-          }
-        >
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="THỂ LOẠI" />
-          </SelectTrigger>
-          <SelectContent>
-            {state.categories.map((item: ICategoryList, index) => (
-              <SelectItem value={item.name} key={index}>
-                {item.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Filter Platform Selects */}
-        <Select
-          onValueChange={(value) =>
-            handleStateItemChange("platform", value)
-          }
-        >
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="ĐỊNH DẠNG" />
-          </SelectTrigger>
-          <SelectContent>
-            {PLATFORMS.map((item, index) => (
-              <SelectItem key={index} value={item}>
-                {item}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Filter Manufacture Year */}
-        <Select
-          onValueChange={(value) =>
-            handleStateItemChange("manufactureYear", value)
-          }
-        >
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="THỜI KỲ" />
-          </SelectTrigger>
-          <SelectContent>
-            {MANUFACTURE_YEARS.map((item, index) => (
-              <SelectItem key={index} value={item.toString()}>
-                {item}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Filter Stock Status */}
-        <Select
-          onValueChange={(value) =>
-            handleStateItemChange("stockStatus", value)
-          }
-        >
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="TÌNH TRẠNG KHO" />
-          </SelectTrigger>
-          <SelectContent>
-            {STOCK_STATUS.map((item, index) => (
-              <SelectItem key={index} value={item.toString()}>
-                {item}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Filter Studio Name */}
-        <Select
-          onValueChange={(value) =>
-            handleStateItemChange("studioName", value)
-          }
-        >
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="HÃNG PHÁT HÀNH" />
-          </SelectTrigger>
-          <SelectContent>
-            {STUDIO_NAMES.map((item, index) => (
-              <SelectItem key={index} value={item}>
-                {item}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select>
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="TÂM TRẠNG" />
-          </SelectTrigger>
-          <SelectContent></SelectContent>
-        </Select>
-
-        <Select>
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="PHÁT HÀNH" />
-          </SelectTrigger>
-          <SelectContent></SelectContent>
-        </Select>
-
-        <Select>
-          <SelectTrigger className="px-3 py-6 border w-full rounded-none">
-            <SelectValue placeholder="TÌNH TRẠNG ĐĨA" />
-          </SelectTrigger>
-          <SelectContent></SelectContent>
-        </Select>
-      </div>
-
-      {/* Price Range Slider */}
-      <div className="mt-4 flex items-center space-x-4">
-        <span className="font-bold">KHOẢNG GIÁ</span>
-        <input
-          type="range"
-          min="0"
-          max="10000000"
-          value={state.priceRange[1]}
-          onChange={(e) =>
-            setState((prevState) => ({
-              ...prevState,
-              priceRange: [0, Number(e.target.value)],
-            }))
-          }
-          className="w-[700px] accent-yellow-500"
-        />
-
-        <span className="font-bold">
-          {state.priceRange[1].toLocaleString()} đ
-        </span>
-      </div>
-
-      {/* Sorting and View Controls */}
-      <div className="flex justify-between items-center mt-6">
-        <div className="flex items-center">
-          <p className="font-semibold w-44 text-sm">SẮP XẾP BỞI:</p>
-          <Select
-            onValueChange={(value) =>
-              handleStateItemChange("sortType", value)
-            }
-          >
-            <SelectTrigger className="py-2 border border-black hover:border-black rounded-none">
-              <SelectValue placeholder="THỨ TỰ MẶC ĐỊNH" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="DEFAULT">THỨ TỰ MẶC ĐỊNH</SelectItem>
-              <SelectItem value="ASC">GIÁ (TĂNG DẦN)</SelectItem>
-              <SelectItem value="DESC">GIÁ (GIẢM DẦN)</SelectItem>
-            </SelectContent>
-          </Select>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      {/* Page Header Banner */}
+      <div className="bg-[#13151A] text-white rounded-xl p-6 sm:p-10 mb-8 border border-amber-500/30 relative overflow-hidden shadow-2xl">
+        <div className="relative z-10 max-w-2xl space-y-2">
+          <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider">
+            <Disc3 className="w-4 h-4 animate-spin-slow" />
+            <span>Kho Đĩa Than & Âm Thanh Analog</span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black font-display text-white uppercase tracking-tight">
+            {platformParam || categoryParam || (titleParam ? `Kết Quả: "${titleParam}"` : "Bộ Sưu Tập Đĩa Than")}
+          </h1>
+          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+            Tìm thấy <b>{products.length}</b> tựa đĩa than và băng cassette nguyên bản sẵn sàng giao tới tận tay bạn.
+          </p>
         </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-sm font-semibold w-16">
-            HIỂN THỊ:
-          </span>
-          <Select
-            onValueChange={(value) =>
-              handleStateItemChange("itemsPerPage", value)
-            }
-            defaultValue="15"
-          >
-            <SelectTrigger className="border w-16 border-black hover:border-black rounded-none">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="15">15</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-              <SelectItem value="25">25</SelectItem>
-            </SelectContent>
-          </Select>
-          <button className="border p-2 bg-gray-200">🔲</button>
+
+        {/* Vinyl Graphic in Background */}
+        <div className="absolute -right-10 -bottom-10 opacity-20 pointer-events-none">
+          <Disc3 className="w-64 h-64 text-amber-400" />
         </div>
       </div>
 
-      {/* Product Grid */}
-      <ProductList products={state.products} type="Horizontal" />
-
-      <Pagination className="mt-6">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              className="text-base"
-              onClick={() =>
-                handlePageChange(Math.max(state.currentPage - 1, 1))
-              }
-            />
-          </PaginationItem>
-          {[...Array(state.totalPages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink
-                href="#"
-                className="text-base"
-                isActive={index + 1 === state.currentPage}
-                onClick={() => handlePageChange(index + 1)}
+      {/* Main Content Layout: Sidebar Filters + Products Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        {/* Desktop Sidebar Filters */}
+        <aside className="hidden lg:block lg:col-span-1 space-y-6">
+          <div className="bg-white border-2 border-zinc-900 rounded-lg p-5 shadow-retro space-y-6">
+            
+            <div className="flex items-center justify-between border-b border-zinc-200 pb-3">
+              <div className="flex items-center gap-2 font-black text-sm uppercase tracking-wide text-zinc-900">
+                <Filter className="w-4 h-4 text-amber-500" />
+                <span>Bộ Lọc Đĩa Than</span>
+              </div>
+              <button
+                onClick={handleResetFilters}
+                className="text-xs text-zinc-500 hover:text-black flex items-center gap-1 font-semibold"
+                title="Xóa tất cả bộ lọc"
               >
-                {index + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              className="text-base"
-              onClick={() =>
-                handlePageChange(
-                  Math.min(state.currentPage + 1, state.totalPages)
-                )
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+                <RotateCcw className="w-3 h-3" />
+                <span>Đặt lại</span>
+              </button>
+            </div>
+
+            {/* Platform / Format */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-800">
+                Định Dạng (Format)
+              </label>
+              <div className="space-y-1.5">
+                <button
+                  onClick={() => handleFilterChange("platform", "ALL")}
+                  className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                    !platformParam ? "bg-[#13151A] text-amber-400 font-bold" : "hover:bg-zinc-100 text-zinc-700"
+                  }`}
+                >
+                  Tất cả định dạng
+                </button>
+                {PLATFORMS.map((plat) => (
+                  <button
+                    key={plat.value}
+                    onClick={() => handleFilterChange("platform", plat.value)}
+                    className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                      platformParam === plat.value
+                        ? "bg-[#13151A] text-amber-400 font-bold"
+                        : "hover:bg-zinc-100 text-zinc-700"
+                    }`}
+                  >
+                    {plat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Category / Thể loại */}
+            <div className="space-y-2 border-t border-zinc-100 pt-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-800">
+                Thể Loại Nhạc
+              </label>
+              <div className="max-h-48 overflow-y-auto space-y-1 pr-1">
+                <button
+                  onClick={() => handleFilterChange("category", "ALL")}
+                  className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                    !categoryParam ? "bg-[#13151A] text-amber-400 font-bold" : "hover:bg-zinc-100 text-zinc-700"
+                  }`}
+                >
+                  Tất cả thể loại
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id || cat.name}
+                    onClick={() => handleFilterChange("category", cat.name)}
+                    className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                      categoryParam === cat.name
+                        ? "bg-[#13151A] text-amber-400 font-bold"
+                        : "hover:bg-zinc-100 text-zinc-700"
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Manufacture Year / Thập niên */}
+            <div className="space-y-2 border-t border-zinc-100 pt-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-800">
+                Năm Phát Hành
+              </label>
+              <div className="max-h-36 overflow-y-auto space-y-1 pr-1">
+                <button
+                  onClick={() => handleFilterChange("manufactureYear", "ALL")}
+                  className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                    !yearParam ? "bg-[#13151A] text-amber-400 font-bold" : "hover:bg-zinc-100 text-zinc-700"
+                  }`}
+                >
+                  Tất cả các năm
+                </button>
+                {MANUFACTURE_YEARS.map((yr) => (
+                  <button
+                    key={yr}
+                    onClick={() => handleFilterChange("manufactureYear", yr)}
+                    className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                      yearParam === yr
+                        ? "bg-[#13151A] text-amber-400 font-bold"
+                        : "hover:bg-zinc-100 text-zinc-700"
+                    }`}
+                  >
+                    Năm {yr}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Slider */}
+            <div className="space-y-2 border-t border-zinc-100 pt-4">
+              <div className="flex justify-between items-center text-xs font-bold uppercase text-zinc-800">
+                <span>Khoảng Giá Tối Đa</span>
+                <span className="text-amber-700">{maxPrice.toLocaleString()} ₫</span>
+              </div>
+              <input
+                type="range"
+                min="100000"
+                max="10000000"
+                step="100000"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className="w-full accent-amber-500 cursor-pointer"
+              />
+            </div>
+
+            {/* Stock Status */}
+            <div className="space-y-2 border-t border-zinc-100 pt-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-800">
+                Tình Trạng Kho
+              </label>
+              <div className="space-y-1">
+                {STOCK_STATUS_LIST.map((st) => (
+                  <button
+                    key={st.value}
+                    onClick={() => handleFilterChange("stockStatus", stockStatusParam === st.value ? "ALL" : st.value)}
+                    className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                      stockStatusParam === st.value
+                        ? "bg-[#13151A] text-amber-400 font-bold"
+                        : "hover:bg-zinc-100 text-zinc-700"
+                    }`}
+                  >
+                    {st.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Record Label / Studio */}
+            <div className="space-y-2 border-t border-zinc-100 pt-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-zinc-800">
+                Hãng Phát Hành (Label)
+              </label>
+              <div className="max-h-36 overflow-y-auto space-y-1 pr-1">
+                {STUDIO_NAMES.map((studio) => (
+                  <button
+                    key={studio}
+                    onClick={() => handleFilterChange("studioName", studioNameParam === studio ? "ALL" : studio)}
+                    className={`w-full text-left text-xs py-1.5 px-2 rounded font-medium transition-colors ${
+                      studioNameParam === studio
+                        ? "bg-[#13151A] text-amber-400 font-bold"
+                        : "hover:bg-zinc-100 text-zinc-700"
+                    }`}
+                  >
+                    {studio}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </aside>
+
+        {/* Main Product Grid Column */}
+        <div className="lg:col-span-3 space-y-6">
+          
+          {/* Top Controls Bar: Mobile Filter Toggle + Active Filters + Sorting */}
+          <div className="bg-white border border-zinc-200 rounded-lg p-3 sm:p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+            
+            {/* Mobile Filter Button */}
+            <button
+              onClick={() => setMobileFilterOpen(true)}
+              className="lg:hidden bg-[#13151A] text-white px-4 py-2 rounded text-xs font-bold uppercase flex items-center gap-2"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-amber-400" />
+              <span>Bộ Lọc</span>
+            </button>
+
+            {/* Active filter pills summary */}
+            <div className="hidden sm:flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="text-zinc-500 font-medium">Bộ lọc đang bật:</span>
+              {platformParam && (
+                <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                  {platformParam}
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => handleFilterChange("platform", "ALL")} />
+                </span>
+              )}
+              {categoryParam && (
+                <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                  {categoryParam}
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => handleFilterChange("category", "ALL")} />
+                </span>
+              )}
+              {stockStatusParam && (
+                <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                  {stockStatusParam}
+                  <X className="w-3 h-3 cursor-pointer" onClick={() => handleFilterChange("stockStatus", "ALL")} />
+                </span>
+              )}
+              {!platformParam && !categoryParam && !stockStatusParam && (
+                <span className="text-zinc-400 italic">Tất cả sản phẩm</span>
+              )}
+            </div>
+
+            {/* Sorting Select */}
+            <div className="flex items-center space-x-2 ml-auto">
+              <span className="text-xs font-bold uppercase text-zinc-600 hidden md:inline">
+                Sắp xếp:
+              </span>
+              <Select
+                value={sortParam}
+                onValueChange={(val) => handleFilterChange("sortType", val)}
+              >
+                <SelectTrigger className="w-48 bg-white border border-zinc-300 rounded text-xs font-semibold focus:ring-0">
+                  <SelectValue placeholder="Thứ tự mặc định" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DEFAULT">Thứ tự mặc định</SelectItem>
+                  <SelectItem value="ASC">Giá: Thấp đến Cao</SelectItem>
+                  <SelectItem value="DESC">Giá: Cao đến Thấp</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Products View */}
+          {loading ? (
+            <div className="py-24 flex flex-col items-center justify-center space-y-3">
+              <ClipLoader size={36} color="#E5A93C" />
+              <p className="text-xs font-semibold text-zinc-500">
+                Đang tìm đĩa than trong kho...
+              </p>
+            </div>
+          ) : (
+            <>
+              <ProductList products={currentProducts} />
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="pt-8 flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage((prev) => Math.max(prev - 1, 1));
+                          }}
+                        />
+                      </PaginationItem>
+                      {[...Array(totalPages)].map((_, index) => (
+                        <PaginationItem key={index}>
+                          <PaginationLink
+                            href="#"
+                            isActive={index + 1 === currentPage}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setCurrentPage(index + 1);
+                            }}
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                          }}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </>
+          )}
+
+        </div>
+
+      </div>
+
+      {/* Mobile Filters Drawer */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden overflow-hidden">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setMobileFilterOpen(false)}
+          ></div>
+          <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-2xl p-6 overflow-y-auto space-y-6">
+            <div className="flex items-center justify-between border-b pb-3">
+              <span className="font-bold text-sm uppercase">Bộ Lọc Đĩa Than</span>
+              <button onClick={() => setMobileFilterOpen(false)}>
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Platform */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase">Định Dạng</label>
+              {PLATFORMS.map((p) => (
+                <button
+                  key={p.value}
+                  onClick={() => {
+                    handleFilterChange("platform", p.value);
+                    setMobileFilterOpen(false);
+                  }}
+                  className="w-full text-left text-xs py-1.5 text-zinc-700"
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Categories */}
+            <div className="space-y-2 border-t pt-4">
+              <label className="text-xs font-bold uppercase">Thể Loại Nhạc</label>
+              {categories.map((c) => (
+                <button
+                  key={c.id || c.name}
+                  onClick={() => {
+                    handleFilterChange("category", c.name);
+                    setMobileFilterOpen(false);
+                  }}
+                  className="w-full text-left text-xs py-1.5 text-zinc-700"
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

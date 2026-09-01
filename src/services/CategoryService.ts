@@ -1,15 +1,11 @@
-import axios from "axios";
+import apiClient from "./apiClient";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-const API = axios.create({ baseURL: apiBaseUrl });
-
-export const getAllCategories = () => {
+export const getAllCategories = async () => {
   try {
-    const res = API.get(`api/v1/categories`);
+    const res = await apiClient.get("/api/v1/categories");
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("CategoryService.getAllCategories error:", error);
+    throw error;
   }
 };

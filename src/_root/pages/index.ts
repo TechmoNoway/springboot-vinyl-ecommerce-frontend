@@ -1,9 +1,11 @@
 export { default as Home } from "./Home";
+export { default as Shop } from "./Shop";
 export { default as ProductDetail } from "./ProductDetail";
 export { default as Cart } from "./Cart";
 export { default as Checkout } from "./Checkout";
-export { default as Shop } from "./Shop";
-export { default as LoginSignup } from "./LoginSignup";
-export { default as Profile } from "./Profile";
-export { default as ResetPassword } from "./ResetPassword";
 export { default as OrderDetails } from "./OrderDetails";
+export { default as LoginSignup } from "./LoginSignup";
+export { default as ResetPassword } from "./ResetPassword";
+export { default as Profile } from "./Profile";
+export { default as QRPayment } from "./QRPayment";
+export { default as AdminDashboard } from "./AdminDashboard";

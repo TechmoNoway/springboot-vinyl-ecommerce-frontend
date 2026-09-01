@@ -1,325 +1,429 @@
-import {
-  FaHeart,
-  FaSearch,
-  FaShoppingCart,
-  FaUser,
-  FaUserCircle,
-} from "react-icons/fa";
-
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../ui/button";
-import { ChangeEvent, useEffect, useState, useRef } from "react";
 import { searchProductsByTitle } from "@/services/ProductService";
 import { IProduct } from "types";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
 import { useCart } from "@/context/CartContext";
-import { ShoppingBasket } from "lucide-react";
-// import useDebounce from '@/hooks/useDebounce';
+import { useWishlist } from "@/context/WishlistContext";
+import { useAuth } from "@/context/AuthContext";
+import {
+  Search,
+  ShoppingBag,
+  Heart,
+  User,
+  Disc3,
+  Menu,
+  X,
+  LogOut,
+  Package,
+  ShieldCheck,
+  ChevronDown,
+} from "lucide-react";
 
-const Header = () => {
-  const [opacity, setOpacity] = useState(1);
+const Header: React.FC = () => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchResults, setSearchResults] = useState<IProduct[]>([]);
-  const [isListVisible, setIsListVisible] = useState(true);
-  const listRef = useRef<HTMLUListElement>(null);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [isListVisible, setIsListVisible] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { cart } = useCart();
 
-  // const debouncedSearchInput = useDebounce(searchInput, 500);
+  const { totalItems, openDrawer } = useCart();
+  const { wishlistCount } = useWishlist();
+  const { currentUser, token, isAdmin, logoutWithNavigate } = useAuth();
 
+  // Handle live search
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const newOpacity = Math.max(1 - scrollTop / 200, 0.9);
-      setOpacity(newOpacity);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      listRef.current &&
-      !listRef.current.contains(event.target as Node)
-    ) {
-      setIsListVisible(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleSearchChange = async (
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = e.target.value;
-    if (value.startsWith(" ")) {
+    if (!searchInput.trim()) {
+      setSearchResults([]);
+      setIsSearching(false);
       return;
     }
-    setSearchInput(value);
-    if (value.length > 0) {
-      const response = await searchProductsByTitle(value);
-      setSearchResults(response?.data.data);
-    } else {
-      setSearchResults([]);
+
+    const timer = setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const response = await searchProductsByTitle(searchInput);
+        const data = response?.data?.data || response?.data || [];
+        setSearchResults(Array.isArray(data) ? data.slice(0, 5) : []);
+        setIsListVisible(true);
+      } catch (e) {
+        console.error("Search error:", e);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // Click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target as Node)
+      ) {
+        setIsListVisible(false);
+      }
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(e.target as Node)
+      ) {
+        setUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelectProduct = (title: string) => {
+    setIsListVisible(false);
+    setSearchInput("");
+    navigate(`/product/${encodeURIComponent(title)}`);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      setIsListVisible(false);
+      navigate(`/product-category/vinyl?title=${encodeURIComponent(searchInput.trim())}`);
     }
   };
 
-  const handleFocus = () => {
-    setIsListVisible(true);
-  };
-
-  const totalPrice = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-
   return (
-    <>
-      <header
-        className="bg-[#121416] dark:bg-gray-900 sticky top-0 z-20 transition-opacity duration-300"
-        style={{ opacity }}
-      >
-        <div className="max-w-screen-xl h-24 flex flex-wrap items-center justify-between mx-auto p-4">
-          <Link to={"/"} className="flex items-center">
-            <img
-              src="https://vocrecords.vn/wp-content/uploads/2020/10/Logo_ngang.png"
-              alt=""
-              className="w-[151x] h-[25px]"
-            />
-          </Link>
-          <button
-            data-collapse-toggle="navbar-default"
-            type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-default"
-            aria-expanded="false"
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
-          <div
-            className="hidden w-full md:block md:w-auto"
-            id="navbar-default"
-          >
-            <nav className="hidden md:flex space-x-6 text-sm uppercase font-semibold">
-              <Link
-                to={"/product-category/vinyl"}
-                className="text-white hover:text-yellow-300 text-[15px] font-semibold"
-              >
-                Đĩa Than
-              </Link>
-              <a
-                href="#"
-                className="text-white hover:text-yellow-300 text-[15px] font-semibold"
-              >
-                Mâm Đĩa
-              </a>
-              <a
-                href="#"
-                className="text-white hover:text-yellow-300 text-[15px] font-semibold"
-              >
-                Cho Người Mới
-              </a>
+    <header className="sticky top-0 z-40 bg-[#121316]/95 backdrop-blur-md border-b border-zinc-800 text-white transition-all">
+      {/* Top Banner Notice */}
+      <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 text-black text-[11px] font-bold py-1 px-4 text-center tracking-wider uppercase flex items-center justify-center gap-2">
+        <span>✨ Freeship đơn từ 1.000.000đ</span>
+        <span className="hidden sm:inline">•</span>
+        <span className="hidden sm:inline">100% Đĩa than & Băng Cassette Chính Hãng</span>
+        <span className="hidden sm:inline">•</span>
+        <span className="hidden md:inline">Hotline: 090 133 8619</span>
+      </div>
 
-              <a
-                href="#"
-                className="text-white hover:text-yellow-300 text-[15px] font-semibold"
-              >
-                Blog
-              </a>
-            </nav>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+        
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
+          <div className="relative w-9 h-9 bg-zinc-900 rounded-full flex items-center justify-center border-2 border-amber-500/80 shadow-md group-hover:rotate-180 transition-transform duration-700">
+            <Disc3 className="w-6 h-6 text-amber-400 animate-spin-slow" />
+            <div className="absolute w-2 h-2 bg-amber-400 rounded-full"></div>
           </div>
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="flex items-center border-b border-gray-400 h-9">
-              <div className="flex flex-col">
-                <input
-                  type="text"
-                  placeholder="Tìm tên bài hát, album, nghệ sĩ..."
-                  onChange={handleSearchChange}
-                  value={searchInput}
-                  onFocus={handleFocus}
-                  className="bg-transparent text-sm outline-none placeholder:text-xs placeholder-gray-500 hidden lg:block text-white md:w-[350px] px-3"
-                />
-                {searchResults?.length > 0 && isListVisible && (
-                  <div className="absolute top-20 mt-2 bg-white border border-gray-300 rounded shadow-lg z-10 max-w-[530px] transition-opacity duration-300 animate-fadeIn">
-                    <ul ref={listRef}>
-                      {searchResults.map((product, index) => (
-                        <Link
-                          to={`/product/${product.title}`}
-                          key={index}
-                          className="px-3 py-3 flex hover:bg-gray-100 w-full space-x-5"
-                          onClick={() => setIsListVisible(false)}
-                        >
-                          <img
-                            src={product.posterUrl}
-                            alt=""
-                            className="h-24"
-                          />
-                          <div className="flex flex-col items-end w-full">
-                            <p className="font-semibold text-black">
-                              {product?.title}
-                            </p>
-                            <p className="text-gray-500">
-                              {product?.artist}
-                            </p>
-                            <p className="font-bold text-black">
-                              {product.price.toLocaleString("en-US")}{" "}
-                              ₫
-                            </p>
-                          </div>
-                        </Link>
-                      ))}
-                    </ul>
+          <div className="flex flex-col">
+            <div className="flex items-center">
+              <span className="font-extrabold text-xl tracking-tight text-white font-display">
+                VOC
+              </span>
+              <span className="font-bold text-xl tracking-tight text-amber-400 font-display ml-1">
+                RECORDS
+              </span>
+            </div>
+            <span className="text-[9px] uppercase tracking-widest text-zinc-400 -mt-1 font-semibold">
+              Analog & Vinyl Shop
+            </span>
+          </div>
+        </Link>
+
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center space-x-6 text-xs font-bold uppercase tracking-wider">
+          <Link
+            to="/product-category/vinyl"
+            className="text-zinc-200 hover:text-amber-400 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400"
+          >
+            Đĩa Than
+          </Link>
+          <Link
+            to="/product-category/vinyl?platform=ĐĨA%20VINTAGE"
+            className="text-zinc-200 hover:text-amber-400 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400"
+          >
+            Đĩa Vintage
+          </Link>
+          <Link
+            to="/product-category/vinyl?platform=CASSETTE"
+            className="text-zinc-200 hover:text-amber-400 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400"
+          >
+            Cassette Zone
+          </Link>
+          <Link
+            to="/product-category/vinyl?category=Phụ%20kiện"
+            className="text-zinc-200 hover:text-amber-400 transition-colors py-2 border-b-2 border-transparent hover:border-amber-400"
+          >
+            Mâm Đĩa & Phụ Kiện
+          </Link>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="text-amber-400 hover:text-amber-300 font-extrabold flex items-center gap-1 bg-amber-400/10 px-2.5 py-1 rounded border border-amber-400/30"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Admin Hub</span>
+            </Link>
+          )}
+        </nav>
+
+        {/* Search Bar with live dropdown */}
+        <div
+          ref={searchContainerRef}
+          className="relative hidden md:flex items-center flex-1 max-w-xs xl:max-w-md mx-2"
+        >
+          <form onSubmit={handleSearchSubmit} className="w-full">
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                placeholder="Tìm bài hát, album, nghệ sĩ..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onFocus={() => {
+                  if (searchResults.length > 0) setIsListVisible(true);
+                }}
+                className="w-full bg-zinc-900/90 text-zinc-100 text-xs rounded-full pl-9 pr-8 py-2.5 border border-zinc-700/80 focus:border-amber-400 focus:outline-none focus:ring-1 focus:ring-amber-400 placeholder:text-zinc-500 transition-all"
+              />
+              <Search className="w-4 h-4 text-zinc-400 absolute left-3 pointer-events-none" />
+              {isSearching ? (
+                <Disc3 className="w-4 h-4 text-amber-400 absolute right-3 animate-spin" />
+              ) : searchInput ? (
+                <button
+                  type="button"
+                  onClick={() => setSearchInput("")}
+                  className="absolute right-3 text-zinc-400 hover:text-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              ) : null}
+            </div>
+          </form>
+
+          {/* Search Dropdown Suggestion */}
+          {isListVisible && searchResults.length > 0 && (
+            <div className="absolute top-12 left-0 right-0 bg-[#1A1D24] border border-zinc-700 rounded-xl shadow-2xl overflow-hidden z-50 animate-fadeIn">
+              <div className="p-2 border-b border-zinc-800 text-[11px] font-semibold text-zinc-400 flex justify-between">
+                <span>Gợi ý tìm kiếm</span>
+                <span className="text-amber-400 cursor-pointer" onClick={handleSearchSubmit}>
+                  Xem tất cả kết quả &gt;
+                </span>
+              </div>
+              <ul className="divide-y divide-zinc-800">
+                {searchResults.map((item) => (
+                  <li
+                    key={item.id}
+                    onClick={() => handleSelectProduct(item.title)}
+                    className="p-2.5 hover:bg-zinc-800/80 cursor-pointer flex items-center gap-3 transition-colors"
+                  >
+                    <img
+                      src={item.posterUrl}
+                      alt={item.title}
+                      className="w-10 h-10 object-cover rounded shadow-sm flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-xs text-white truncate">
+                        {item.title}
+                      </p>
+                      <p className="text-[11px] text-zinc-400 truncate">
+                        {item.artist || "Đĩa than"}
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-amber-400 flex-shrink-0">
+                      {item.price?.toLocaleString()} ₫
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Right Actions: Wishlist, Cart, Profile */}
+        <div className="flex items-center space-x-3 sm:space-x-4">
+          {/* Wishlist Link */}
+          <Link
+            to="/account/wishlist"
+            className="relative p-2 text-zinc-300 hover:text-amber-400 transition-colors rounded-full hover:bg-zinc-800"
+            title="Danh sách yêu thích"
+          >
+            <Heart className="w-5 h-5" />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Cart Trigger */}
+          <button
+            onClick={openDrawer}
+            className="relative p-2 text-zinc-300 hover:text-amber-400 transition-colors rounded-full hover:bg-zinc-800 flex items-center"
+            title="Giỏ hàng"
+          >
+            <ShoppingBag className="w-5 h-5" />
+            {totalItems > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-amber-400 text-black text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
+          </button>
+
+          {/* User Profile Dropdown */}
+          <div ref={userDropdownRef} className="relative">
+            <button
+              onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+              className="flex items-center space-x-1.5 p-1.5 rounded-full hover:bg-zinc-800 text-zinc-300 hover:text-white transition-colors border border-zinc-700"
+            >
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-black font-extrabold text-xs">
+                {currentUser?.fullname ? currentUser.fullname.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
+              </div>
+              <ChevronDown className="w-3.5 h-3.5 text-zinc-400 hidden sm:block" />
+            </button>
+
+            {userDropdownOpen && (
+              <div className="absolute right-0 top-12 w-56 bg-[#1A1D24] border border-zinc-700 rounded-xl shadow-2xl py-2 z-50 text-xs animate-fadeIn">
+                {token ? (
+                  <>
+                    <div className="px-4 py-2 border-b border-zinc-800">
+                      <p className="font-bold text-white truncate">
+                        {currentUser.fullname || "Người yêu đĩa than"}
+                      </p>
+                      <p className="text-zinc-400 text-[11px] truncate">
+                        {currentUser.email}
+                      </p>
+                    </div>
+
+                    <Link
+                      to="/account/details"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white"
+                    >
+                      <User className="w-4 h-4 text-amber-400" />
+                      <span>Thông tin tài khoản</span>
+                    </Link>
+
+                    <Link
+                      to="/account/orders"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white"
+                    >
+                      <Package className="w-4 h-4 text-amber-400" />
+                      <span>Lịch sử đơn hàng</span>
+                    </Link>
+
+                    <Link
+                      to="/account/wishlist"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white"
+                    >
+                      <Heart className="w-4 h-4 text-amber-400" />
+                      <span>Đĩa than yêu thích</span>
+                    </Link>
+
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-amber-400 font-bold border-t border-zinc-800"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-amber-400" />
+                        <span>Bảng Quản Trị (Admin)</span>
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setUserDropdownOpen(false);
+                        logoutWithNavigate();
+                      }}
+                      className="w-full text-left px-4 py-2.5 hover:bg-red-950/40 text-red-400 flex items-center gap-2.5 border-t border-zinc-800"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-3 text-center space-y-2">
+                    <p className="text-zinc-300 font-medium">Chào mừng bạn đến với Vọc!</p>
+                    <Link
+                      to="/login-signup"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="block w-full bg-amber-400 hover:bg-amber-300 text-black py-2 rounded-md font-bold text-xs uppercase"
+                    >
+                      Đăng Nhập / Đăng Ký
+                    </Link>
                   </div>
                 )}
               </div>
-
-              {/* Icons */}
-              <Button className="bg-transparent hover:bg-transparent border-none">
-                <FaSearch className="text-white cursor-pointer" />
-              </Button>
-            </div>
-            <HoverCard>
-              <HoverCardTrigger>
-                <div className="relative">
-                  <FaShoppingCart className="text-white cursor-pointer w-5 h-5 mx-1" />
-                  <span className="absolute -top-2 -right-1 bg-red-500 text-xs text-white rounded-full px-1">
-                    {cart.length}
-                  </span>
-                </div>
-              </HoverCardTrigger>
-              <HoverCardContent
-                className="bg-white p-5 shadow-md rounded-none w-80 mt-2"
-                align="end"
-              >
-                {/* Item Count */}
-                <div className="text-gray-800 font-bold mb-3">
-                  {cart.length} ITEMS
-                </div>
-
-                <hr className="border-gray-300" />
-
-                {cart.length === 0 ? (
-                  <>
-                    <p>Your cart is empty.</p>
-                  </>
-                ) : (
-                  <>
-                    {cart.map((item, index) => (
-                      <div key={index}>
-                        {/* Product Info */}
-                        <div className="flex justify-between items-center py-3">
-                          <div>
-                            <p className="font-semibold">
-                              {item.title}
-                            </p>
-                            <p className="text-gray-600">
-                              {item.quantity} ×{" "}
-                              {item.price.toLocaleString("en-US")} đ
-                            </p>
-                          </div>
-                          <img
-                            src={item.posterUrl}
-                            alt={item.title}
-                            className="w-14 h-14 object-cover"
-                          />
-                        </div>
-
-                        <hr className="border-gray-300" />
-                      </div>
-                    ))}
-
-                    {/* Subtotal */}
-                    <div className="flex justify-between py-3">
-                      <span className="font-semibold">
-                        TỔNG SỐ PHỤ:
-                      </span>
-                      <span className="font-semibold">
-                        {totalPrice.toLocaleString("en-US")} đ
-                      </span>
-                    </div>
-
-                    {/* Buttons */}
-                    <Button
-                      onClick={() => navigate("/cart")}
-                      className="w-full bg-white border-2 border-black py-2 font-bold mb-2 hover:bg-gray-white text-black rounded-none hover:border-black mt-4"
-                    >
-                      XEM GIỎ HÀNG
-                    </Button>
-                    <Button
-                      onClick={() => navigate("/checkout")}
-                      className="w-full bg-black text-white py-2 font-bold hover:bg-black rounded-none hover:border-black"
-                    >
-                      THANH TOÁN
-                    </Button>
-                  </>
-                )}
-              </HoverCardContent>
-            </HoverCard>
-            <HoverCard>
-              <HoverCardTrigger>
-                <FaUser className="text-white cursor-pointer w-5 h-5 mx-1" />
-              </HoverCardTrigger>
-              <HoverCardContent
-                className="bg-black border-none mr-4 rounded-none p-0 w-52"
-                align="end"
-              >
-                <div className="flex items-center space-x-3 p-4 broder-b border-[1px]-white text-white hover:bg-white hover:text-black cursor-pointer">
-                  <FaHeart className="w-5 h-5" />
-                  <p className="uppercase font-semibold text-sm">
-                    Wishlist
-                  </p>
-                </div>
-                <div
-                  className="flex items-center space-x-3 p-4 broder-b border-[1px]-white text-white hover:bg-white hover:text-black cursor-pointer"
-                  onClick={() => navigate("/account/orders")}
-                >
-                  <ShoppingBasket className="w-5 h-5" />
-                  <p className="uppercase font-semibold text-sm">
-                    Order Checkout
-                  </p>
-                </div>
-                <div
-                  onClick={() => navigate("/account/details")}
-                  className="flex items-center space-x-3 p-4 text-white hover:bg-white hover:text-black cursor-pointer"
-                >
-                  <FaUserCircle className="w-5 h-5" />
-                  <p className="uppercase font-semibold text-sm">
-                    Account
-                  </p>
-                </div>
-              </HoverCardContent>
-            </HoverCard>
+            )}
           </div>
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 text-zinc-300 hover:text-white"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
-      </header>
-    </>
+      </div>
+
+      {/* Mobile Drawer Navigation */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#121316] border-b border-zinc-800 p-4 space-y-4 animate-slide-up">
+          {/* Mobile Search */}
+          <form onSubmit={handleSearchSubmit} className="relative">
+            <input
+              type="text"
+              placeholder="Tìm kiếm đĩa than, nghệ sĩ..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="w-full bg-zinc-900 text-zinc-100 text-xs rounded-lg pl-9 pr-4 py-2.5 border border-zinc-700"
+            />
+            <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+          </form>
+
+          <nav className="flex flex-col space-y-2 text-sm font-bold uppercase">
+            <Link
+              to="/product-category/vinyl"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
+            >
+              Đĩa Than
+            </Link>
+            <Link
+              to="/product-category/vinyl?platform=ĐĨA%20VINTAGE"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
+            >
+              Đĩa Vintage
+            </Link>
+            <Link
+              to="/product-category/vinyl?platform=CASSETTE"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
+            >
+              Cassette Zone
+            </Link>
+            <Link
+              to="/product-category/vinyl?category=Phụ%20kiện"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
+            >
+              Mâm Đĩa & Phụ Kiện
+            </Link>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded bg-amber-400/10 text-amber-400 font-bold flex items-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span>Admin Hub</span>
+              </Link>
+            )}
+          </nav>
+        </div>
+      )}
+    </header>
   );
 };
 

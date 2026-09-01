@@ -1,65 +1,66 @@
-import axios from "axios";
+import apiClient from "./apiClient";
 import { IChangePassword, IUpdateUser } from "types";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-const API = axios.create({ baseURL: apiBaseUrl });
-
-API.interceptors.request.use((req) => {
-  if (localStorage.getItem("access_token")) {
-    req.headers.Authorization = `Bearer ${JSON.parse(
-      localStorage.getItem("access_token") ?? ""
-    )}`;
-  }
-  return req;
-});
-
-export const getAllUsers = () => {
+// User endpoints
+export const getCurrentUserProfile = async () => {
   try {
-    const res = API.get(`api/v1/users`);
+    const res = await apiClient.get("/api/v1/users/me");
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("UserService.getCurrentUserProfile error:", error);
+    throw error;
   }
 };
 
-export const getCurrentUser = (id: number) => {
+export const updateUserInfo = async (userForm: IUpdateUser) => {
   try {
-    const res = API.get(`api/v1/users?id=${id}`);
+    const res = await apiClient.put("/api/v1/users/profile", userForm);
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("UserService.updateUserInfo error:", error);
+    throw error;
   }
 };
 
-export const getUserByEmail = (email: string) => {
+export const changePassword = async (passwordForm: IChangePassword) => {
   try {
-    const res = API.get(`api/v1/users/email?address=${email}`);
+    const res = await apiClient.put("/api/v1/users/change-password", passwordForm);
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("UserService.changePassword error:", error);
+    throw error;
   }
 };
 
-export const updateUserInfo = (userForm: IUpdateUser) => {
+// Admin endpoints
+export const getAllUsers = async () => {
   try {
-    const res = API.put(`api/v1/users/update`, userForm);
+    const res = await apiClient.get("/api/v1/users");
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("UserService.getAllUsers error:", error);
+    throw error;
   }
 };
 
-export const changePassword = (password: IChangePassword) => {
+export const getUserByEmail = async (email: string) => {
   try {
-    const res = API.put(`api/v1/users/change-password`, password);
+    const res = await apiClient.get(
+      `/api/v1/users/email?address=${encodeURIComponent(email)}`
+    );
     return res;
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error("UserService.getUserByEmail error:", error);
+    throw error;
+  }
+};
+
+export const getUserById = async (id: number | string) => {
+  try {
+    const res = await apiClient.get(`/api/v1/users/${id}`);
+    return res;
+  } catch (error) {
+    console.error("UserService.getUserById error:", error);
+    throw error;
   }
 };

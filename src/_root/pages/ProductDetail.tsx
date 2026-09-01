@@ -1,191 +1,395 @@
-import { Button } from '@/components/ui/button';
-import { useCart } from '@/context/CartContext';
-import { useToast } from '@/hooks/use-toast';
-import { getProductByTitle } from '@/services/ProductService';
-import { useEffect, useState } from 'react';
-import { FaCommentAlt, FaHeart, FaInfoCircle, FaShoppingCart, FaVolumeUp } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
-import { IProduct } from 'types';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { IProduct } from "types";
+import { getProductByTitle, getReadyProducts } from "@/services/ProductService";
+import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
+import { useAudioPlayer } from "@/context/AudioPlayerContext";
+import { useToast } from "@/hooks/use-toast";
+import VinylSpin from "@/components/shared/VinylSpin";
+import ProductCard from "@/components/shared/ProductCard";
+import {
+  Heart,
+  ShoppingBag,
+  Play,
+  Pause,
+  Disc3,
+  Truck,
+  Plus,
+  Minus,
+  CheckCircle2,
+  Radio,
+  Share2,
+} from "lucide-react";
+import ClipLoader from "react-spinners/ClipLoader";
 
-const ProductDetail = () => {
-    const params = useParams();
-    const title = params.title;
-    const { cart, dispatch } = useCart();
-    const { toast } = useToast();
+const ProductDetail: React.FC = () => {
+  const { title } = useParams<{ title: string }>();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { currentTrack, isPlaying, playTrack, togglePlay } = useAudioPlayer();
+  const { toast } = useToast();
 
-    const [product, setProduct] = useState<IProduct>();
+  const [product, setProduct] = useState<IProduct | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<IProduct[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [quantity, setQuantity] = useState<number>(1);
+  const [isDiscExtracted, setIsDiscExtracted] = useState<boolean>(false);
 
-    const fetchProduct = async () => {
-        if (title) {
-            const response = await getProductByTitle(title);
-            if (response?.data.data) {
-                console.log(response.data.data);
-
-                setProduct(response.data.data);
-            } else {
-                console.error('Failed to fetch product');
-            }
-        } else {
-            console.error('Title is undefined');
+  useEffect(() => {
+    const fetchProductData = async () => {
+      if (!title) return;
+      setLoading(true);
+      try {
+        const res = await getProductByTitle(decodeURIComponent(title));
+        const data = res?.data?.data || res?.data;
+        if (Array.isArray(data) && data.length > 0) {
+          setProduct(data[0]);
+        } else if (data && !Array.isArray(data)) {
+          setProduct(data);
         }
+
+        // Fetch related products
+        const relatedRes = await getReadyProducts();
+        const relatedData = relatedRes?.data?.data || relatedRes?.data || [];
+        if (Array.isArray(relatedData)) {
+          setRelatedProducts(relatedData.slice(0, 4));
+        }
+      } catch (err) {
+        console.error("Failed to load product:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const addToCart = () => {
-        if (product?.id) {
-            const existingCartItem = cart.find((item) => item.id === product?.id);
-            if (existingCartItem) {
-                dispatch({
-                    type: 'UPDATE_QUANTITY',
-                    payload: { ...existingCartItem, quantity: existingCartItem.quantity + 1 },
-                });
-                toast({
-                    variant: 'success',
-                    title: 'Nice!',
-                    description: 'Product added to cart.',
-                });
-            } else {
-                dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } });
-            }
-        } else {
-            toast({
-                variant: 'destructive',
-                title: 'Opps! Something went wrong',
-                description: 'Please add your product again.',
-            });
-            console.error('Product ID is undefined');
-        }
-    };
+    fetchProductData();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [title]);
 
-    useEffect(() => {
-        fetchProduct();
-    }, [title]);
-
+  if (loading) {
     return (
-        <div className="px-4 sm:px-6 md:px-10 xl:px-80 py-10">
-            <div className="flex flex-col lg:flex-row items-center lg:items-start">
-                {/* Left: Product Image */}
-                <div className="w-full lg:w-1/2 flex flex-col items-center lg:pr-8">
-                    <div className="border border-gray-300 w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[480px] xl:max-w-[590px]">
-                        <img src={product?.posterUrl} alt={product?.title} className="w-full h-auto object-cover" />
-                        <p className="text-xs sm:text-sm text-gray-500 py-2 text-center">
-                            Hình ảnh minh họa. Vui lòng xem chi tiết chính xác tại mục mô tả sản phẩm.
-                        </p>
-                    </div>
-
-                    {/* Thumbnail Preview */}
-                    <div className="mt-4 flex space-x-2">
-                        <img
-                            src={product?.posterUrl}
-                            alt="Thumbnail"
-                            className="w-14 h-14 sm:w-16 sm:h-16 rounded border border-gray-300 cursor-pointer hover:border-black"
-                        />
-                    </div>
-
-                    <div className="bg-slate-100 p-5 mt-4">
-                        {/* Header with Icon */}
-                        <div className="flex items-center font-bold text-lg mb-3">
-                            <FaCommentAlt className="mr-2" />
-                            LƯU Ý KHI MUA HÀNG
-                        </div>
-
-                        {/* Bullet Points */}
-                        <ul className="text-gray-800 list-disc pl-7 space-y-2">
-                            <li>
-                                Vui lòng chuyển khoản 100% đơn hàng có <b>sản phẩm PRE-ORDER</b>.
-                            </li>
-                            <li>
-                                Giá sản phẩm <b>PRE-ORDER</b> cập nhật hàng tuần, Voc Records sẽ liên hệ nếu có chênh
-                                lệch.
-                            </li>
-                            <li>
-                                Thời gian vận chuyển: Sản phẩm <b>CÒN HÀNG 1-5 ngày</b>, sản phẩm{' '}
-                                <b>PRE-ORDER 2-4 tuần</b>.
-                            </li>
-                            <li>
-                                <b>KHÔNG HỦY / HOÀN TIỀN</b> sản phẩm PRE-ORDER.
-                            </li>
-                        </ul>
-
-                        {/* Return Policy Link */}
-                        <div className="mt-3 ml-7 font-bold cursor-pointer underline">QUY ĐỊNH ĐỔI TRẢ</div>
-                    </div>
-                </div>
-
-                {/* Right: Product Details */}
-                <div className="w-full lg:w-1/2 flex flex-col space-y-4 mt-6 lg:mt-0">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-center lg:text-left">{product?.title}</h1>
-                    <p className="text-lg text-black text-center lg:text-left">{product?.artist}</p>
-                    <p className="text-center lg:text-left">Đĩa mới</p>
-
-                    {/* Price & Availability */}
-                    <div className="flex items-center justify-center lg:justify-start space-x-2">
-                        <p className="text-xl font-bold">{product?.price.toLocaleString('en-US')} ₫</p>
-                        <span className="text-green-600 text-xs sm:text-sm px-2 py-1 uppercase font-bold bg-green-100">
-                            CÒN HÀNG
-                        </span>
-                    </div>
-
-                    {/* Product Actions */}
-                    <div className="flex flex-wrap justify-center lg:justify-start space-x-3 mt-4 border-t border-b py-4">
-                        <Button className="bg-white px-4 flex items-center space-x-2 hover:bg-gray-100 rounded-none border-[1px] border-black hover:border-black shadow-[4px_4px_0px_#000000]">
-                            <FaVolumeUp className="text-black" />
-                        </Button>
-                        <Button className="bg-white px-4 flex items-center space-x-2 hover:bg-gray-100 rounded-none border-[1px] border-black hover:border-black shadow-[4px_4px_0px_#000000]">
-                            <FaHeart className="text-black" />
-                        </Button>
-                        <Button
-                            onClick={addToCart}
-                            className="bg-[#FFF27E] hover:bg-[#FFF27E] border-[1px] border-black hover:border-black px-6 sm:px-10 flex items-center rounded-none shadow-[4px_4px_0px_#000000] text-black"
-                        >
-                            <FaShoppingCart />
-                            <p className="font-bold ml-2 text-xs sm:text-sm">THÊM VÀO GIỎ HÀNG</p>
-                        </Button>
-                    </div>
-
-                    {/* Description */}
-                    <p className="mt-4 text-black text-sm sm:text-base">{product?.description}</p>
-
-                    {/* Product Specifications */}
-                    <div className="mt-6 pt-10 pb-16">
-                        <h2 className="text-lg font-bold pb-2 mb-6 border-b-[2px]  border-gray-400">THÔNG TIN ĐĨA</h2>
-                        <div className="grid grid-cols-2 gap-y-2 text-gray-800">
-                            <span className="font-semibold">Trọng lượng</span>
-                            <span className="">5 kg</span>
-
-                            <span className="font-semibold">Năm Sản Xuất</span>
-                            <span>{product?.manufactureYear}</span>
-
-                            <span className="font-semibold">Thể Loại</span>
-                            <span>Electronic, Pop</span>
-
-                            <span className="font-semibold">Định Dạng</span>
-                            <span>{product?.platform}</span>
-
-                            <span className="font-semibold">Hãng Phát Hành</span>
-                            <span>{product?.studioName}</span>
-
-                            <span className="font-semibold flex items-center">
-                                Tình Trạng Đĩa <FaInfoCircle className="ml-1 text-gray-500" />
-                            </span>
-                            <span>M</span>
-
-                            <span className="font-semibold">Tình Trạng Vỏ</span>
-                            <span>M</span>
-
-                            <span className="font-semibold">Quốc Gia</span>
-                            <span>{product?.region}</span>
-
-                            <span className="font-semibold">Mã Đĩa</span>
-                            <span className="text-gray-500">602455542144</span>
-
-                            <span className="font-semibold">Số Lượng</span>
-                            <span>{product?.set}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
+        <ClipLoader size={48} color="#E5A93C" />
+        <p className="text-sm font-bold uppercase tracking-wider text-zinc-600">
+          Đang tải thông tin đĩa than...
+        </p>
+      </div>
     );
+  }
+
+  if (!product) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
+        <Disc3 className="w-16 h-16 text-zinc-400 mx-auto animate-spin-slow" />
+        <h2 className="text-2xl font-bold font-display text-zinc-900">
+          Không tìm thấy đĩa than này
+        </h2>
+        <p className="text-xs text-zinc-500">
+          Sản phẩm có thể đã được đổi tên hoặc tạm thời hết hàng.
+        </p>
+        <button
+          onClick={() => navigate("/product-category/vinyl")}
+          className="bg-[#13151A] text-amber-300 px-6 py-3 font-bold text-xs uppercase shadow-retro"
+        >
+          Quay lại cửa hàng
+        </button>
+      </div>
+    );
+  }
+
+  const isFavorited = isInWishlist(product.id);
+  const isCurrentPlaying = currentTrack?.id === product.id && isPlaying;
+
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    toast({
+      title: "Đã thêm vào giỏ hàng!",
+      description: `${quantity}x ${product.title} đã sẵn sàng trong giỏ.`,
+    });
+  };
+
+  const handleBuyNow = () => {
+    addToCart(product, quantity);
+    navigate("/checkout");
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: product.title,
+        text: `Nghe đĩa than ${product.title} - ${product.artist} tại Vọc Records!`,
+        url: window.location.href,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Đã sao chép liên kết!",
+        description: "Bạn có thể chia sẻ liên kết đĩa than này cho bạn bè.",
+      });
+    }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+      
+      {/* Breadcrumb */}
+      <div className="flex items-center space-x-2 text-xs text-zinc-500 uppercase tracking-wider">
+        <Link to="/" className="hover:text-black">Trang Chủ</Link>
+        <span>/</span>
+        <Link to="/product-category/vinyl" className="hover:text-black">Đĩa Than</Link>
+        <span>/</span>
+        <span className="font-bold text-zinc-900 truncate max-w-xs sm:max-w-md">
+          {product.title}
+        </span>
+      </div>
+
+      {/* Main Product Showcase Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        
+        {/* Left: Vinyl Sleeve & Interactive Turntable Record */}
+        <div className="lg:col-span-6 space-y-6">
+          <div className="relative bg-[#1A1C22] rounded-2xl p-6 border-2 border-zinc-800 shadow-2xl overflow-hidden flex items-center justify-center min-h-[380px] sm:min-h-[480px]">
+            
+            {/* Sliding out Disc Graphic */}
+            <div
+              className={`absolute transition-all duration-700 ease-out z-0 cursor-pointer ${
+                isDiscExtracted || isCurrentPlaying
+                  ? "translate-x-28 sm:translate-x-36 rotate-90 scale-105"
+                  : "translate-x-0 rotate-0 scale-95"
+              }`}
+              onClick={() => setIsDiscExtracted(!isDiscExtracted)}
+              title="Nhấn để rút đĩa than ra khỏi vỏ"
+            >
+              <VinylSpin
+                posterUrl={product.posterUrl}
+                isPlaying={isCurrentPlaying}
+                size="xl"
+              />
+            </div>
+
+            {/* Sleeve Cover Card */}
+            <div
+              className="relative z-10 w-64 sm:w-80 aspect-square rounded-lg overflow-hidden shadow-2xl border border-white/20 cursor-pointer transition-transform duration-300 hover:scale-102"
+              onClick={() => setIsDiscExtracted(!isDiscExtracted)}
+            >
+              <img
+                src={product.posterUrl}
+                alt={product.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+              <div className="absolute bottom-3 left-3 bg-black/75 backdrop-blur-sm text-white px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
+                {isDiscExtracted ? "Chạm để thu đĩa vào" : "Chạm để rút đĩa ra"}
+              </div>
+            </div>
+          </div>
+
+          {/* Audio Demo Player Action Card */}
+          <div className="bg-amber-50 border-2 border-amber-300 rounded-xl p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-amber-400 text-black flex items-center justify-center flex-shrink-0 shadow-md">
+                <Radio className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="font-extrabold text-xs text-amber-950 uppercase tracking-wider">
+                  Nghe Thử Audio Demo
+                </p>
+                <p className="text-[11px] text-amber-800">
+                  {isCurrentPlaying ? "Đang phát đoạn trích từ rãnh đĩa..." : "Nghe chất âm analog ấm áp của album"}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                if (currentTrack?.id === product.id) {
+                  togglePlay();
+                } else {
+                  playTrack(product);
+                }
+              }}
+              className="bg-[#13151A] hover:bg-black text-amber-400 px-5 py-2.5 rounded-none font-bold text-xs uppercase flex items-center gap-2 shadow-retro-sm active:scale-95 transition-transform"
+            >
+              {isCurrentPlaying ? (
+                <>
+                  <Pause className="w-3.5 h-3.5 fill-current" />
+                  <span>Tạm Dừng</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                  <span>Phát Demo</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Album Details & Purchase Controls */}
+        <div className="lg:col-span-6 space-y-6">
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-100 px-3 py-1 rounded uppercase">
+                {product.platform || "ĐĨA THAN CHÍNH HÃNG"}
+              </span>
+              <button
+                onClick={handleShare}
+                className="text-zinc-500 hover:text-black p-1.5 rounded-full hover:bg-zinc-100"
+                title="Chia sẻ album này"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+            </div>
+
+            <h1 className="text-2xl sm:text-4xl font-black font-display text-zinc-900 mt-3 leading-tight">
+              {product.title}
+            </h1>
+            <p className="text-base sm:text-lg font-bold text-zinc-600 mt-1">
+              Nghệ sĩ: <span className="text-black">{product.artist || "Nhiều nghệ sĩ"}</span>
+            </p>
+          </div>
+
+          {/* Price & Stock status */}
+          <div className="flex items-center gap-4 bg-[#FAF6EE] p-4 rounded-lg border border-zinc-200">
+            <span className="text-2xl sm:text-3xl font-black text-[#13151A] font-display">
+              {product.price ? product.price.toLocaleString("vi-VN") : "0"} ₫
+            </span>
+            <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-black px-2.5 py-1 rounded-full uppercase flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              {product.stockStatus || "CÒN HÀNG SẴN"}
+            </span>
+          </div>
+
+          {/* Description */}
+          <div className="text-xs sm:text-sm text-zinc-700 leading-relaxed space-y-2">
+            <p>
+              {product.description ||
+                "Album đĩa than nguyên bản được sản xuất với tiêu chuẩn âm thanh audiophile độ phân giải cao. Từng rãnh đĩa mang đến dải động phong phú, âm bass sâu lắng và giọng hát ấm áp đặc trưng của công nghệ analog."}
+            </p>
+          </div>
+
+          {/* Quantity & Buy Buttons */}
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center space-x-4">
+              <span className="text-xs font-bold uppercase text-zinc-700">Số lượng:</span>
+              <div className="flex items-center border-2 border-zinc-900 rounded bg-white">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="px-3 py-1.5 text-zinc-700 hover:bg-zinc-100 font-bold"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="px-4 text-xs font-black text-zinc-900">
+                  {quantity}
+                </span>
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="px-3 py-1.5 text-zinc-700 hover:bg-zinc-100 font-bold"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-3.5 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-transform active:scale-[0.99]"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span>THÊM VÀO GIỎ HÀNG</span>
+              </button>
+
+              <button
+                onClick={handleBuyNow}
+                className="flex-1 bg-[#13151A] hover:bg-black text-white py-3.5 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-transform active:scale-[0.99]"
+              >
+                <span>MUA NGAY (GIAO NHANH)</span>
+              </button>
+
+              <button
+                onClick={() => toggleWishlist(product)}
+                className={`p-3.5 border-2 border-zinc-900 rounded-none transition-colors shadow-retro-sm ${
+                  isFavorited
+                    ? "bg-red-500 text-white"
+                    : "bg-white hover:bg-zinc-100 text-zinc-800"
+                }`}
+                title={isFavorited ? "Đã lưu vào Wishlist" : "Lưu vào Wishlist"}
+              >
+                <Heart className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Audiophile Vinyl Specifications */}
+          <div className="pt-6 border-t-2 border-zinc-900 space-y-4">
+            <h3 className="text-sm font-black font-display uppercase tracking-wider text-zinc-900 flex items-center gap-2">
+              <Disc3 className="w-4 h-4 text-amber-500" />
+              <span>Thông Số Kỹ Thuật Đĩa Than (Audiophile Specs)</span>
+            </h3>
+
+            <div className="grid grid-cols-2 gap-3 text-xs bg-white p-4 border border-zinc-200 rounded-lg">
+              <div className="text-zinc-500">Tốc độ quay (Speed):</div>
+              <div className="font-bold text-zinc-900">{product.speed || "33 ⅓ RPM"}</div>
+
+              <div className="text-zinc-500">Trọng lượng (Weight):</div>
+              <div className="font-bold text-zinc-900">{product.weight || "180g Audiophile Vinyl"}</div>
+
+              <div className="text-zinc-500">Năm sản xuất:</div>
+              <div className="font-bold text-zinc-900">{product.manufactureYear || product.releaseYear || "2023"}</div>
+
+              <div className="text-zinc-500">Hãng phát hành (Label):</div>
+              <div className="font-bold text-zinc-900">{product.studioName || "Vọc Records Imported"}</div>
+
+              <div className="text-zinc-500">Tình trạng đĩa / vỏ:</div>
+              <div className="font-bold text-emerald-700">M / Mint (Mới 100% nguyên seal)</div>
+
+              <div className="text-zinc-500">Quốc gia xuất xứ:</div>
+              <div className="font-bold text-zinc-900">{product.region || "US / UK / Japan"}</div>
+            </div>
+          </div>
+
+          {/* Shipping & Packaging Assurance */}
+          <div className="bg-zinc-100 rounded-lg p-4 space-y-2 text-xs text-zinc-700">
+            <div className="flex items-center gap-2 font-bold text-zinc-900">
+              <Truck className="w-4 h-4 text-amber-600" />
+              <span>Cam kết đóng gói chuyên dụng chống cong vênh</span>
+            </div>
+            <p className="text-[11px] text-zinc-500 leading-relaxed">
+              Mỗi đơn hàng đĩa than đều được Vọc bọc xốp bóng khí 3 lớp và đóng hộp carton cứng cáp chuyên dụng để bảo vệ rãnh đĩa nguyên vẹn trong suốt hành trình vận chuyển.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Related Vinyl Section */}
+      {relatedProducts.length > 0 && (
+        <div className="pt-12 border-t-2 border-zinc-900 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl sm:text-2xl font-black font-display uppercase tracking-tight text-zinc-900">
+              Có Thể Bạn Cũng Thích
+            </h2>
+            <Link
+              to="/product-category/vinyl"
+              className="text-xs font-bold text-amber-600 hover:underline uppercase"
+            >
+              Xem thêm đĩa khác &gt;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {relatedProducts.map((rel) => (
+              <ProductCard key={rel.id} product={rel} />
+            ))}
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
 };
 
 export default ProductDetail;
