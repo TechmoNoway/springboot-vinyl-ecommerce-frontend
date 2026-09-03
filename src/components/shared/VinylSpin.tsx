@@ -46,7 +46,7 @@ const VinylSpin: React.FC<VinylSpinProps> = ({
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-tr from-amber-600 to-yellow-400 flex items-center justify-center">
-            <span className="text-[8px] font-black text-black">VOC</span>
+            <span className="text-[7px] font-black text-black tracking-tighter">33 RPM</span>
           </div>
         )}
         {/* Spindle hole */}

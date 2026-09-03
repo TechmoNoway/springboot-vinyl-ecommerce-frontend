@@ -49,9 +49,11 @@ const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
   }
 
   if (newCart.length > 0) {
-    localStorage.setItem("voc_cart", JSON.stringify(newCart));
-    localStorage.setItem("voc_cart_ts", JSON.stringify(Date.now()));
+    localStorage.setItem("33rpm_cart", JSON.stringify(newCart));
+    localStorage.setItem("33rpm_cart_ts", JSON.stringify(Date.now()));
   } else {
+    localStorage.removeItem("33rpm_cart");
+    localStorage.removeItem("33rpm_cart_ts");
     localStorage.removeItem("voc_cart");
     localStorage.removeItem("voc_cart_ts");
   }
@@ -81,8 +83,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [cart, dispatch] = useReducer(cartReducer, [], () => {
     try {
-      const stored = localStorage.getItem("voc_cart") || localStorage.getItem("cart");
-      const ts = localStorage.getItem("voc_cart_ts") || localStorage.getItem("cartTimestamp");
+      const stored =
+        localStorage.getItem("33rpm_cart") ||
+        localStorage.getItem("voc_cart") ||
+        localStorage.getItem("cart");
+      const ts =
+        localStorage.getItem("33rpm_cart_ts") ||
+        localStorage.getItem("voc_cart_ts") ||
+        localStorage.getItem("cartTimestamp");
       if (stored && ts) {
         const savedTime = JSON.parse(ts);
         if (Date.now() - savedTime < CART_EXPIRATION_TIME) {

@@ -59,7 +59,7 @@ const AccountAddresses: React.FC = () => {
             📦 Lưu ý khi nhận đĩa than:
           </p>
           <p className="leading-relaxed">
-            Vọc Records luôn đóng gói đĩa than bằng thùng carton 3 lớp chuyên dụng và bọc bóng khí chống sốc tiêu chuẩn quốc tế. Vui lòng kiểm tra kỹ bưu phẩm trước khi thanh toán cho shipper nhé!
+            33 RPM luôn đóng gói đĩa than bằng thùng carton 3 lớp chuyên dụng và bọc bóng khí chống sốc tiêu chuẩn quốc tế. Vui lòng kiểm tra kỹ bưu phẩm trước khi thanh toán cho shipper nhé!
           </p>
         </div>
       </div>

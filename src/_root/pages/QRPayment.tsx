@@ -17,7 +17,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 const DEFAULT_BANK_INFO = {
   bankName: "MBBank (Ngân Hàng Quân Đội)",
   accountNumber: "0901338619",
-  accountHolder: "CONG TY TNHH VOC RECORDS VIETNAM",
+  accountHolder: "CONG TY TNHH 33 RPM VIETNAM",
   branch: "Chi nhánh Đống Đa - Hà Nội",
 };
 
@@ -33,7 +33,7 @@ const QRPayment: React.FC = () => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const numericAmount = amount ? parseInt(amount, 10) : 500000;
-  const transferContent = `VOC ${orderId}`;
+  const transferContent = `33RPM ${orderId}`;
 
   // Generate dynamic VietQR URL (MB Bank / Standard Quicklink)
   const qrUrl = `https://img.vietqr.io/image/MB-0901338619-compact2.png?amount=${numericAmount}&addInfo=${encodeURIComponent(
@@ -99,7 +99,7 @@ const QRPayment: React.FC = () => {
         <Link to="/" className="inline-flex items-center gap-2">
           <Disc3 className="w-8 h-8 text-amber-400 animate-spin-slow" />
           <span className="text-2xl font-black font-display text-white">
-            VOC <span className="text-amber-400">RECORDS</span>
+            33 <span className="text-amber-400">RPM</span>
           </span>
         </Link>
         <p className="text-xs text-zinc-400 uppercase tracking-widest">
@@ -125,7 +125,7 @@ const QRPayment: React.FC = () => {
                 Thanh Toán Thành Công!
               </h2>
               <p className="text-sm text-zinc-300 max-w-md mx-auto">
-                Cảm ơn bạn đã đặt hàng tại Vọc Records. Hệ thống đang chuyển hướng tới trang chi tiết đơn hàng #{orderId}...
+                Cảm ơn bạn đã đặt hàng tại 33 RPM. Hệ thống đang chuyển hướng tới trang chi tiết đơn hàng #{orderId}...
               </p>
               <ClipLoader size={24} color="#10B981" />
             </motion.div>

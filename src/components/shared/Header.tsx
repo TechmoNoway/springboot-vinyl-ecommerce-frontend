@@ -120,11 +120,11 @@ const Header: React.FC = () => {
           </motion.div>
           <div className="flex flex-col">
             <div className="flex items-center">
-              <span className="font-extrabold text-xl tracking-tight text-white font-display">
-                VOC
+              <span className="font-extrabold text-2xl tracking-tight text-white font-display">
+                33
               </span>
-              <span className="font-bold text-xl tracking-tight text-amber-400 font-display ml-1">
-                RECORDS
+              <span className="font-bold text-2xl tracking-tight text-amber-400 font-display ml-1">
+                RPM
               </span>
             </div>
             <span className="text-[9px] uppercase tracking-widest text-zinc-400 -mt-1 font-semibold">
@@ -378,7 +378,7 @@ const Header: React.FC = () => {
                     </>
                   ) : (
                     <div className="p-3 text-center space-y-2">
-                      <p className="text-zinc-300 font-medium">Chào mừng bạn đến với Vọc!</p>
+                      <p className="text-zinc-300 font-medium">Chào mừng bạn đến với 33 RPM!</p>
                       <Link
                         to="/login-signup"
                         onClick={() => setUserDropdownOpen(false)}

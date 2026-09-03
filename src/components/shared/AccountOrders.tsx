@@ -52,7 +52,7 @@ const AccountOrders: React.FC = () => {
             Bạn chưa có đơn hàng nào
           </h3>
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-            Hãy khám phá kho đĩa than phong phú của Vọc và đặt chiếc đĩa đầu tiên cho bộ sưu tập nhé!
+            Hãy khám phá kho đĩa than phong phú của 33 RPM và đặt chiếc đĩa đầu tiên cho bộ sưu tập nhé!
           </p>
           <Link
             to="/product-category/vinyl"

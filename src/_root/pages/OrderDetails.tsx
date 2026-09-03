@@ -61,7 +61,7 @@ const OrderDetails: React.FC = () => {
           Không tìm thấy đơn hàng #{id}
         </h2>
         <p className="text-xs text-zinc-500">
-          Vui lòng kiểm tra lại mã vận đơn hoặc liên hệ với hotline của Vọc Records để được trợ giúp.
+          Vui lòng kiểm tra lại mã vận đơn hoặc liên hệ với hotline của 33 RPM để được trợ giúp.
         </p>
         <Link
           to="/"
@@ -228,7 +228,7 @@ const OrderDetails: React.FC = () => {
           </div>
 
           <div className="space-y-1.5 text-zinc-700">
-            <p className="font-bold text-zinc-900 text-sm">Vọc Records Vietnam</p>
+            <p className="font-bold text-zinc-900 text-sm">33 RPM Vietnam</p>
             <p className="flex items-center gap-1.5">
               <Phone className="w-3.5 h-3.5 text-zinc-400" />
               <span>Hotline hỗ trợ: 090 133 8619</span>

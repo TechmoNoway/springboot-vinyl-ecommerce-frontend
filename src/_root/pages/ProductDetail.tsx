@@ -120,7 +120,7 @@ const ProductDetail: React.FC = () => {
     if (navigator.share) {
       navigator.share({
         title: product.title,
-        text: `Nghe đĩa than ${product.title} - ${product.artist} tại Vọc Records!`,
+        text: `Nghe đĩa than ${product.title} - ${product.artist} tại 33 RPM!`,
         url: window.location.href,
       }).catch(() => {});
     } else {
@@ -355,7 +355,7 @@ const ProductDetail: React.FC = () => {
               <div className="font-bold text-zinc-900">{product.manufactureYear || product.releaseYear || "2023"}</div>
 
               <div className="text-zinc-500">Hãng phát hành (Label):</div>
-              <div className="font-bold text-zinc-900">{product.studioName || "Vọc Records Imported"}</div>
+              <div className="font-bold text-zinc-900">{product.studioName || "33 RPM Imported"}</div>
 
               <div className="text-zinc-500">Tình trạng đĩa / vỏ:</div>
               <div className="font-bold text-emerald-700">M / Mint (Mới 100% nguyên seal)</div>
@@ -372,7 +372,7 @@ const ProductDetail: React.FC = () => {
               <span>Cam kết đóng gói chuyên dụng chống cong vênh</span>
             </div>
             <p className="text-[11px] text-zinc-500 leading-relaxed">
-              Mỗi đơn hàng đĩa than đều được Vọc bọc xốp bóng khí 3 lớp và đóng hộp carton cứng cáp chuyên dụng để bảo vệ rãnh đĩa nguyên vẹn trong suốt hành trình vận chuyển.
+              Mỗi đơn hàng đĩa than đều được 33 RPM bọc xốp bóng khí 3 lớp và đóng hộp carton cứng cáp chuyên dụng để bảo vệ rãnh đĩa nguyên vẹn trong suốt hành trình vận chuyển.
             </p>
           </div>
 

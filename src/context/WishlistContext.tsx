@@ -16,7 +16,9 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [wishlist, setWishlist] = useState<IProduct[]>(() => {
     try {
-      const stored = localStorage.getItem("voc_wishlist");
+      const stored =
+        localStorage.getItem("33rpm_wishlist") ||
+        localStorage.getItem("voc_wishlist");
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -24,7 +26,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   useEffect(() => {
-    localStorage.setItem("voc_wishlist", JSON.stringify(wishlist));
+    localStorage.setItem("33rpm_wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
 
   const toggleWishlist = (product: IProduct) => {

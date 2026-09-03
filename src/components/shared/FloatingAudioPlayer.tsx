@@ -74,7 +74,7 @@ const FloatingAudioPlayer: React.FC = () => {
                 </Link>
                 <p className="text-xs text-zinc-400 truncate flex items-center gap-1">
                   <Music2 className="w-3 h-3 text-amber-500 inline" />
-                  {currentTrack.artist || "Vọc Vinyl Demo"}
+                  {currentTrack.artist || "33 RPM Vinyl Demo"}
                 </p>
               </div>
             </div>

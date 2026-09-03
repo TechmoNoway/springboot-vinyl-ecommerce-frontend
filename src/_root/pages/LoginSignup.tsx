@@ -59,7 +59,7 @@ const LoginSignup: React.FC = () => {
         await stateLogin(token);
         toast({
           title: "Đăng nhập thành công! 🎉",
-          description: "Chào mừng bạn quay trở lại với Vọc Records.",
+          description: "Chào mừng bạn quay trở lại với 33 RPM.",
         });
         navigate("/account/details");
       } else {
@@ -123,7 +123,7 @@ const LoginSignup: React.FC = () => {
       await stateLogin(token);
       toast({
         title: "Đăng nhập bằng Google thành công!",
-        description: "Chào mừng bạn đến với Vọc Records.",
+        description: "Chào mừng bạn đến với 33 RPM.",
       });
       navigate("/account/details");
     } catch {
@@ -145,8 +145,8 @@ const LoginSignup: React.FC = () => {
           <div className="space-y-3 relative z-10">
             <Link to="/" className="inline-flex items-center gap-2">
               <Disc3 className="w-7 h-7 text-amber-400 animate-spin-slow" />
-              <span className="text-xl font-black font-display text-white">
-                VOC <span className="text-amber-400">RECORDS</span>
+              <span className="text-2xl font-black font-display text-white">
+                33 <span className="text-amber-400">RPM</span>
               </span>
             </Link>
             <p className="text-xs text-zinc-400 leading-relaxed">
@@ -169,7 +169,7 @@ const LoginSignup: React.FC = () => {
           </div>
 
           <div className="text-[11px] text-zinc-500 relative z-10">
-            © {new Date().getFullYear()} Vọc Records Vietnam.
+            © {new Date().getFullYear()} 33 RPM Vietnam.
           </div>
 
           {/* Background Vinyl Ring */}
@@ -358,7 +358,7 @@ const LoginSignup: React.FC = () => {
           </AnimatePresence>
 
           <div className="text-[10px] text-zinc-400 text-center leading-relaxed">
-            Bằng việc tiếp tục, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Vọc Records.
+            Bằng việc tiếp tục, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của 33 RPM.
           </div>
 
         </div>

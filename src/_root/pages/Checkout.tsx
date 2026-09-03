@@ -159,7 +159,7 @@ const Checkout: React.FC = () => {
           Chi Tiết Thanh Toán & Đặt Hàng
         </h1>
         <p className="text-xs text-zinc-500 mt-1">
-          Hoàn tất các bước bên dưới để nhận những đĩa than được đóng gói cẩn thận từ Vọc Records.
+          Hoàn tất các bước bên dưới để nhận những đĩa than được đóng gói cẩn thận từ 33 RPM.
         </p>
       </FadeIn>
 
@@ -369,7 +369,7 @@ const Checkout: React.FC = () => {
                     <span>Chuyển Khoản Ngân Hàng Thủ Công</span>
                   </span>
                   <p className="text-[11px] text-zinc-500 mt-1">
-                    Chuyển khoản trực tiếp tới STK ngân hàng của Vọc Records và ghi nội dung là Mã đơn hàng.
+                    Chuyển khoản trực tiếp tới STK ngân hàng của 33 RPM và ghi nội dung là Mã đơn hàng.
                   </p>
                 </div>
               </label>

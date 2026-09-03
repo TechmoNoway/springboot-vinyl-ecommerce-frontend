@@ -34,7 +34,12 @@ const Cart: React.FC = () => {
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
-    if (couponCode.toUpperCase() === "VOCVINYL" || couponCode.toUpperCase() === "WELCOME") {
+    if (
+      couponCode.toUpperCase() === "33RPM" ||
+      couponCode.toUpperCase() === "RPM33" ||
+      couponCode.toUpperCase() === "VOCVINYL" ||
+      couponCode.toUpperCase() === "WELCOME"
+    ) {
       const discount = Math.round(totalPrice * 0.1);
       setDiscountAmount(discount);
       toast({
@@ -45,7 +50,7 @@ const Cart: React.FC = () => {
       toast({
         variant: "destructive",
         title: "Mã không hợp lệ",
-        description: "Mã giảm giá không tồn tại hoặc đã hết hạn. Hãy thử mã 'VOCVINYL'.",
+        description: "Mã giảm giá không tồn tại hoặc đã hết hạn. Hãy thử mã '33RPM'.",
       });
     }
   };
@@ -194,7 +199,7 @@ const Cart: React.FC = () => {
           <div className="bg-white border-2 border-zinc-900 rounded-lg p-4 shadow-retro flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-xs font-bold uppercase text-zinc-800">
               <Tag className="w-4 h-4 text-amber-500" />
-              <span>Mã Giảm Giá Ưu Đãi (Thử: VOCVINYL)</span>
+              <span>Mã Giảm Giá Ưu Đãi (Thử: 33RPM)</span>
             </div>
             <form onSubmit={handleApplyCoupon} className="flex w-full sm:w-auto gap-2">
               <input
@@ -305,7 +310,7 @@ const Cart: React.FC = () => {
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-600 font-bold">
-                  <span>Mã giảm giá (VOCVINYL):</span>
+                  <span>Mã giảm giá (33RPM):</span>
                   <span>-{discountAmount.toLocaleString()} ₫</span>
                 </div>
               )}

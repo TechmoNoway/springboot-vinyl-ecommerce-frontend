@@ -112,7 +112,7 @@ const AdminDashboard: React.FC = () => {
       const res = await importVocCatalog({ limit: catalogLimit });
       toast({
         title: "Tiến trình Import đã kích hoạt!",
-        description: res?.data?.message || `Đang nhập ${catalogLimit} đĩa than từ VOC Records.`,
+        description: res?.data?.message || `Đang nhập ${catalogLimit} đĩa than vào kho 33 RPM.`,
       });
     } catch (err) {
       console.error("VOC Bulk Import Error:", err);
@@ -276,7 +276,7 @@ const AdminDashboard: React.FC = () => {
                   </h3>
                 </div>
                 <p className="text-xs text-zinc-600 leading-relaxed">
-                  Kích hoạt tác vụ thu thập đĩa than tự động từ catalog Voc Records. Hệ thống sẽ cào thông tin tiêu đề, ảnh poster, nghệ sĩ, năm phát hành và giá bán vào database.
+                  Kích hoạt tác vụ thu thập đĩa than tự động từ catalog nguồn. Hệ thống sẽ cào thông tin tiêu đề, ảnh poster, nghệ sĩ, năm phát hành và giá bán vào database 33 RPM.
                 </p>
 
                 <form onSubmit={handleBulkImport} className="space-y-4 pt-2">
@@ -505,7 +505,7 @@ const AdminDashboard: React.FC = () => {
                 </div>
 
                 <pre className="bg-zinc-900 p-4 rounded text-[11px] font-mono text-amber-300 overflow-x-auto max-h-60">
-                  {helloTestResult || JSON.stringify({ message: "Hello from Voc Records Backend API Diagnostic" }, null, 2)}
+                  {helloTestResult || JSON.stringify({ message: "Hello from 33 RPM Backend API Diagnostic" }, null, 2)}
                 </pre>
               </div>
 

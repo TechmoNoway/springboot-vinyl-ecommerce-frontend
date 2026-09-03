@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
           <div className="space-y-1 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2 text-amber-400 font-bold text-sm tracking-wider uppercase">
               <Sparkles className="w-4 h-4" />
-              <span>Voc Records Mixtape & Secret Drops</span>
+              <span>33 RPM Mixtape & Secret Drops</span>
             </div>
             <h3 className="text-xl sm:text-2xl font-black text-white font-display">
               Nhận thông báo đĩa than hiếm & ưu đãi độc quyền
@@ -84,8 +84,8 @@ const Footer: React.FC = () => {
               <div className="w-8 h-8 bg-zinc-800 rounded-full flex items-center justify-center border border-amber-500/80">
                 <Disc3 className="w-5 h-5 text-amber-400" />
               </div>
-              <span className="font-extrabold text-xl tracking-tight text-white font-display">
-                VOC <span className="text-amber-400">RECORDS</span>
+              <span className="font-extrabold text-2xl tracking-tight text-white font-display">
+                33 <span className="text-amber-400">RPM</span>
               </span>
             </Link>
             <p className="text-xs text-zinc-400 leading-relaxed max-w-sm">
@@ -258,7 +258,7 @@ const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-6 border-t border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-          <p>© {new Date().getFullYear()} VỌC RECORDS. Bản quyền thuộc về Vọc Records Vietnam.</p>
+          <p>© {new Date().getFullYear()} 33 RPM. Bản quyền thuộc về 33 RPM Vietnam.</p>
           <div className="flex items-center space-x-4">
             <span>Analog Sound Experience</span>
             <span>•</span>
