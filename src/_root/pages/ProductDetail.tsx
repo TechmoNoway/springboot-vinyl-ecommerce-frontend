@@ -8,6 +8,8 @@ import { useAudioPlayer } from "@/context/AudioPlayerContext";
 import { useToast } from "@/hooks/use-toast";
 import VinylSpin from "@/components/shared/VinylSpin";
 import ProductCard from "@/components/shared/ProductCard";
+import { motion } from "framer-motion";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations/MotionWrapper";
 import {
   Heart,
   ShoppingBag,
@@ -80,7 +82,7 @@ const ProductDetail: React.FC = () => {
 
   if (!product) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
+      <FadeIn direction="up" className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
         <Disc3 className="w-16 h-16 text-zinc-400 mx-auto animate-spin-slow" />
         <h2 className="text-2xl font-bold font-display text-zinc-900">
           Không tìm thấy đĩa than này
@@ -94,7 +96,7 @@ const ProductDetail: React.FC = () => {
         >
           Quay lại cửa hàng
         </button>
-      </div>
+      </FadeIn>
     );
   }
 
@@ -134,7 +136,7 @@ const ProductDetail: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
       
       {/* Breadcrumb */}
-      <div className="flex items-center space-x-2 text-xs text-zinc-500 uppercase tracking-wider">
+      <FadeIn direction="down" className="flex items-center space-x-2 text-xs text-zinc-500 uppercase tracking-wider">
         <Link to="/" className="hover:text-black">Trang Chủ</Link>
         <span>/</span>
         <Link to="/product-category/vinyl" className="hover:text-black">Đĩa Than</Link>
@@ -142,22 +144,29 @@ const ProductDetail: React.FC = () => {
         <span className="font-bold text-zinc-900 truncate max-w-xs sm:max-w-md">
           {product.title}
         </span>
-      </div>
+      </FadeIn>
 
       {/* Main Product Showcase Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         
         {/* Left: Vinyl Sleeve & Interactive Turntable Record */}
-        <div className="lg:col-span-6 space-y-6">
+        <FadeIn direction="right" className="lg:col-span-6 space-y-6">
           <div className="relative bg-[#1A1C22] rounded-2xl p-6 border-2 border-zinc-800 shadow-2xl overflow-hidden flex items-center justify-center min-h-[380px] sm:min-h-[480px]">
             
-            {/* Sliding out Disc Graphic */}
-            <div
-              className={`absolute transition-all duration-700 ease-out z-0 cursor-pointer ${
-                isDiscExtracted || isCurrentPlaying
-                  ? "translate-x-28 sm:translate-x-36 rotate-90 scale-105"
-                  : "translate-x-0 rotate-0 scale-95"
-              }`}
+            {/* Sliding out Disc Graphic with Motion Spring */}
+            <motion.div
+              animate={{
+                x: isDiscExtracted || isCurrentPlaying ? 130 : 0,
+                rotate: isDiscExtracted || isCurrentPlaying ? 90 : 0,
+                scale: isDiscExtracted || isCurrentPlaying ? 1.05 : 0.95,
+              }}
+              transition={{
+                type: "spring",
+                damping: 22,
+                stiffness: 180,
+                mass: 0.9,
+              }}
+              className="absolute z-0 cursor-pointer"
               onClick={() => setIsDiscExtracted(!isDiscExtracted)}
               title="Nhấn để rút đĩa than ra khỏi vỏ"
             >
@@ -166,11 +175,13 @@ const ProductDetail: React.FC = () => {
                 isPlaying={isCurrentPlaying}
                 size="xl"
               />
-            </div>
+            </motion.div>
 
             {/* Sleeve Cover Card */}
-            <div
-              className="relative z-10 w-64 sm:w-80 aspect-square rounded-lg overflow-hidden shadow-2xl border border-white/20 cursor-pointer transition-transform duration-300 hover:scale-102"
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+              className="relative z-10 w-64 sm:w-80 aspect-square rounded-lg overflow-hidden shadow-2xl border border-white/20 cursor-pointer"
               onClick={() => setIsDiscExtracted(!isDiscExtracted)}
             >
               <img
@@ -182,7 +193,7 @@ const ProductDetail: React.FC = () => {
               <div className="absolute bottom-3 left-3 bg-black/75 backdrop-blur-sm text-white px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
                 {isDiscExtracted ? "Chạm để thu đĩa vào" : "Chạm để rút đĩa ra"}
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Audio Demo Player Action Card */}
@@ -201,7 +212,8 @@ const ProductDetail: React.FC = () => {
               </div>
             </div>
 
-            <button
+            <motion.button
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 if (currentTrack?.id === product.id) {
                   togglePlay();
@@ -209,7 +221,7 @@ const ProductDetail: React.FC = () => {
                   playTrack(product);
                 }
               }}
-              className="bg-[#13151A] hover:bg-black text-amber-400 px-5 py-2.5 rounded-none font-bold text-xs uppercase flex items-center gap-2 shadow-retro-sm active:scale-95 transition-transform"
+              className="bg-[#13151A] hover:bg-black text-amber-400 px-5 py-2.5 rounded-none font-bold text-xs uppercase flex items-center gap-2 shadow-retro-sm transition-colors"
             >
               {isCurrentPlaying ? (
                 <>
@@ -222,12 +234,12 @@ const ProductDetail: React.FC = () => {
                   <span>Phát Demo</span>
                 </>
               )}
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </FadeIn>
 
         {/* Right: Album Details & Purchase Controls */}
-        <div className="lg:col-span-6 space-y-6">
+        <FadeIn direction="left" delay={0.1} className="lg:col-span-6 space-y-6">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-100 px-3 py-1 rounded uppercase">
@@ -235,7 +247,7 @@ const ProductDetail: React.FC = () => {
               </span>
               <button
                 onClick={handleShare}
-                className="text-zinc-500 hover:text-black p-1.5 rounded-full hover:bg-zinc-100"
+                className="text-zinc-500 hover:text-black p-1.5 rounded-full hover:bg-zinc-100 transition-colors"
                 title="Chia sẻ album này"
               >
                 <Share2 className="w-4 h-4" />
@@ -293,22 +305,25 @@ const ProductDetail: React.FC = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={handleAddToCart}
-                className="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-3.5 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-transform active:scale-[0.99]"
+                className="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-3.5 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-colors"
               >
                 <ShoppingBag className="w-4 h-4" />
                 <span>THÊM VÀO GIỎ HÀNG</span>
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={handleBuyNow}
-                className="flex-1 bg-[#13151A] hover:bg-black text-white py-3.5 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-transform active:scale-[0.99]"
+                className="flex-1 bg-[#13151A] hover:bg-black text-white py-3.5 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-colors"
               >
                 <span>MUA NGAY (GIAO NHANH)</span>
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.9 }}
                 onClick={() => toggleWishlist(product)}
                 className={`p-3.5 border-2 border-zinc-900 rounded-none transition-colors shadow-retro-sm ${
                   isFavorited
@@ -318,7 +333,7 @@ const ProductDetail: React.FC = () => {
                 title={isFavorited ? "Đã lưu vào Wishlist" : "Lưu vào Wishlist"}
               >
                 <Heart className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`} />
-              </button>
+              </motion.button>
             </div>
           </div>
 
@@ -361,13 +376,13 @@ const ProductDetail: React.FC = () => {
             </p>
           </div>
 
-        </div>
+        </FadeIn>
 
       </div>
 
       {/* Related Vinyl Section */}
       {relatedProducts.length > 0 && (
-        <div className="pt-12 border-t-2 border-zinc-900 space-y-6">
+        <FadeIn direction="up" className="pt-12 border-t-2 border-zinc-900 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl sm:text-2xl font-black font-display uppercase tracking-tight text-zinc-900">
               Có Thể Bạn Cũng Thích
@@ -380,12 +395,14 @@ const ProductDetail: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             {relatedProducts.map((rel) => (
-              <ProductCard key={rel.id} product={rel} />
+              <StaggerItem key={rel.id}>
+                <ProductCard product={rel} />
+              </StaggerItem>
             ))}
-          </div>
-        </div>
+          </StaggerContainer>
+        </FadeIn>
       )}
 
     </div>

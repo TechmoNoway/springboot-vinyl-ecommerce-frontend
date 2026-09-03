@@ -21,14 +21,17 @@ import AccountWishlist from "./components/shared/AccountWishlist";
 
 function App() {
   return (
-    <main className="w-full min-h-screen">
+    <div className="w-full min-h-screen">
       <Routes>
         <Route element={<RootLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/product-category/vinyl" element={<Shop />} />
           <Route path="/product/:title" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/product-category/vinyl" element={<Shop />} />
+          <Route path="/login" element={<LoginSignup />} />
+          <Route path="/signup" element={<LoginSignup />} />
           <Route path="/login-signup" element={<LoginSignup />} />
           <Route path="/order-details/:id" element={<OrderDetails />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -53,7 +56,7 @@ function App() {
       </Routes>
 
       <Toaster />
-    </main>
+    </div>
   );
 }
 

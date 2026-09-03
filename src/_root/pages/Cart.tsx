@@ -12,6 +12,8 @@ import {
   Tag,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { FadeIn } from "@/components/animations/MotionWrapper";
 
 const FREE_SHIPPING_THRESHOLD = 1000000;
 
@@ -54,7 +56,7 @@ const Cart: React.FC = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
+      <FadeIn direction="up" className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
         <div className="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto">
           <ShoppingBag className="w-10 h-10 text-zinc-400" />
         </div>
@@ -70,7 +72,7 @@ const Cart: React.FC = () => {
         >
           Khám Phá Đĩa Than Ngay
         </button>
-      </div>
+      </FadeIn>
     );
   }
 
@@ -78,7 +80,7 @@ const Cart: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
       {/* Page Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-zinc-900 pb-4">
+      <FadeIn direction="down" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-zinc-900 pb-4">
         <div className="flex items-center gap-2">
           <ShoppingBag className="w-6 h-6 text-amber-500" />
           <h1 className="text-2xl sm:text-3xl font-black font-display uppercase tracking-tight text-zinc-900">
@@ -87,18 +89,18 @@ const Cart: React.FC = () => {
         </div>
         <button
           onClick={clearCart}
-          className="text-xs font-semibold text-zinc-500 hover:text-red-500 flex items-center gap-1"
+          className="text-xs font-semibold text-zinc-500 hover:text-red-500 flex items-center gap-1 transition-colors"
         >
           <Trash2 className="w-3.5 h-3.5" />
           <span>Xóa tất cả</span>
         </button>
-      </div>
+      </FadeIn>
 
       {/* Main Grid: Items Table + Summary Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Items Table */}
-        <div className="lg:col-span-8 space-y-6">
+        <FadeIn direction="right" className="lg:col-span-8 space-y-6">
           <div className="bg-white border-2 border-zinc-900 rounded-lg shadow-retro overflow-hidden">
             
             {/* Desktop Table Headers */}
@@ -109,74 +111,81 @@ const Cart: React.FC = () => {
               <div className="col-span-2 text-right">Tổng Tiền</div>
             </div>
 
-            {/* Cart Rows */}
+            {/* Cart Rows with AnimatePresence */}
             <div className="divide-y divide-zinc-200">
-              {cart.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center"
-                >
-                  {/* Product Info */}
-                  <div className="sm:col-span-6 flex items-center space-x-3">
-                    <img
-                      src={item.posterUrl}
-                      alt={item.title}
-                      className="w-16 h-16 object-cover rounded shadow-sm border border-zinc-200 flex-shrink-0"
-                    />
-                    <div className="overflow-hidden">
-                      <Link
-                        to={`/product/${encodeURIComponent(item.title)}`}
-                        className="font-bold text-sm text-zinc-900 hover:text-amber-600 truncate block"
-                      >
-                        {item.title}
-                      </Link>
-                      <p className="text-xs text-zinc-500 truncate">
-                        {item.artist || "Đĩa than chính hãng"}
-                      </p>
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-[11px] text-red-500 hover:underline flex items-center gap-1 mt-1 font-semibold"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span>Xóa</span>
-                      </button>
+              <AnimatePresence mode="popLayout">
+                {cart.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -50, height: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center overflow-hidden"
+                  >
+                    {/* Product Info */}
+                    <div className="sm:col-span-6 flex items-center space-x-3">
+                      <img
+                        src={item.posterUrl}
+                        alt={item.title}
+                        className="w-16 h-16 object-cover rounded shadow-sm border border-zinc-200 flex-shrink-0"
+                      />
+                      <div className="overflow-hidden">
+                        <Link
+                          to={`/product/${encodeURIComponent(item.title)}`}
+                          className="font-bold text-sm text-zinc-900 hover:text-amber-600 truncate block transition-colors"
+                        >
+                          {item.title}
+                        </Link>
+                        <p className="text-xs text-zinc-500 truncate">
+                          {item.artist || "Đĩa than chính hãng"}
+                        </p>
+                        <button
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-[11px] text-red-500 hover:underline flex items-center gap-1 mt-1 font-semibold"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          <span>Xóa</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Unit Price */}
-                  <div className="sm:col-span-2 text-left sm:text-center text-xs font-bold text-zinc-700">
-                    <span className="sm:hidden text-zinc-400 font-normal">Giá: </span>
-                    {item.price ? item.price.toLocaleString() : "0"} ₫
-                  </div>
-
-                  {/* Quantity Stepper */}
-                  <div className="sm:col-span-2 flex items-center sm:justify-center">
-                    <div className="flex items-center border border-zinc-300 rounded bg-white">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="px-2 py-1 text-zinc-600 hover:text-black"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="px-3 text-xs font-bold text-zinc-900">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="px-2 py-1 text-zinc-600 hover:text-black"
-                      >
-                        <Plus className="w-3 h-3" />
-                      </button>
+                    {/* Unit Price */}
+                    <div className="sm:col-span-2 text-left sm:text-center text-xs font-bold text-zinc-700">
+                      <span className="sm:hidden text-zinc-400 font-normal">Giá: </span>
+                      {item.price ? item.price.toLocaleString() : "0"} ₫
                     </div>
-                  </div>
 
-                  {/* Row Total */}
-                  <div className="sm:col-span-2 text-left sm:text-right text-sm font-extrabold text-amber-700">
-                    <span className="sm:hidden text-zinc-400 font-normal text-xs">Tổng: </span>
-                    {((item.price || 0) * item.quantity).toLocaleString()} ₫
-                  </div>
-                </div>
-              ))}
+                    {/* Quantity Stepper */}
+                    <div className="sm:col-span-2 flex items-center sm:justify-center">
+                      <div className="flex items-center border border-zinc-300 rounded bg-white">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="px-2 py-1 text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="px-3 text-xs font-bold text-zinc-900">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="px-2 py-1 text-zinc-600 hover:text-black hover:bg-zinc-50 transition-colors"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Row Total */}
+                    <div className="sm:col-span-2 text-left sm:text-right text-sm font-extrabold text-amber-700">
+                      <span className="sm:hidden text-zinc-400 font-normal text-xs">Tổng: </span>
+                      {((item.price || 0) * item.quantity).toLocaleString()} ₫
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
 
           </div>
@@ -195,12 +204,13 @@ const Cart: React.FC = () => {
                 onChange={(e) => setCouponCode(e.target.value)}
                 className="bg-zinc-50 border border-zinc-300 text-xs px-3 py-2 rounded focus:outline-none uppercase font-bold text-zinc-800"
               />
-              <button
+              <motion.button
+                whileTap={{ scale: 0.96 }}
                 type="submit"
-                className="bg-[#13151A] hover:bg-black text-amber-300 font-bold text-xs uppercase px-4 py-2 rounded shadow-retro-sm"
+                className="bg-[#13151A] hover:bg-black text-amber-300 font-bold text-xs uppercase px-4 py-2 rounded shadow-retro-sm transition-colors"
               >
                 Áp Dụng
-              </button>
+              </motion.button>
             </form>
           </div>
 
@@ -208,16 +218,16 @@ const Cart: React.FC = () => {
           <div>
             <Link
               to="/product-category/vinyl"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-700 hover:text-black"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-zinc-700 hover:text-black transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Tiếp tục chọn thêm đĩa than</span>
             </Link>
           </div>
-        </div>
+        </FadeIn>
 
         {/* Right Column: Order Summary & Checkout CTA */}
-        <div className="lg:col-span-4 space-y-6">
+        <FadeIn direction="left" delay={0.1} className="lg:col-span-4 space-y-6">
           <div className="bg-white border-2 border-zinc-900 rounded-lg p-6 shadow-retro space-y-6">
             
             <h3 className="text-lg font-black font-display uppercase tracking-tight text-zinc-900 border-b border-zinc-200 pb-3">
@@ -246,7 +256,7 @@ const Cart: React.FC = () => {
               </label>
               
               <div className="space-y-2 text-xs">
-                <label className="flex items-center justify-between p-2.5 border rounded cursor-pointer hover:bg-zinc-50">
+                <label className="flex items-center justify-between p-2.5 border rounded cursor-pointer hover:bg-zinc-50 transition-colors">
                   <div className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -259,7 +269,7 @@ const Cart: React.FC = () => {
                   <span className="font-bold">{isFreeShip ? "0 ₫" : "50,000 ₫"}</span>
                 </label>
 
-                <label className="flex items-center justify-between p-2.5 border rounded cursor-pointer hover:bg-zinc-50">
+                <label className="flex items-center justify-between p-2.5 border rounded cursor-pointer hover:bg-zinc-50 transition-colors">
                   <div className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -272,7 +282,7 @@ const Cart: React.FC = () => {
                   <span className="font-bold">{isFreeShip ? "0 ₫" : "65,000 ₫"}</span>
                 </label>
 
-                <label className="flex items-center justify-between p-2.5 border rounded cursor-pointer hover:bg-zinc-50">
+                <label className="flex items-center justify-between p-2.5 border rounded cursor-pointer hover:bg-zinc-50 transition-colors">
                   <div className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -312,16 +322,17 @@ const Cart: React.FC = () => {
             </div>
 
             {/* Checkout Button */}
-            <button
+            <motion.button
+              whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/checkout")}
-              className="w-full bg-amber-400 hover:bg-amber-300 text-black py-4 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-transform active:scale-[0.99]"
+              className="w-full bg-amber-400 hover:bg-amber-300 text-black py-4 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-colors"
             >
               <span>TIẾN HÀNH ĐẶT HÀNG</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </motion.button>
 
           </div>
-        </div>
+        </FadeIn>
 
       </div>
 

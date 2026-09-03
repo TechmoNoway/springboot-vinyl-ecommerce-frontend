@@ -67,7 +67,7 @@ const Profile: React.FC = () => {
         {isAdmin && (
           <Link
             to="/admin"
-            className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-black px-4 py-2.5 rounded-none font-bold text-xs uppercase shadow-retro-sm"
+            className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-black px-4 py-2.5 rounded-none font-bold text-xs uppercase shadow-retro-sm transition-transform active:scale-95"
           >
             <ShieldCheck className="w-4 h-4" />
             <span>Mở Trang Quản Trị</span>
@@ -104,7 +104,7 @@ const Profile: React.FC = () => {
             {isAdmin && (
               <Link
                 to="/admin"
-                className="w-full flex items-center gap-3 px-3.5 py-3 rounded-none text-xs font-bold uppercase tracking-wider text-amber-600 hover:bg-amber-50"
+                className="w-full flex items-center gap-3 px-3.5 py-3 rounded-none text-xs font-bold uppercase tracking-wider text-amber-600 hover:bg-amber-50 transition-colors"
               >
                 <ShieldCheck className="w-4 h-4" />
                 <span>Bảng Quản Trị Admin</span>
@@ -121,7 +121,7 @@ const Profile: React.FC = () => {
           </nav>
         </div>
 
-        {/* Right: Content Area */}
+        {/* Right: Content Area without stuck AnimatePresence */}
         <div className="lg:col-span-9 bg-white border-2 border-zinc-900 rounded-lg p-6 sm:p-8 shadow-retro min-h-[480px]">
           <Outlet />
         </div>

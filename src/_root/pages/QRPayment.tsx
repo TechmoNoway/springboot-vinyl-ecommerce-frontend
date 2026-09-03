@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
 import { getPaymentStatus } from "@/services/PaymentService";
 import { useToast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { FadeIn } from "@/components/animations/MotionWrapper";
 import {
   Copy,
   CheckCircle2,
@@ -85,7 +87,7 @@ const QRPayment: React.FC = () => {
 
   const formatTimer = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
+    const secs = seconds % 60;
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
@@ -93,7 +95,7 @@ const QRPayment: React.FC = () => {
     <div className="min-h-screen bg-[#121316] text-white py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center">
       
       {/* Brand Header */}
-      <div className="text-center space-y-2 mb-8">
+      <FadeIn direction="down" className="text-center space-y-2 mb-8">
         <Link to="/" className="inline-flex items-center gap-2">
           <Disc3 className="w-8 h-8 text-amber-400 animate-spin-slow" />
           <span className="text-2xl font-black font-display text-white">
@@ -103,140 +105,157 @@ const QRPayment: React.FC = () => {
         <p className="text-xs text-zinc-400 uppercase tracking-widest">
           Cổng Thanh Toán VietQR Tự Động 24/7
         </p>
-      </div>
+      </FadeIn>
 
-      <div className="w-full max-w-3xl bg-[#1A1D24] border border-zinc-700 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-8">
-        
-        {isPaid ? (
-          <div className="text-center py-12 space-y-4">
-            <div className="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto animate-bounce">
-              <CheckCircle2 className="w-12 h-12" />
-            </div>
-            <h2 className="text-2xl font-black font-display text-white">
-              Thanh Toán Thành Công!
-            </h2>
-            <p className="text-sm text-zinc-300 max-w-md mx-auto">
-              Cảm ơn bạn đã đặt hàng tại Vọc Records. Hệ thống đang chuyển hướng tới trang chi tiết đơn hàng #{orderId}...
-            </p>
-            <ClipLoader size={24} color="#10B981" />
-          </div>
-        ) : (
-          <>
-            {/* Countdown Strip */}
-            <div className="flex flex-col sm:flex-row items-center justify-between bg-zinc-900/90 border border-zinc-800 p-4 rounded-xl gap-4">
-              <div className="flex items-center space-x-3">
-                <Clock className="w-5 h-5 text-amber-400 animate-pulse" />
-                <div>
-                  <p className="text-xs font-bold text-zinc-300 uppercase tracking-wide">
-                    Thời gian giữ đơn & mã QR còn:
-                  </p>
-                  <p className="text-xl font-black text-amber-400 font-mono">
-                    {formatTimer(countdown)}
-                  </p>
-                </div>
+      <FadeIn direction="up" delay={0.1} className="w-full max-w-3xl bg-[#1A1D24] border border-zinc-700 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-8">
+        <AnimatePresence mode="wait">
+          {isPaid ? (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="text-center py-12 space-y-4"
+            >
+              <div className="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto animate-bounce">
+                <CheckCircle2 className="w-12 h-12" />
               </div>
-
-              <div className="text-right">
-                <span className="text-xs text-zinc-400">Số tiền cần chuyển:</span>
-                <p className="text-2xl font-black text-white font-display">
-                  {numericAmount.toLocaleString()} ₫
-                </p>
-              </div>
-            </div>
-
-            {/* QR Code and Bank Details 2-Column */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              
-              {/* QR Image Box */}
-              <div className="bg-white p-4 rounded-xl border-4 border-amber-400/80 shadow-2xl flex flex-col items-center justify-center space-y-3">
-                <img
-                  src={qrUrl}
-                  alt="Mã VietQR"
-                  className="w-full max-w-[260px] aspect-square object-contain rounded"
-                />
-                <p className="text-[11px] font-bold text-zinc-800 text-center uppercase tracking-wider">
-                  Quét mã qua mọi App Ngân hàng hoặc MoMo
-                </p>
-              </div>
-
-              {/* Manual Transfer Information */}
-              <div className="space-y-4 text-xs">
-                <div>
-                  <span className="text-zinc-400">Ngân hàng thụ hưởng:</span>
-                  <p className="font-bold text-white text-sm mt-0.5">{DEFAULT_BANK_INFO.bankName}</p>
-                </div>
-
-                <div>
-                  <span className="text-zinc-400">Chủ tài khoản:</span>
-                  <p className="font-bold text-white text-sm mt-0.5">{DEFAULT_BANK_INFO.accountHolder}</p>
-                </div>
-
-                <div className="flex items-center justify-between bg-zinc-900 p-3 rounded border border-zinc-800">
+              <h2 className="text-2xl font-black font-display text-white">
+                Thanh Toán Thành Công!
+              </h2>
+              <p className="text-sm text-zinc-300 max-w-md mx-auto">
+                Cảm ơn bạn đã đặt hàng tại Vọc Records. Hệ thống đang chuyển hướng tới trang chi tiết đơn hàng #{orderId}...
+              </p>
+              <ClipLoader size={24} color="#10B981" />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="pending"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="space-y-8"
+            >
+              {/* Countdown Strip */}
+              <div className="flex flex-col sm:flex-row items-center justify-between bg-zinc-900/90 border border-zinc-800 p-4 rounded-xl gap-4">
+                <div className="flex items-center space-x-3">
+                  <Clock className="w-5 h-5 text-amber-400 animate-pulse" />
                   <div>
-                    <span className="text-zinc-400">Số tài khoản:</span>
-                    <p className="font-mono font-bold text-amber-400 text-base">
-                      {DEFAULT_BANK_INFO.accountNumber}
+                    <p className="text-xs font-bold text-zinc-300 uppercase tracking-wide">
+                      Thời gian giữ đơn & mã QR còn:
+                    </p>
+                    <p className="text-xl font-black text-amber-400 font-mono">
+                      {formatTimer(countdown)}
                     </p>
                   </div>
-                  <button
-                    onClick={() => copyToClipboard(DEFAULT_BANK_INFO.accountNumber, "Số tài khoản")}
-                    className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded font-bold text-xs flex items-center gap-1"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>{copiedField === "Số tài khoản" ? "Đã chép" : "Sao chép"}</span>
-                  </button>
                 </div>
 
-                <div className="flex items-center justify-between bg-zinc-900 p-3 rounded border border-zinc-800">
-                  <div>
-                    <span className="text-zinc-400">Nội dung chuyển khoản (Bắt buộc):</span>
-                    <p className="font-mono font-bold text-amber-400 text-base">
-                      {transferContent}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => copyToClipboard(transferContent, "Nội dung")}
-                    className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded font-bold text-xs flex items-center gap-1"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>{copiedField === "Nội dung" ? "Đã chép" : "Sao chép"}</span>
-                  </button>
-                </div>
-
-                <div className="text-[11px] text-zinc-400 space-y-1 bg-amber-950/20 border border-amber-500/20 p-3 rounded">
-                  <p className="font-bold text-amber-300 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Lưu ý quan trọng:
-                  </p>
-                  <p>
-                    Vui lòng giữ nguyên nội dung chuyển khoản <b>{transferContent}</b> để hệ thống tự động kích hoạt đơn hàng trong 1-2 phút.
+                <div className="text-right">
+                  <span className="text-xs text-zinc-400">Số tiền cần chuyển:</span>
+                  <p className="text-2xl font-black text-white font-display">
+                    {numericAmount.toLocaleString()} ₫
                   </p>
                 </div>
               </div>
 
-            </div>
+              {/* QR Code and Bank Details 2-Column */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                
+                {/* QR Image Box */}
+                <div className="bg-white p-4 rounded-xl border-4 border-amber-400/80 shadow-2xl flex flex-col items-center justify-center space-y-3">
+                  <img
+                    src={qrUrl}
+                    alt="Mã VietQR"
+                    className="w-full max-w-[260px] aspect-square object-contain rounded"
+                  />
+                  <p className="text-[11px] font-bold text-zinc-800 text-center uppercase tracking-wider">
+                    Quét mã qua mọi App Ngân hàng hoặc MoMo
+                  </p>
+                </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-zinc-800">
-              <Link
-                to="/checkout"
-                className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 font-semibold"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Quay về chỉnh sửa thông tin</span>
-              </Link>
+                {/* Manual Transfer Information */}
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <span className="text-zinc-400">Ngân hàng thụ hưởng:</span>
+                    <p className="font-bold text-white text-sm mt-0.5">{DEFAULT_BANK_INFO.bankName}</p>
+                  </div>
 
-              <button
-                onClick={() => navigate(`/order-details/${orderId}`)}
-                className="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-none font-bold text-xs uppercase"
-              >
-                Tôi đã chuyển khoản xong &gt;
-              </button>
-            </div>
-          </>
-        )}
+                  <div>
+                    <span className="text-zinc-400">Chủ tài khoản:</span>
+                    <p className="font-bold text-white text-sm mt-0.5">{DEFAULT_BANK_INFO.accountHolder}</p>
+                  </div>
 
-      </div>
+                  <div className="flex items-center justify-between bg-zinc-900 p-3 rounded border border-zinc-800">
+                    <div>
+                      <span className="text-zinc-400">Số tài khoản:</span>
+                      <p className="font-mono font-bold text-amber-400 text-base">
+                        {DEFAULT_BANK_INFO.accountNumber}
+                      </p>
+                    </div>
+                    <motion.button
+                      whileTap={{ scale: 0.94 }}
+                      onClick={() => copyToClipboard(DEFAULT_BANK_INFO.accountNumber, "Số tài khoản")}
+                      className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded font-bold text-xs flex items-center gap-1 transition-colors"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>{copiedField === "Số tài khoản" ? "Đã chép" : "Sao chép"}</span>
+                    </motion.button>
+                  </div>
+
+                  <div className="flex items-center justify-between bg-zinc-900 p-3 rounded border border-zinc-800">
+                    <div>
+                      <span className="text-zinc-400">Nội dung chuyển khoản (Bắt buộc):</span>
+                      <p className="font-mono font-bold text-amber-400 text-base">
+                        {transferContent}
+                      </p>
+                    </div>
+                    <motion.button
+                      whileTap={{ scale: 0.94 }}
+                      onClick={() => copyToClipboard(transferContent, "Nội dung")}
+                      className="p-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded font-bold text-xs flex items-center gap-1 transition-colors"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>{copiedField === "Nội dung" ? "Đã chép" : "Sao chép"}</span>
+                    </motion.button>
+                  </div>
+
+                  <div className="text-[11px] text-zinc-400 space-y-1 bg-amber-950/20 border border-amber-500/20 p-3 rounded">
+                    <p className="font-bold text-amber-300 flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      Lưu ý quan trọng:
+                    </p>
+                    <p>
+                      Vui lòng giữ nguyên nội dung chuyển khoản <b>{transferContent}</b> để hệ thống tự động kích hoạt đơn hàng trong 1-2 phút.
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-zinc-800">
+                <Link
+                  to="/checkout"
+                  className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 font-semibold transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Quay về chỉnh sửa thông tin</span>
+                </Link>
+
+                <motion.button
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => navigate(`/order-details/${orderId}`)}
+                  className="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-none font-bold text-xs uppercase transition-colors"
+                >
+                  Tôi đã chuyển khoản xong &gt;
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </FadeIn>
     </div>
   );
 };

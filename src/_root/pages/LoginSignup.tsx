@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { login, register, googleLogin } from "@/services/AuthService";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { FadeIn } from "@/components/animations/MotionWrapper";
 import {
   Disc3,
   Mail,
@@ -136,7 +138,7 @@ const LoginSignup: React.FC = () => {
 
   return (
     <div className="min-h-[85vh] bg-[#FAF8F4] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-4xl bg-white border-2 border-zinc-900 rounded-2xl shadow-retro-lg overflow-hidden grid grid-cols-1 md:grid-cols-12">
+      <FadeIn direction="up" className="w-full max-w-4xl bg-white border-2 border-zinc-900 rounded-2xl shadow-retro-lg overflow-hidden grid grid-cols-1 md:grid-cols-12">
         
         {/* Left Column: Retro Vinyl Art Panel */}
         <div className="md:col-span-5 bg-[#13151A] text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden border-b-2 md:border-b-0 md:border-r-2 border-zinc-900">
@@ -206,22 +208,24 @@ const LoginSignup: React.FC = () => {
           {/* Social OAuth Buttons */}
           <div className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <button
+              <motion.button
+                whileTap={{ scale: 0.96 }}
                 type="button"
                 onClick={handleMockGoogleLogin}
                 className="flex items-center justify-center gap-2 bg-white hover:bg-zinc-50 border border-zinc-300 py-2.5 px-3 rounded text-xs font-bold text-zinc-800 shadow-sm transition-colors"
               >
                 <FaGoogle className="w-4 h-4 text-red-500" />
                 <span>Google</span>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.96 }}
                 type="button"
                 onClick={handleMockGoogleLogin}
                 className="flex items-center justify-center gap-2 bg-white hover:bg-zinc-50 border border-zinc-300 py-2.5 px-3 rounded text-xs font-bold text-zinc-800 shadow-sm transition-colors"
               >
                 <FaGithub className="w-4 h-4 text-black" />
                 <span>GitHub</span>
-              </button>
+              </motion.button>
             </div>
 
             <div className="relative flex items-center justify-center">
@@ -232,106 +236,126 @@ const LoginSignup: React.FC = () => {
             </div>
           </div>
 
-          {/* Form Content */}
-          {isLoginTab ? (
-            /* Login Form */
-            <form onSubmit={handleLoginSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase text-zinc-700 mb-1">
-                  Địa Chỉ Email <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    required
-                    placeholder="email@example.com"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    className="w-full bg-zinc-50 border border-zinc-300 rounded px-3 py-2.5 text-xs text-zinc-900 focus:border-amber-400 focus:bg-white focus:outline-none"
-                  />
-                  <Mail className="w-4 h-4 text-zinc-400 absolute right-3 top-3" />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-bold uppercase text-zinc-700">
-                    Mật Khẩu <span className="text-red-500">*</span>
+          {/* Form Content with Smooth Swipe & Fade Transition */}
+          <AnimatePresence mode="wait">
+            {isLoginTab ? (
+              /* Login Form */
+              <motion.form
+                key="login-form"
+                initial={{ opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 16 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                onSubmit={handleLoginSubmit}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="block text-xs font-bold uppercase text-zinc-700 mb-1">
+                    Địa Chỉ Email <span className="text-red-500">*</span>
                   </label>
-                  <Link
-                    to="/reset-password"
-                    className="text-[11px] text-amber-600 hover:underline font-semibold"
-                  >
-                    Quên mật khẩu?
-                  </Link>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      required
+                      placeholder="email@example.com"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      className="w-full bg-zinc-50 border border-zinc-300 rounded px-3 py-2.5 text-xs text-zinc-900 focus:border-amber-400 focus:bg-white focus:outline-none"
+                    />
+                    <Mail className="w-4 h-4 text-zinc-400 absolute right-3 top-3" />
+                  </div>
                 </div>
-                <div className="relative">
-                  <input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full bg-zinc-50 border border-zinc-300 rounded px-3 py-2.5 text-xs text-zinc-900 focus:border-amber-400 focus:bg-white focus:outline-none"
-                  />
-                  <Lock className="w-4 h-4 text-zinc-400 absolute right-3 top-3" />
-                </div>
-              </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#13151A] hover:bg-black text-amber-300 py-3 px-4 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-black shadow-retro-sm transition-transform active:scale-[0.99]"
-              >
-                {loading ? (
-                  <ClipLoader size={16} color="#F5C542" />
-                ) : (
-                  <>
-                    <span>ĐĂNG NHẬP VÀO TIỆM</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-          ) : (
-            /* Register Form */
-            <form onSubmit={handleRegisterSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase text-zinc-700 mb-1">
-                  Địa Chỉ Email Của Bạn <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    required
-                    placeholder="email@example.com"
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                    className="w-full bg-zinc-50 border border-zinc-300 rounded px-3 py-2.5 text-xs text-zinc-900 focus:border-amber-400 focus:bg-white focus:outline-none"
-                  />
-                  <Mail className="w-4 h-4 text-zinc-400 absolute right-3 top-3" />
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-xs font-bold uppercase text-zinc-700">
+                      Mật Khẩu <span className="text-red-500">*</span>
+                    </label>
+                    <Link
+                      to="/reset-password"
+                      className="text-[11px] text-amber-600 hover:underline font-semibold"
+                    >
+                      Quên mật khẩu?
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      required
+                      placeholder="••••••••"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      className="w-full bg-zinc-50 border border-zinc-300 rounded px-3 py-2.5 text-xs text-zinc-900 focus:border-amber-400 focus:bg-white focus:outline-none"
+                    />
+                    <Lock className="w-4 h-4 text-zinc-400 absolute right-3 top-3" />
+                  </div>
                 </div>
-                <p className="text-[11px] text-zinc-500 mt-1.5">
-                  Mật khẩu đăng nhập an toàn sẽ được hệ thống tạo tự động và gửi tới email của bạn.
-                </p>
-              </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-[#13151A] hover:bg-black text-amber-300 py-3 px-4 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-black shadow-retro-sm transition-transform active:scale-[0.99]"
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[#13151A] hover:bg-black text-amber-300 py-3 px-4 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-black shadow-retro-sm transition-colors"
+                >
+                  {loading ? (
+                    <ClipLoader size={16} color="#F5C542" />
+                  ) : (
+                    <>
+                      <span>ĐĂNG NHẬP VÀO TIỆM</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </motion.button>
+              </motion.form>
+            ) : (
+              /* Register Form */
+              <motion.form
+                key="register-form"
+                initial={{ opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                onSubmit={handleRegisterSubmit}
+                className="space-y-4"
               >
-                {loading ? (
-                  <ClipLoader size={16} color="#F5C542" />
-                ) : (
-                  <>
-                    <span>TẠO TÀI KHOẢN MỚI</span>
-                    <UserCheck className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-          )}
+                <div>
+                  <label className="block text-xs font-bold uppercase text-zinc-700 mb-1">
+                    Địa Chỉ Email Của Bạn <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      required
+                      placeholder="email@example.com"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      className="w-full bg-zinc-50 border border-zinc-300 rounded px-3 py-2.5 text-xs text-zinc-900 focus:border-amber-400 focus:bg-white focus:outline-none"
+                    />
+                    <Mail className="w-4 h-4 text-zinc-400 absolute right-3 top-3" />
+                  </div>
+                  <p className="text-[11px] text-zinc-500 mt-1.5">
+                    Mật khẩu đăng nhập an toàn sẽ được hệ thống tạo tự động và gửi tới email của bạn.
+                  </p>
+                </div>
+
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-[#13151A] hover:bg-black text-amber-300 py-3 px-4 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-black shadow-retro-sm transition-colors"
+                >
+                  {loading ? (
+                    <ClipLoader size={16} color="#F5C542" />
+                  ) : (
+                    <>
+                      <span>TẠO TÀI KHOẢN MỚI</span>
+                      <UserCheck className="w-4 h-4" />
+                    </>
+                  )}
+                </motion.button>
+              </motion.form>
+            )}
+          </AnimatePresence>
 
           <div className="text-[10px] text-zinc-400 text-center leading-relaxed">
             Bằng việc tiếp tục, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Vọc Records.
@@ -339,7 +363,7 @@ const LoginSignup: React.FC = () => {
 
         </div>
 
-      </div>
+      </FadeIn>
     </div>
   );
 };

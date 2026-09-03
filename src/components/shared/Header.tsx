@@ -5,6 +5,7 @@ import { IProduct } from "types";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAuth } from "@/context/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   ShoppingBag,
@@ -109,10 +110,14 @@ const Header: React.FC = () => {
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
-          <div className="relative w-9 h-9 bg-zinc-900 rounded-full flex items-center justify-center border-2 border-amber-500/80 shadow-md group-hover:rotate-180 transition-transform duration-700">
+          <motion.div
+            whileHover={{ rotate: 180 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="relative w-9 h-9 bg-zinc-900 rounded-full flex items-center justify-center border-2 border-amber-500/80 shadow-md"
+          >
             <Disc3 className="w-6 h-6 text-amber-400 animate-spin-slow" />
             <div className="absolute w-2 h-2 bg-amber-400 rounded-full"></div>
-          </div>
+          </motion.div>
           <div className="flex flex-col">
             <div className="flex items-center">
               <span className="font-extrabold text-xl tracking-tight text-white font-display">
@@ -197,43 +202,52 @@ const Header: React.FC = () => {
             </div>
           </form>
 
-          {/* Search Dropdown Suggestion */}
-          {isListVisible && searchResults.length > 0 && (
-            <div className="absolute top-12 left-0 right-0 bg-[#1A1D24] border border-zinc-700 rounded-xl shadow-2xl overflow-hidden z-50 animate-fadeIn">
-              <div className="p-2 border-b border-zinc-800 text-[11px] font-semibold text-zinc-400 flex justify-between">
-                <span>Gợi ý tìm kiếm</span>
-                <span className="text-amber-400 cursor-pointer" onClick={handleSearchSubmit}>
-                  Xem tất cả kết quả &gt;
-                </span>
-              </div>
-              <ul className="divide-y divide-zinc-800">
-                {searchResults.map((item) => (
-                  <li
-                    key={item.id}
-                    onClick={() => handleSelectProduct(item.title)}
-                    className="p-2.5 hover:bg-zinc-800/80 cursor-pointer flex items-center gap-3 transition-colors"
-                  >
-                    <img
-                      src={item.posterUrl}
-                      alt={item.title}
-                      className="w-10 h-10 object-cover rounded shadow-sm flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-xs text-white truncate">
-                        {item.title}
-                      </p>
-                      <p className="text-[11px] text-zinc-400 truncate">
-                        {item.artist || "Đĩa than"}
-                      </p>
-                    </div>
-                    <span className="text-xs font-bold text-amber-400 flex-shrink-0">
-                      {item.price?.toLocaleString()} ₫
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Search Dropdown Suggestion with AnimatePresence */}
+          <AnimatePresence>
+            {isListVisible && searchResults.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute top-12 left-0 right-0 bg-[#1A1D24] border border-zinc-700 rounded-xl shadow-2xl overflow-hidden z-50"
+              >
+                <div className="p-2 border-b border-zinc-800 text-[11px] font-semibold text-zinc-400 flex justify-between">
+                  <span>Gợi ý tìm kiếm</span>
+                  <span className="text-amber-400 cursor-pointer hover:underline" onClick={handleSearchSubmit}>
+                    Xem tất cả kết quả &gt;
+                  </span>
+                </div>
+                <ul className="divide-y divide-zinc-800">
+                  {searchResults.map((item) => (
+                    <motion.li
+                      key={item.id}
+                      whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                      onClick={() => handleSelectProduct(item.title)}
+                      className="p-2.5 cursor-pointer flex items-center gap-3 transition-colors"
+                    >
+                      <img
+                        src={item.posterUrl}
+                        alt={item.title}
+                        className="w-10 h-10 object-cover rounded shadow-sm flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-xs text-white truncate">
+                          {item.title}
+                        </p>
+                        <p className="text-[11px] text-zinc-400 truncate">
+                          {item.artist || "Đĩa than"}
+                        </p>
+                      </div>
+                      <span className="text-xs font-bold text-amber-400 flex-shrink-0">
+                        {item.price?.toLocaleString()} ₫
+                      </span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Right Actions: Wishlist, Cart, Profile */}
@@ -245,26 +259,41 @@ const Header: React.FC = () => {
             title="Danh sách yêu thích"
           >
             <Heart className="w-5 h-5" />
-            {wishlistCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-bounce">
-                {wishlistCount}
-              </span>
-            )}
+            <AnimatePresence>
+              {wishlistCount > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center"
+                >
+                  {wishlistCount}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </Link>
 
           {/* Cart Trigger */}
-          <button
+          <motion.button
+            whileTap={{ scale: 0.92 }}
             onClick={openDrawer}
             className="relative p-2 text-zinc-300 hover:text-amber-400 transition-colors rounded-full hover:bg-zinc-800 flex items-center"
             title="Giỏ hàng"
           >
             <ShoppingBag className="w-5 h-5" />
-            {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-amber-400 text-black text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </button>
+            <AnimatePresence>
+              {totalItems > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  className="absolute -top-0.5 -right-0.5 bg-amber-400 text-black text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center"
+                >
+                  {totalItems}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
 
           {/* User Profile Dropdown */}
           <div ref={userDropdownRef} className="relative">
@@ -275,85 +304,93 @@ const Header: React.FC = () => {
               <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-black font-extrabold text-xs">
                 {currentUser?.fullname ? currentUser.fullname.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-400 hidden sm:block" />
+              <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 hidden sm:block transition-transform duration-200 ${userDropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
-            {userDropdownOpen && (
-              <div className="absolute right-0 top-12 w-56 bg-[#1A1D24] border border-zinc-700 rounded-xl shadow-2xl py-2 z-50 text-xs animate-fadeIn">
-                {token ? (
-                  <>
-                    <div className="px-4 py-2 border-b border-zinc-800">
-                      <p className="font-bold text-white truncate">
-                        {currentUser.fullname || "Người yêu đĩa than"}
-                      </p>
-                      <p className="text-zinc-400 text-[11px] truncate">
-                        {currentUser.email}
-                      </p>
-                    </div>
+            <AnimatePresence>
+              {userDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute right-0 top-12 w-56 bg-[#1A1D24] border border-zinc-700 rounded-xl shadow-2xl py-2 z-50 text-xs"
+                >
+                  {token ? (
+                    <>
+                      <div className="px-4 py-2 border-b border-zinc-800">
+                        <p className="font-bold text-white truncate">
+                          {currentUser.fullname || "Người yêu đĩa than"}
+                        </p>
+                        <p className="text-zinc-400 text-[11px] truncate">
+                          {currentUser.email}
+                        </p>
+                      </div>
 
-                    <Link
-                      to="/account/details"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white"
-                    >
-                      <User className="w-4 h-4 text-amber-400" />
-                      <span>Thông tin tài khoản</span>
-                    </Link>
-
-                    <Link
-                      to="/account/orders"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white"
-                    >
-                      <Package className="w-4 h-4 text-amber-400" />
-                      <span>Lịch sử đơn hàng</span>
-                    </Link>
-
-                    <Link
-                      to="/account/wishlist"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white"
-                    >
-                      <Heart className="w-4 h-4 text-amber-400" />
-                      <span>Đĩa than yêu thích</span>
-                    </Link>
-
-                    {isAdmin && (
                       <Link
-                        to="/admin"
+                        to="/account/details"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-amber-400 font-bold border-t border-zinc-800"
+                        className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white transition-colors"
                       >
-                        <ShieldCheck className="w-4 h-4 text-amber-400" />
-                        <span>Bảng Quản Trị (Admin)</span>
+                        <User className="w-4 h-4 text-amber-400" />
+                        <span>Thông tin tài khoản</span>
                       </Link>
-                    )}
 
-                    <button
-                      onClick={() => {
-                        setUserDropdownOpen(false);
-                        logoutWithNavigate();
-                      }}
-                      className="w-full text-left px-4 py-2.5 hover:bg-red-950/40 text-red-400 flex items-center gap-2.5 border-t border-zinc-800"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Đăng xuất</span>
-                    </button>
-                  </>
-                ) : (
-                  <div className="p-3 text-center space-y-2">
-                    <p className="text-zinc-300 font-medium">Chào mừng bạn đến với Vọc!</p>
-                    <Link
-                      to="/login-signup"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="block w-full bg-amber-400 hover:bg-amber-300 text-black py-2 rounded-md font-bold text-xs uppercase"
-                    >
-                      Đăng Nhập / Đăng Ký
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
+                      <Link
+                        to="/account/orders"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white transition-colors"
+                      >
+                        <Package className="w-4 h-4 text-amber-400" />
+                        <span>Lịch sử đơn hàng</span>
+                      </Link>
+
+                      <Link
+                        to="/account/wishlist"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-zinc-200 hover:text-white transition-colors"
+                      >
+                        <Heart className="w-4 h-4 text-amber-400" />
+                        <span>Đĩa than yêu thích</span>
+                      </Link>
+
+                      {isAdmin && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="px-4 py-2.5 hover:bg-zinc-800 flex items-center gap-2.5 text-amber-400 font-bold border-t border-zinc-800 transition-colors"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-amber-400" />
+                          <span>Bảng Quản Trị (Admin)</span>
+                        </Link>
+                      )}
+
+                      <button
+                        onClick={() => {
+                          setUserDropdownOpen(false);
+                          logoutWithNavigate();
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-red-950/40 text-red-400 flex items-center gap-2.5 border-t border-zinc-800 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Đăng xuất</span>
+                      </button>
+                    </>
+                  ) : (
+                    <div className="p-3 text-center space-y-2">
+                      <p className="text-zinc-300 font-medium">Chào mừng bạn đến với Vọc!</p>
+                      <Link
+                        to="/login-signup"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="block w-full bg-amber-400 hover:bg-amber-300 text-black py-2 rounded-md font-bold text-xs uppercase"
+                      >
+                        Đăng Nhập / Đăng Ký
+                      </Link>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Mobile Menu Toggle Button */}
@@ -366,63 +403,71 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#121316] border-b border-zinc-800 p-4 space-y-4 animate-slide-up">
-          {/* Mobile Search */}
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <input
-              type="text"
-              placeholder="Tìm kiếm đĩa than, nghệ sĩ..."
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full bg-zinc-900 text-zinc-100 text-xs rounded-lg pl-9 pr-4 py-2.5 border border-zinc-700"
-            />
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
-          </form>
+      {/* Mobile Drawer Navigation with AnimatePresence */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:hidden bg-[#121316] border-b border-zinc-800 p-4 space-y-4 overflow-hidden"
+          >
+            {/* Mobile Search */}
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <input
+                type="text"
+                placeholder="Tìm kiếm đĩa than, nghệ sĩ..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                className="w-full bg-zinc-900 text-zinc-100 text-xs rounded-lg pl-9 pr-4 py-2.5 border border-zinc-700"
+              />
+              <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+            </form>
 
-          <nav className="flex flex-col space-y-2 text-sm font-bold uppercase">
-            <Link
-              to="/product-category/vinyl"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
-            >
-              Đĩa Than
-            </Link>
-            <Link
-              to="/product-category/vinyl?platform=ĐĨA%20VINTAGE"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
-            >
-              Đĩa Vintage
-            </Link>
-            <Link
-              to="/product-category/vinyl?platform=CASSETTE"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
-            >
-              Cassette Zone
-            </Link>
-            <Link
-              to="/product-category/vinyl?category=Phụ%20kiện"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
-            >
-              Mâm Đĩa & Phụ Kiện
-            </Link>
-            {isAdmin && (
+            <nav className="flex flex-col space-y-2 text-sm font-bold uppercase">
               <Link
-                to="/admin"
+                to="/product-category/vinyl"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-2 rounded bg-amber-400/10 text-amber-400 font-bold flex items-center gap-2"
+                className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
               >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Admin Hub</span>
+                Đĩa Than
               </Link>
-            )}
-          </nav>
-        </div>
-      )}
+              <Link
+                to="/product-category/vinyl?platform=ĐĨA%20VINTAGE"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
+              >
+                Đĩa Vintage
+              </Link>
+              <Link
+                to="/product-category/vinyl?platform=CASSETTE"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
+              >
+                Cassette Zone
+              </Link>
+              <Link
+                to="/product-category/vinyl?category=Phụ%20kiện"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded hover:bg-zinc-800 text-zinc-200"
+              >
+                Mâm Đĩa & Phụ Kiện
+              </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3 py-2 rounded bg-amber-400/10 text-amber-400 font-bold flex items-center gap-2"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Admin Hub</span>
+                </Link>
+              )}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

@@ -4,6 +4,7 @@ import { IOrder } from "types";
 import { getOrderById } from "@/services/OrderService";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/animations/MotionWrapper";
 import {
   Package,
   MapPin,
@@ -54,7 +55,7 @@ const OrderDetails: React.FC = () => {
 
   if (!order) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
+      <FadeIn direction="up" className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
         <Package className="w-16 h-16 text-zinc-400 mx-auto" />
         <h2 className="text-2xl font-black font-display text-zinc-900">
           Không tìm thấy đơn hàng #{id}
@@ -68,7 +69,7 @@ const OrderDetails: React.FC = () => {
         >
           Trang chủ
         </Link>
-      </div>
+      </FadeIn>
     );
   }
 
@@ -92,7 +93,7 @@ const OrderDetails: React.FC = () => {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-zinc-900 pb-4">
+      <FadeIn direction="down" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-zinc-900 pb-4">
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl sm:text-3xl font-black font-display uppercase tracking-tight text-zinc-900">
@@ -107,15 +108,15 @@ const OrderDetails: React.FC = () => {
 
         <Link
           to="/account/orders"
-          className="text-xs font-bold text-zinc-700 hover:text-black flex items-center gap-1 uppercase"
+          className="text-xs font-bold text-zinc-700 hover:text-black flex items-center gap-1 uppercase transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Danh sách đơn hàng</span>
         </Link>
-      </div>
+      </FadeIn>
 
       {/* Shipment Progress Stepper */}
-      <div className="bg-white border-2 border-zinc-900 rounded-lg p-6 shadow-retro">
+      <FadeIn direction="up" delay={0.05} className="bg-white border-2 border-zinc-900 rounded-lg p-6 shadow-retro">
         <h2 className="text-xs font-black font-display uppercase tracking-wider text-zinc-900 mb-6 flex items-center gap-1.5">
           <Truck className="w-4 h-4 text-amber-500" />
           <span>Tiến Trình Giao Hàng</span>
@@ -126,7 +127,7 @@ const OrderDetails: React.FC = () => {
           {/* Step 1: Placed */}
           <div className="flex flex-col items-center text-center space-y-2 relative">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${
                 stepIndex >= 1
                   ? "bg-[#13151A] text-amber-400 ring-4 ring-amber-100"
                   : "bg-zinc-200 text-zinc-500"
@@ -141,7 +142,7 @@ const OrderDetails: React.FC = () => {
           {/* Step 2: Processing */}
           <div className="flex flex-col items-center text-center space-y-2 relative">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${
                 stepIndex >= 2
                   ? "bg-[#13151A] text-amber-400 ring-4 ring-amber-100"
                   : "bg-zinc-200 text-zinc-500"
@@ -156,7 +157,7 @@ const OrderDetails: React.FC = () => {
           {/* Step 3: Shipping */}
           <div className="flex flex-col items-center text-center space-y-2 relative">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${
                 stepIndex >= 3
                   ? "bg-[#13151A] text-amber-400 ring-4 ring-amber-100"
                   : "bg-zinc-200 text-zinc-500"
@@ -171,7 +172,7 @@ const OrderDetails: React.FC = () => {
           {/* Step 4: Delivered */}
           <div className="flex flex-col items-center text-center space-y-2 relative">
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${
                 stepIndex >= 4
                   ? "bg-emerald-600 text-white ring-4 ring-emerald-100"
                   : "bg-zinc-200 text-zinc-500"
@@ -184,13 +185,13 @@ const OrderDetails: React.FC = () => {
           </div>
 
         </div>
-      </div>
+      </FadeIn>
 
       {/* Customer & Address Information 2-Column */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         {/* Recipient details */}
-        <div className="bg-white border-2 border-zinc-900 rounded-lg p-5 shadow-retro space-y-3 text-xs">
+        <FadeIn direction="right" delay={0.1} className="bg-white border-2 border-zinc-900 rounded-lg p-5 shadow-retro space-y-3 text-xs">
           <div className="flex items-center gap-2 font-bold uppercase text-zinc-900 text-sm border-b pb-2">
             <User className="w-4 h-4 text-amber-500" />
             <span>Thông Tin Người Nhận</span>
@@ -217,10 +218,10 @@ const OrderDetails: React.FC = () => {
               <span className="font-bold">Ghi chú:</span> {order.note}
             </div>
           )}
-        </div>
+        </FadeIn>
 
         {/* Sender & Shop Guarantee */}
-        <div className="bg-[#FAF6EE] border-2 border-zinc-900 rounded-lg p-5 shadow-retro space-y-3 text-xs">
+        <FadeIn direction="left" delay={0.1} className="bg-[#FAF6EE] border-2 border-zinc-900 rounded-lg p-5 shadow-retro space-y-3 text-xs">
           <div className="flex items-center gap-2 font-bold uppercase text-zinc-900 text-sm border-b border-zinc-300 pb-2">
             <Disc3 className="w-4 h-4 text-amber-500" />
             <span>Đơn Vị Gửi Hàng</span>
@@ -245,12 +246,12 @@ const OrderDetails: React.FC = () => {
             </p>
             <p>Cam kết 1 đổi 1 nếu đĩa bị cong vênh hoặc lỗi do nhà sản xuất trong 7 ngày.</p>
           </div>
-        </div>
+        </FadeIn>
 
       </div>
 
       {/* Ordered Products Table */}
-      <div className="bg-white border-2 border-zinc-900 rounded-lg shadow-retro overflow-hidden">
+      <FadeIn direction="up" delay={0.15} className="bg-white border-2 border-zinc-900 rounded-lg shadow-retro overflow-hidden">
         <div className="bg-zinc-900 text-white p-4 font-bold text-xs uppercase tracking-wider flex items-center justify-between">
           <span>Danh Sách Đĩa Than Trong Đơn Hàng</span>
           <span>{order.items ? order.items.length : 0} sản phẩm</span>
@@ -258,42 +259,46 @@ const OrderDetails: React.FC = () => {
 
         <div className="divide-y divide-zinc-200">
           {order.items && order.items.length > 0 ? (
-            order.items.map((item, idx) => (
-              <div key={idx} className="p-4 flex items-center justify-between text-xs gap-4">
-                <div className="flex items-center space-x-3">
-                  {item.productPosterUrl ? (
-                    <img
-                      src={item.productPosterUrl}
-                      alt={item.productTitle}
-                      className="w-14 h-14 object-cover rounded shadow-sm border border-zinc-200"
-                    />
-                  ) : (
-                    <div className="w-14 h-14 bg-zinc-900 rounded flex items-center justify-center">
-                      <Disc3 className="w-6 h-6 text-amber-400" />
+            <StaggerContainer>
+              {order.items.map((item, idx) => (
+                <StaggerItem key={idx}>
+                  <div className="p-4 flex items-center justify-between text-xs gap-4 hover:bg-zinc-50/80 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      {item.productPosterUrl ? (
+                        <img
+                          src={item.productPosterUrl}
+                          alt={item.productTitle}
+                          className="w-14 h-14 object-cover rounded shadow-sm border border-zinc-200"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 bg-zinc-900 rounded flex items-center justify-center">
+                          <Disc3 className="w-6 h-6 text-amber-400" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-bold text-sm text-zinc-900">
+                          {item.productTitle || `Mã đĩa #${item.productId}`}
+                        </p>
+                        <p className="text-zinc-500 mt-0.5">
+                          Số lượng: <b className="text-zinc-900">{item.quantity}</b>
+                        </p>
+                      </div>
                     </div>
-                  )}
-                  <div>
-                    <p className="font-bold text-sm text-zinc-900">
-                      {item.productTitle || `Mã đĩa #${item.productId}`}
-                    </p>
-                    <p className="text-zinc-500 mt-0.5">
-                      Số lượng: <b className="text-zinc-900">{item.quantity}</b>
-                    </p>
-                  </div>
-                </div>
 
-                <div className="text-right">
-                  <p className="font-extrabold text-sm text-amber-700">
-                    {item.price ? `${(item.price * item.quantity).toLocaleString()} ₫` : "—"}
-                  </p>
-                  {item.price && (
-                    <p className="text-[11px] text-zinc-400">
-                      {item.price.toLocaleString()} ₫ / đĩa
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))
+                    <div className="text-right">
+                      <p className="font-extrabold text-sm text-amber-700">
+                        {item.price ? `${(item.price * item.quantity).toLocaleString()} ₫` : "—"}
+                      </p>
+                      {item.price && (
+                        <p className="text-[11px] text-zinc-400">
+                          {item.price.toLocaleString()} ₫ / đĩa
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
           ) : (
             <div className="p-6 text-center text-xs text-zinc-400 italic">
               Thông tin chi tiết các tựa đĩa đang được cập nhật.
@@ -322,7 +327,7 @@ const OrderDetails: React.FC = () => {
             </span>
           </div>
         </div>
-      </div>
+      </FadeIn>
 
     </div>
   );

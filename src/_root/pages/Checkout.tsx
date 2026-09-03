@@ -5,6 +5,8 @@ import { useAuth } from "@/context/AuthContext";
 import { placeOrder } from "@/services/OrderService";
 import { createPayment } from "@/services/PaymentService";
 import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import { FadeIn } from "@/components/animations/MotionWrapper";
 import {
   Truck,
   Building,
@@ -152,19 +154,19 @@ const Checkout: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
       {/* Title */}
-      <div className="border-b-2 border-zinc-900 pb-4">
+      <FadeIn direction="down" className="border-b-2 border-zinc-900 pb-4">
         <h1 className="text-2xl sm:text-3xl font-black font-display uppercase tracking-tight text-zinc-900">
           Chi Tiết Thanh Toán & Đặt Hàng
         </h1>
         <p className="text-xs text-zinc-500 mt-1">
           Hoàn tất các bước bên dưới để nhận những đĩa than được đóng gói cẩn thận từ Vọc Records.
         </p>
-      </div>
+      </FadeIn>
 
       <form onSubmit={handlePlaceOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         
         {/* Left Column: Shipping & Billing Form */}
-        <div className="lg:col-span-7 space-y-6">
+        <FadeIn direction="right" className="lg:col-span-7 space-y-6">
           <div className="bg-white border-2 border-zinc-900 rounded-lg p-6 shadow-retro space-y-4">
             <h2 className="text-base font-black font-display uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-3">
               1. Thông Tin Người Nhận
@@ -373,10 +375,10 @@ const Checkout: React.FC = () => {
               </label>
             </div>
           </div>
-        </div>
+        </FadeIn>
 
         {/* Right Column: Order Summary Review */}
-        <div className="lg:col-span-5 space-y-6">
+        <FadeIn direction="left" delay={0.1} className="lg:col-span-5 space-y-6">
           <div className="bg-white border-2 border-zinc-900 rounded-lg p-6 shadow-retro space-y-6">
             <h2 className="text-base font-black font-display uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-3 flex items-center gap-2">
               <ShoppingBag className="w-4 h-4 text-amber-500" />
@@ -424,10 +426,11 @@ const Checkout: React.FC = () => {
             </div>
 
             {/* Submit Button */}
-            <button
+            <motion.button
+              whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full bg-[#13151A] hover:bg-black text-amber-300 py-4 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-transform active:scale-[0.99]"
+              className="w-full bg-[#13151A] hover:bg-black text-amber-300 py-4 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-colors"
             >
               {loading ? (
                 <ClipLoader size={18} color="#F5C542" />
@@ -438,14 +441,14 @@ const Checkout: React.FC = () => {
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
-            </button>
+            </motion.button>
 
             <div className="text-[11px] text-zinc-500 text-center flex items-center justify-center gap-1.5 pt-1">
               <ShieldCheck className="w-4 h-4 text-emerald-600 inline" />
               <span>Bảo mật thông tin thanh toán 100% tiêu chuẩn SSL</span>
             </div>
           </div>
-        </div>
+        </FadeIn>
 
       </form>
     </div>

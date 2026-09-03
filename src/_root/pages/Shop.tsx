@@ -17,7 +17,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getAllCategories } from "@/services/CategoryService";
-import { getAllProductsFilteredAndSorted } from "@/services/ProductService";
+import {
+  getAllProductsFilteredAndSorted,
+  getReadyProducts,
+} from "@/services/ProductService";
 import { ICategoryList, IProduct } from "types";
 import {
   Filter,
@@ -27,6 +30,8 @@ import {
   RotateCcw,
 } from "lucide-react";
 import ClipLoader from "react-spinners/ClipLoader";
+import { motion, AnimatePresence } from "framer-motion";
+import { FadeIn } from "@/components/animations/MotionWrapper";
 
 const STUDIO_NAMES = [
   "SONY MUSIC",
@@ -111,7 +116,7 @@ const Shop: React.FC = () => {
     setCurrentPage(1);
   };
 
-  // Fetch Products with filters
+  // Fetch Products with filters & smart client fallback
   const handleGetProducts = useCallback(async () => {
     setLoading(true);
     try {
@@ -129,6 +134,39 @@ const Shop: React.FC = () => {
       let data: IProduct[] = res?.data?.data || res?.data || [];
       if (!Array.isArray(data)) data = [];
 
+      // Smart fallback: If backend returns 0 products for a specific category/search term,
+      // fetch all products and match against mood, description, artist, platform, and title
+      if (data.length === 0 && (categoryParam || titleParam || platformParam)) {
+        try {
+          const allRes = await getReadyProducts();
+          const allData: IProduct[] = allRes?.data?.data || allRes?.data || [];
+          if (Array.isArray(allData) && allData.length > 0) {
+            const term = (categoryParam || titleParam || "").toLowerCase().trim();
+            const plat = (platformParam || "").toLowerCase().trim();
+
+            data = allData.filter((p) => {
+              let matchCat = true;
+              if (term) {
+                matchCat = Boolean(
+                  (p.mood && p.mood.toLowerCase().includes(term)) ||
+                  (p.artist && p.artist.toLowerCase().includes(term)) ||
+                  (p.title && p.title.toLowerCase().includes(term)) ||
+                  (p.description && p.description.toLowerCase().includes(term)) ||
+                  (p.categories && p.categories.some((c) => (c.categoryName || "").toLowerCase().includes(term)))
+                );
+              }
+              let matchPlat = true;
+              if (plat) {
+                matchPlat = Boolean(p.platform && p.platform.toLowerCase().includes(plat));
+              }
+              return matchCat && matchPlat;
+            });
+          }
+        } catch {
+          // ignore fallback error
+        }
+      }
+
       // Filter by max price client-side if changed
       if (maxPrice < 10000000) {
         data = data.filter((p) => p.price <= maxPrice);
@@ -137,7 +175,14 @@ const Shop: React.FC = () => {
       setProducts(data);
     } catch (err) {
       console.error("Failed to load products:", err);
-      setProducts([]);
+      // If API fails, try getReadyProducts
+      try {
+        const fallbackRes = await getReadyProducts();
+        const fallbackData = fallbackRes?.data?.data || fallbackRes?.data || [];
+        setProducts(Array.isArray(fallbackData) ? fallbackData : []);
+      } catch {
+        setProducts([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -167,7 +212,7 @@ const Shop: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       
       {/* Page Header Banner */}
-      <div className="bg-[#13151A] text-white rounded-xl p-6 sm:p-10 mb-8 border border-amber-500/30 relative overflow-hidden shadow-2xl">
+      <FadeIn direction="up" className="bg-[#13151A] text-white rounded-xl p-6 sm:p-10 mb-8 border border-amber-500/30 relative overflow-hidden shadow-2xl">
         <div className="relative z-10 max-w-2xl space-y-2">
           <div className="inline-flex items-center gap-1.5 text-amber-400 text-xs font-bold uppercase tracking-wider">
             <Disc3 className="w-4 h-4 animate-spin-slow" />
@@ -185,7 +230,7 @@ const Shop: React.FC = () => {
         <div className="absolute -right-10 -bottom-10 opacity-20 pointer-events-none">
           <Disc3 className="w-64 h-64 text-amber-400" />
         </div>
-      </div>
+      </FadeIn>
 
       {/* Main Content Layout: Sidebar Filters + Products Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -372,33 +417,50 @@ const Shop: React.FC = () => {
             {/* Mobile Filter Button */}
             <button
               onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden bg-[#13151A] text-white px-4 py-2 rounded text-xs font-bold uppercase flex items-center gap-2"
+              className="lg:hidden bg-[#13151A] text-white px-4 py-2 rounded text-xs font-bold uppercase flex items-center gap-2 shadow-retro-sm transition-transform active:scale-95"
             >
               <SlidersHorizontal className="w-4 h-4 text-amber-400" />
               <span>Bộ Lọc</span>
             </button>
 
-            {/* Active filter pills summary */}
+            {/* Active filter pills summary with AnimatePresence */}
             <div className="hidden sm:flex flex-wrap items-center gap-1.5 text-xs">
               <span className="text-zinc-500 font-medium">Bộ lọc đang bật:</span>
-              {platformParam && (
-                <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                  {platformParam}
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => handleFilterChange("platform", "ALL")} />
-                </span>
-              )}
-              {categoryParam && (
-                <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                  {categoryParam}
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => handleFilterChange("category", "ALL")} />
-                </span>
-              )}
-              {stockStatusParam && (
-                <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                  {stockStatusParam}
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => handleFilterChange("stockStatus", "ALL")} />
-                </span>
-              )}
+              <AnimatePresence>
+                {platformParam && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1"
+                  >
+                    {platformParam}
+                    <X className="w-3 h-3 cursor-pointer hover:text-black" onClick={() => handleFilterChange("platform", "ALL")} />
+                  </motion.span>
+                )}
+                {categoryParam && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1"
+                  >
+                    {categoryParam}
+                    <X className="w-3 h-3 cursor-pointer hover:text-black" onClick={() => handleFilterChange("category", "ALL")} />
+                  </motion.span>
+                )}
+                {stockStatusParam && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full font-bold flex items-center gap-1"
+                  >
+                    {stockStatusParam}
+                    <X className="w-3 h-3 cursor-pointer hover:text-black" onClick={() => handleFilterChange("stockStatus", "ALL")} />
+                  </motion.span>
+                )}
+              </AnimatePresence>
               {!platformParam && !categoryParam && !stockStatusParam && (
                 <span className="text-zinc-400 italic">Tất cả sản phẩm</span>
               )}
@@ -434,7 +496,7 @@ const Shop: React.FC = () => {
               </p>
             </div>
           ) : (
-            <>
+            <div>
               <ProductList products={currentProducts} />
 
               {/* Pagination */}
@@ -478,64 +540,79 @@ const Shop: React.FC = () => {
                   </Pagination>
                 </div>
               )}
-            </>
+            </div>
           )}
 
         </div>
 
       </div>
 
-      {/* Mobile Filters Drawer */}
-      {mobileFilterOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden overflow-hidden">
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setMobileFilterOpen(false)}
-          ></div>
-          <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-2xl p-6 overflow-y-auto space-y-6">
-            <div className="flex items-center justify-between border-b pb-3">
-              <span className="font-bold text-sm uppercase">Bộ Lọc Đĩa Than</span>
-              <button onClick={() => setMobileFilterOpen(false)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* Mobile Filters Drawer with AnimatePresence & Swipe In from Left */}
+      <AnimatePresence>
+        {mobileFilterOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden overflow-hidden">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
+              onClick={() => setMobileFilterOpen(false)}
+            />
 
-            {/* Platform */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase">Định Dạng</label>
-              {PLATFORMS.map((p) => (
-                <button
-                  key={p.value}
-                  onClick={() => {
-                    handleFilterChange("platform", p.value);
-                    setMobileFilterOpen(false);
-                  }}
-                  className="w-full text-left text-xs py-1.5 text-zinc-700"
-                >
-                  {p.label}
+            {/* Panel */}
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
+              className="fixed inset-y-0 left-0 max-w-xs w-full bg-white shadow-2xl p-6 overflow-y-auto space-y-6 z-10"
+            >
+              <div className="flex items-center justify-between border-b pb-3">
+                <span className="font-bold text-sm uppercase">Bộ Lọc Đĩa Than</span>
+                <button onClick={() => setMobileFilterOpen(false)} className="p-1 hover:bg-zinc-100 rounded">
+                  <X className="w-5 h-5" />
                 </button>
-              ))}
-            </div>
+              </div>
 
-            {/* Categories */}
-            <div className="space-y-2 border-t pt-4">
-              <label className="text-xs font-bold uppercase">Thể Loại Nhạc</label>
-              {categories.map((c) => (
-                <button
-                  key={c.id || c.name}
-                  onClick={() => {
-                    handleFilterChange("category", c.name);
-                    setMobileFilterOpen(false);
-                  }}
-                  className="w-full text-left text-xs py-1.5 text-zinc-700"
-                >
-                  {c.name}
-                </button>
-              ))}
-            </div>
+              {/* Platform */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase">Định Dạng</label>
+                {PLATFORMS.map((p) => (
+                  <button
+                    key={p.value}
+                    onClick={() => {
+                      handleFilterChange("platform", p.value);
+                      setMobileFilterOpen(false);
+                    }}
+                    className="w-full text-left text-xs py-1.5 text-zinc-700 hover:text-black font-medium"
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Categories */}
+              <div className="space-y-2 border-t pt-4">
+                <label className="text-xs font-bold uppercase">Thể Loại Nhạc</label>
+                {categories.map((c) => (
+                  <button
+                    key={c.id || c.name}
+                    onClick={() => {
+                      handleFilterChange("category", c.name);
+                      setMobileFilterOpen(false);
+                    }}
+                    className="w-full text-left text-xs py-1.5 text-zinc-700 hover:text-black font-medium"
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
     </div>
   );

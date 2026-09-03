@@ -6,6 +6,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { useAudioPlayer } from "@/context/AudioPlayerContext";
 import { useToast } from "@/hooks/use-toast";
 import { Heart, ShoppingBag, Play, Pause, Disc } from "lucide-react";
+import { motion } from "framer-motion";
 import VinylSpin from "./VinylSpin";
 
 interface ProductCardProps {
@@ -54,15 +55,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
 
   return (
-    <div
-      className="group relative bg-white border border-zinc-200/80 hover:border-amber-400/80 rounded-lg p-3 transition-all duration-300 hover:shadow-retro flex flex-col justify-between"
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="group relative bg-white border border-zinc-200/80 hover:border-amber-400/80 rounded-lg p-3 transition-shadow duration-300 hover:shadow-retro flex flex-col justify-between"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Vinyl Sleeve & Slide-out Disc Container */}
       <div className="relative overflow-hidden aspect-square bg-[#1a1c22] rounded-md mb-3 flex items-center justify-center">
         
-        {/* Slide-out Vinyl Disc */}
+        {/* Slide-out Vinyl Disc with Smooth Motion */}
         <div
           className={`absolute transition-all duration-500 ease-out pointer-events-none ${
             isHovered || isCurrentPlaying
@@ -194,7 +197,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <span>THÊM VÀO GIỎ</span>
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

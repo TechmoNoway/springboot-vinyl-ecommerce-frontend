@@ -4,6 +4,8 @@ import { IProduct } from "types";
 import { getReadyProducts } from "@/services/ProductService";
 import ProductCard from "./ProductCard";
 import { Disc3, ArrowRight, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { StaggerContainer, StaggerItem, FadeIn } from "@/components/animations/MotionWrapper";
 
 const ReadyVinylList: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -51,7 +53,7 @@ const ReadyVinylList: React.FC = () => {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       
       {/* Section Header with Filter Tabs */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-2 border-zinc-900 pb-4 mb-8">
+      <FadeIn direction="up" className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b-2 border-zinc-900 pb-4 mb-8">
         <div>
           <div className="inline-flex items-center gap-1.5 text-amber-600 font-extrabold text-xs tracking-wider uppercase mb-1">
             <Sparkles className="w-3.5 h-3.5" />
@@ -64,50 +66,28 @@ const ReadyVinylList: React.FC = () => {
 
         {/* Tab Pills */}
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => setActiveTab("ALL")}
-            className={`px-3.5 py-1.5 text-xs font-bold uppercase transition-all ${
-              activeTab === "ALL"
-                ? "bg-[#13151A] text-amber-400 shadow-retro-sm"
-                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-700"
-            }`}
-          >
-            Tất Cả ({products.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("IN_STOCK")}
-            className={`px-3.5 py-1.5 text-xs font-bold uppercase transition-all ${
-              activeTab === "IN_STOCK"
-                ? "bg-[#13151A] text-amber-400 shadow-retro-sm"
-                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-700"
-            }`}
-          >
-            Có Sẵn Lấy Ngay
-          </button>
-          <button
-            onClick={() => setActiveTab("VINTAGE")}
-            className={`px-3.5 py-1.5 text-xs font-bold uppercase transition-all ${
-              activeTab === "VINTAGE"
-                ? "bg-[#13151A] text-amber-400 shadow-retro-sm"
-                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-700"
-            }`}
-          >
-            Đĩa Xưa Vintage
-          </button>
-          <button
-            onClick={() => setActiveTab("CASSETTE")}
-            className={`px-3.5 py-1.5 text-xs font-bold uppercase transition-all ${
-              activeTab === "CASSETTE"
-                ? "bg-[#13151A] text-amber-400 shadow-retro-sm"
-                : "bg-zinc-100 hover:bg-zinc-200 text-zinc-700"
-            }`}
-          >
-            Băng Cassette
-          </button>
+          {[
+            { id: "ALL", label: `Tất Cả (${products.length})` },
+            { id: "IN_STOCK", label: "Có Sẵn Lấy Ngay" },
+            { id: "VINTAGE", label: "Đĩa Xưa Vintage" },
+            { id: "CASSETTE", label: "Băng Cassette" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-3.5 py-1.5 text-xs font-bold uppercase transition-all ${
+                activeTab === tab.id
+                  ? "bg-[#13151A] text-amber-400 shadow-retro-sm"
+                  : "bg-zinc-100 hover:bg-zinc-200 text-zinc-700"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
-      </div>
+      </FadeIn>
 
-      {/* Products Grid */}
+      {/* Products Grid with Tab Transition */}
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
@@ -123,7 +103,7 @@ const ReadyVinylList: React.FC = () => {
           ))}
         </div>
       ) : filteredProducts.length === 0 ? (
-        <div className="text-center py-16 bg-white border border-dashed border-zinc-300 rounded-lg p-8">
+        <FadeIn direction="up" className="text-center py-16 bg-white border border-dashed border-zinc-300 rounded-lg p-8">
           <Disc3 className="w-12 h-12 text-zinc-400 mx-auto animate-spin-slow mb-3" />
           <h3 className="text-base font-bold text-zinc-800">
             Không tìm thấy sản phẩm trong danh mục này
@@ -137,17 +117,29 @@ const ReadyVinylList: React.FC = () => {
           >
             Xem Tất Cả Đĩa
           </button>
-        </div>
+        </FadeIn>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {filteredProducts.slice(0, 12).map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <StaggerContainer className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {filteredProducts.slice(0, 12).map((product) => (
+                <StaggerItem key={product.id}>
+                  <ProductCard product={product} />
+                </StaggerItem>
+              ))}
+            </StaggerContainer>
+          </motion.div>
+        </AnimatePresence>
       )}
 
       {/* Explore More CTA */}
-      <div className="mt-12 text-center">
+      <FadeIn direction="up" delay={0.2} className="mt-12 text-center">
         <button
           onClick={() => navigate("/product-category/vinyl")}
           className="inline-flex items-center gap-2 bg-[#13151A] hover:bg-black text-amber-400 font-extrabold text-sm uppercase px-8 py-4 rounded-none shadow-retro hover:shadow-retro-lg transition-all active:translate-x-0.5 active:translate-y-0.5 border border-black"
@@ -155,7 +147,7 @@ const ReadyVinylList: React.FC = () => {
           <span>Khám Phá Toàn Bộ Đĩa Than Của Tiệm</span>
           <ArrowRight className="w-4 h-4" />
         </button>
-      </div>
+      </FadeIn>
 
     </section>
   );
