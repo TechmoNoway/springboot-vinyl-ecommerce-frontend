@@ -5,6 +5,7 @@ import { getProductByTitle, getReadyProducts } from "@/services/ProductService";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useAudioPlayer } from "@/context/AudioPlayerContext";
+import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import VinylSpin from "@/components/shared/VinylSpin";
 import ProductCard from "@/components/shared/ProductCard";
@@ -31,6 +32,7 @@ const ProductDetail: React.FC = () => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { currentTrack, isPlaying, playTrack, togglePlay } = useAudioPlayer();
+  const { token } = useAuth();
   const { toast } = useToast();
 
   const [product, setProduct] = useState<IProduct | null>(null);
@@ -113,6 +115,15 @@ const ProductDetail: React.FC = () => {
 
   const handleBuyNow = () => {
     addToCart(product, quantity);
+    if (!token) {
+      toast({
+        variant: "destructive",
+        title: "Yêu cầu đăng nhập 🔒",
+        description: "Vui lòng đăng nhập tài khoản 33 RPM để tiến hành mua ngay và thanh toán.",
+      });
+      navigate("/login-signup?redirect=/checkout", { state: { from: "/checkout" } });
+      return;
+    }
     navigate("/checkout");
   };
 

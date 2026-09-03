@@ -4,6 +4,7 @@ import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { placeOrder } from "@/services/OrderService";
 import { createPayment } from "@/services/PaymentService";
+import { IPlaceOrder } from "types";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/animations/MotionWrapper";
@@ -22,7 +23,7 @@ const FREE_SHIPPING_THRESHOLD = 1000000;
 
 const Checkout: React.FC = () => {
   const { cart, totalPrice, clearCart } = useCart();
-  const { currentUser } = useAuth();
+  const { currentUser, token, isLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -41,6 +42,18 @@ const Checkout: React.FC = () => {
 
   // Payment method
   const [paymentMethod, setPaymentMethod] = useState<"vietqr" | "cod" | "bank_transfer">("vietqr");
+
+  // Require login to checkout
+  useEffect(() => {
+    if (!isLoading && !token) {
+      toast({
+        variant: "destructive",
+        title: "Yêu cầu đăng nhập 🔒",
+        description: "Vui lòng đăng nhập để tiến hành thanh toán đơn hàng.",
+      });
+      navigate("/login-signup?redirect=/checkout", { state: { from: "/checkout" } });
+    }
+  }, [isLoading, token, navigate, toast]);
 
   useEffect(() => {
     if (currentUser) {
@@ -77,6 +90,16 @@ const Checkout: React.FC = () => {
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!token) {
+      toast({
+        variant: "destructive",
+        title: "Chưa đăng nhập 🔒",
+        description: "Vui lòng đăng nhập tài khoản 33 RPM để hoàn tất đặt hàng.",
+      });
+      navigate("/login-signup?redirect=/checkout", { state: { from: "/checkout" } });
+      return;
+    }
+
     if (!formData.fullname.trim() || !formData.phone.trim() || !formData.email.trim() || !formData.address.trim()) {
       toast({
         variant: "destructive",
@@ -91,39 +114,45 @@ const Checkout: React.FC = () => {
     try {
       const fullAddress = `${formData.address}${formData.district ? `, ${formData.district}` : ""}, ${formData.city}`;
 
-      const orderPayload = {
+      const orderPayload: IPlaceOrder = {
         fullname: formData.fullname.trim(),
         email: formData.email.trim(),
         customerPhone: formData.phone.trim(),
         customerAddress: fullAddress,
-        note: formData.note.trim(),
+        note: formData.note.trim() || undefined,
         items: cart.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-          price: item.price,
-          productTitle: item.title,
-          productPosterUrl: item.posterUrl,
+          productId: Number(item.id),
+          quantity: Number(item.quantity),
         })),
       };
 
       const orderResponse = await placeOrder(orderPayload);
+      if (orderResponse?.data && orderResponse.data.success === false) {
+        throw new Error(orderResponse.data.message || orderResponse.data.error || "Không thể khởi tạo đơn hàng.");
+      }
+
+      const orderData = orderResponse?.data?.data || orderResponse?.data;
       const createdOrderId =
-        orderResponse?.data?.data?.id ||
-        orderResponse?.data?.data ||
+        orderData?.id ||
         orderResponse?.data?.id ||
         `ORD-${Date.now()}`;
 
-      // Create Payment if VietQR or Bank Transfer
-      const idempotencyKey = `PAY-${createdOrderId}-${Date.now()}`;
-      try {
-        await createPayment({
-          orderId: String(createdOrderId),
-          method: paymentMethod,
-          idempotencyKey,
-          amount: grandTotal,
-        });
-      } catch (payErr) {
-        console.warn("Payment initialization warning:", payErr);
+      // Create Payment if VNPAY / MOMO / VietQR
+      const idempotencyKey =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `b286e5ac-2bb9-4c51-b2ce-${Date.now()}`;
+
+      if (paymentMethod === "vietqr") {
+        try {
+          await createPayment({
+            orderId: String(createdOrderId),
+            method: "VNPAY",
+            idempotencyKey,
+          });
+        } catch (payErr) {
+          console.warn("Payment initialization warning:", payErr);
+        }
       }
 
       toast({
@@ -133,6 +162,7 @@ const Checkout: React.FC = () => {
 
       clearCart();
 
+      // Navigation based on method
       if (paymentMethod === "vietqr") {
         navigate(`/payment/vietqr/${grandTotal}?orderId=${createdOrderId}`);
       } else {

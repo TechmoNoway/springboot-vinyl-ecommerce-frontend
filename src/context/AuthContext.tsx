@@ -5,7 +5,14 @@ import { jwtDecode } from "jwt-decode";
 import { setUser, logout as logoutAction, AuthState } from "../redux/authSlice";
 import { getCurrentUserProfile } from "@/services/UserService";
 import { useToast } from "@/hooks/use-toast";
-import { getStoredToken, setStoredToken, removeStoredToken } from "@/services/apiClient";
+import axios from "axios";
+import {
+  API_BASE_URL,
+  getStoredAccessToken,
+  getStoredRefreshToken,
+  setStoredTokens,
+  removeStoredTokens,
+} from "@/services/apiClient";
 import { ICurrentUser } from "types";
 
 interface DecodedToken {
@@ -21,8 +28,12 @@ interface AuthContextProps {
   token: string | null;
   isAdmin: boolean;
   isLoading: boolean;
-  stateLogin: (token: string) => Promise<void>;
-  loginWithGoogle: (token: string) => Promise<void>;
+  stateLogin: (
+    accessToken: string,
+    refreshToken?: string,
+    initialData?: Partial<AuthState>
+  ) => Promise<void>;
+  loginWithGoogle: (accessToken: string) => Promise<void>;
   logoutWithNavigate: () => void;
   logoutWithoutNavigate: () => void;
   refreshUserProfile: () => Promise<void>;
@@ -31,7 +42,7 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(getStoredToken());
+  const [token, setToken] = useState<string | null>(getStoredAccessToken());
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -44,15 +55,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const res = await getCurrentUserProfile();
       const userData = res?.data?.data || res?.data;
-      if (userData) {
-        let roles: string[] = [];
-        if (Array.isArray(userData.roles)) {
-          roles = userData.roles.map((r: unknown) => (typeof r === "string" ? r : (r as { name?: string }).name || ""));
-        } else if (typeof userData.role === "string") {
-          roles = [userData.role];
-        }
+      if (userData && userData.email) {
+        const roleId = userData.roleId;
+        const isAdminUser = roleId === 1;
+        const roleStr = isAdminUser ? "ADMIN" : "CUSTOMER";
+        const roles = isAdminUser
+          ? ["ROLE_ADMIN", "ADMIN"]
+          : ["ROLE_CUSTOMER", "CUSTOMER"];
 
-        const roleStr = roles.join(",");
         dispatch(
           setUser({
             id: userData.id,
@@ -62,6 +72,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             fullname: userData.fullname || "",
             birthday: userData.birthday,
             address: userData.address || "",
+            roleId: roleId,
+            avatar: userData.avatar || "",
             roles: roles,
             role: roleStr,
           })
@@ -73,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [dispatch]);
 
   const checkAuth = useCallback(async () => {
-    const rawToken = getStoredToken();
+    const rawToken = getStoredAccessToken();
     if (!rawToken) {
       dispatch(logoutAction());
       setIsLoading(false);
@@ -81,11 +93,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      const decoded: DecodedToken = jwtDecode<DecodedToken>(rawToken);
-      const currentUnix = Math.floor(Date.now() / 1000);
+      let isExpired = false;
+      try {
+        const decoded: DecodedToken = jwtDecode<DecodedToken>(rawToken);
+        const currentUnix = Math.floor(Date.now() / 1000);
+        if (decoded.exp && decoded.exp < currentUnix) {
+          isExpired = true;
+        }
+      } catch {
+        // If jwtDecode fails, token might not be standard JWT, continue
+      }
 
-      if (decoded.exp && decoded.exp < currentUnix) {
-        removeStoredToken();
+      if (isExpired) {
+        const rToken = getStoredRefreshToken();
+        if (rToken) {
+          try {
+            const refreshRes = await axios.post(
+              `${API_BASE_URL}/api/v1/auth/refresh-token`,
+              null,
+              {
+                headers: {
+                  Authorization: `Bearer ${rToken}`,
+                },
+              }
+            );
+            const rData = refreshRes.data?.data || refreshRes.data;
+            if (rData?.accessToken) {
+              setStoredTokens(rData.accessToken, rData.refreshToken || rToken);
+              setToken(rData.accessToken);
+              await fetchProfile();
+              setIsLoading(false);
+              return;
+            }
+          } catch {
+            // Refresh failed, proceed to logout
+          }
+        }
+
+        removeStoredTokens();
         setToken(null);
         dispatch(logoutAction());
         toast({
@@ -100,8 +145,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(rawToken);
       await fetchProfile();
     } catch (e) {
-      console.error("Token decoding error:", e);
-      removeStoredToken();
+      console.error("Token checking error:", e);
+      removeStoredTokens();
       setToken(null);
       dispatch(logoutAction());
     } finally {
@@ -113,31 +158,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuth();
   }, [checkAuth]);
 
-  const stateLogin = async (newToken: string) => {
-    const cleanToken = newToken.replace(/^"|"$/g, "");
-    setStoredToken(cleanToken);
+  const stateLogin = async (
+    accessToken: string,
+    refreshToken?: string,
+    initialData?: Partial<AuthState>
+  ) => {
+    const cleanToken = accessToken.replace(/^"|"$/g, "");
+    setStoredTokens(cleanToken, refreshToken);
     setToken(cleanToken);
+
+    if (initialData && (initialData.email || initialData.id)) {
+      dispatch(setUser(initialData));
+    }
+
     await fetchProfile();
   };
 
-  const loginWithGoogle = async (newToken: string) => {
-    await stateLogin(newToken);
+  const loginWithGoogle = async (accessToken: string) => {
+    await stateLogin(accessToken);
   };
 
   const logoutWithoutNavigate = () => {
-    removeStoredToken();
+    removeStoredTokens();
     setToken(null);
     dispatch(logoutAction());
   };
 
   const logoutWithNavigate = () => {
     logoutWithoutNavigate();
-    if (location.pathname.startsWith("/account") || location.pathname.startsWith("/admin")) {
+    if (
+      location.pathname.startsWith("/account") ||
+      location.pathname.startsWith("/admin") ||
+      location.pathname.startsWith("/checkout")
+    ) {
       navigate("/login-signup");
     }
   };
 
   const isAdmin = Boolean(
+    authState?.roleId === 1 ||
     authState?.roles?.some((r) => r.toLowerCase().includes("admin")) ||
     authState?.role?.toLowerCase().includes("admin") ||
     authState?.email?.toLowerCase().includes("admin")

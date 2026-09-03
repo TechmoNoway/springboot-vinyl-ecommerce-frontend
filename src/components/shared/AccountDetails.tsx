@@ -47,11 +47,12 @@ const AccountDetails: React.FC = () => {
     setProfileLoading(true);
     try {
       await updateUserInfo({
+        email: currentUser.email,
         fullname: profileForm.fullname,
         phone: profileForm.phone,
         gender: profileForm.gender,
         address: profileForm.address,
-        birthday: profileForm.birthday ? new Date(profileForm.birthday) : undefined,
+        birthday: profileForm.birthday || undefined,
       });
       await refreshUserProfile();
       toast({
@@ -60,10 +61,11 @@ const AccountDetails: React.FC = () => {
       });
     } catch (err) {
       console.error(err);
+      const anyErr = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
       toast({
         variant: "destructive",
         title: "Cập nhật thất bại",
-        description: "Vui lòng kiểm tra lại thông tin và thử lại.",
+        description: anyErr?.response?.data?.message || anyErr?.message || "Vui lòng kiểm tra lại thông tin và thử lại.",
       });
     } finally {
       setProfileLoading(false);
@@ -80,11 +82,11 @@ const AccountDetails: React.FC = () => {
       });
       return;
     }
-    if (passwordForm.newPassword.length < 6) {
+    if (passwordForm.newPassword.length < 12 || passwordForm.newPassword.length > 72) {
       toast({
         variant: "destructive",
-        title: "Mật khẩu quá ngắn",
-        description: "Mật khẩu mới phải có ít nhất 6 ký tự.",
+        title: "Độ dài mật khẩu không hợp lệ",
+        description: "Mật khẩu mới phải có độ dài từ 12 đến 72 ký tự.",
       });
       return;
     }
@@ -106,10 +108,11 @@ const AccountDetails: React.FC = () => {
       });
     } catch (err) {
       console.error(err);
+      const anyErr = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
       toast({
         variant: "destructive",
         title: "Đổi mật khẩu thất bại",
-        description: "Mật khẩu hiện tại không chính xác.",
+        description: anyErr?.response?.data?.message || anyErr?.message || "Mật khẩu hiện tại không chính xác.",
       });
     } finally {
       setPasswordLoading(false);

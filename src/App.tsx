@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
 import RootLayout from "./_root/RootLayout";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import {
   Home,
   Shop,
@@ -29,16 +30,50 @@ function App() {
           <Route path="/product-category/vinyl" element={<Shop />} />
           <Route path="/product/:title" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
           <Route path="/login" element={<LoginSignup />} />
           <Route path="/signup" element={<LoginSignup />} />
           <Route path="/login-signup" element={<LoginSignup />} />
-          <Route path="/order-details/:id" element={<OrderDetails />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/admin" element={<AdminDashboard />} />
 
-          {/* Account Nested Routes */}
-          <Route path="/account" element={<Profile />}>
+          {/* Protected Checkout */}
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Order Details */}
+          <Route
+            path="/order-details/:id"
+            element={
+              <ProtectedRoute>
+                <OrderDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Admin Dashboard */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requireAdmin>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Account Nested Routes */}
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<Navigate to="/account/details" replace />} />
             <Route path="details" element={<AccountDetails />} />
             <Route path="orders" element={<AccountOrders />} />
@@ -48,8 +83,15 @@ function App() {
           <Route path="/account-details" element={<Navigate to="/account/details" replace />} />
         </Route>
 
-        {/* Standalone payment route */}
-        <Route path="/payment/vietqr/:amount" element={<QRPayment />} />
+        {/* Protected standalone payment route */}
+        <Route
+          path="/payment/vietqr/:amount"
+          element={
+            <ProtectedRoute>
+              <QRPayment />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

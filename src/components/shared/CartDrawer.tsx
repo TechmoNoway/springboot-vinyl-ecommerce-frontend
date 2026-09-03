@@ -1,5 +1,7 @@
 import React from "react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -25,6 +27,8 @@ const CartDrawer: React.FC = () => {
     totalPrice,
     totalItems,
   } = useCart();
+  const { token } = useAuth();
+  const { toast } = useToast();
 
   const navigate = useNavigate();
 
@@ -39,6 +43,15 @@ const CartDrawer: React.FC = () => {
 
   const handleCheckout = () => {
     closeDrawer();
+    if (!token) {
+      toast({
+        variant: "destructive",
+        title: "Yêu cầu đăng nhập 🔒",
+        description: "Vui lòng đăng nhập tài khoản 33 RPM để tiến hành thanh toán đơn hàng.",
+      });
+      navigate("/login-signup?redirect=/checkout", { state: { from: "/checkout" } });
+      return;
+    }
     navigate("/checkout");
   };
 

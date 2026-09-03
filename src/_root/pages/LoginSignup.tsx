@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams, useLocation } from "react-router-dom";
 import { login, register, googleLogin } from "@/services/AuthService";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -17,8 +17,12 @@ import { FaGoogle, FaGithub } from "react-icons/fa";
 import ClipLoader from "react-spinners/ClipLoader";
 
 const LoginSignup: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [isLoginTab, setIsLoginTab] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const redirectTarget = searchParams.get("redirect") || (location.state as { from?: { pathname?: string } })?.from?.pathname || "/account/details";
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState<string>("");
@@ -49,28 +53,46 @@ const LoginSignup: React.FC = () => {
         password: loginPassword.trim(),
       });
 
-      const token =
-        res?.data?.data?.accessToken ||
-        res?.data?.accessToken ||
-        res?.data?.data ||
-        res?.data?.token;
-
-      if (token) {
-        await stateLogin(token);
-        toast({
-          title: "Đăng nhập thành công! 🎉",
-          description: "Chào mừng bạn quay trở lại với 33 RPM.",
-        });
-        navigate("/account/details");
-      } else {
-        throw new Error("Không tìm thấy token trong phản hồi");
+      if (res?.data && res.data.success === false) {
+        throw new Error(res.data.message || res.data.error || "Đăng nhập thất bại");
       }
+
+      const authData = res?.data?.data || res?.data;
+      const accessToken =
+        authData?.accessToken ||
+        authData?.token ||
+        (typeof authData === "string" ? authData : null);
+      const refreshToken = authData?.refreshToken;
+
+      if (!accessToken) {
+        throw new Error(res?.data?.message || "Không nhận được access token từ máy chủ");
+      }
+
+      await stateLogin(accessToken, refreshToken, {
+        id: authData?.userID || authData?.id,
+        email: authData?.email || loginEmail.trim(),
+        fullname: authData?.fullname || "",
+        roleId: authData?.roleId,
+        avatar: authData?.avatar,
+      });
+
+      toast({
+        title: "Đăng nhập thành công! 🎉",
+        description: `Chào mừng ${authData?.fullname || loginEmail.trim()} quay trở lại với 33 RPM.`,
+      });
+      navigate(redirectTarget);
     } catch (err: unknown) {
       console.error("Login failed:", err);
+      const anyErr = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
+      const errorMessage =
+        anyErr?.response?.data?.message ||
+        anyErr?.response?.data?.error ||
+        anyErr?.message ||
+        "Email hoặc mật khẩu không chính xác. Vui lòng thử lại.";
       toast({
         variant: "destructive",
         title: "Đăng nhập thất bại",
-        description: "Email hoặc mật khẩu không chính xác. Vui lòng thử lại.",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -91,20 +113,40 @@ const LoginSignup: React.FC = () => {
     setLoading(true);
     try {
       const res = await register(regEmail.trim());
-      if (res?.data?.success !== false) {
-        toast({
-          title: "Đăng ký thành công!",
-          description: "Mật khẩu kích hoạt tài khoản đã được gửi tới hộp thư email của bạn.",
+      if (res?.data && res.data.success === false) {
+        throw new Error(res.data.message || res.data.error || "Đăng ký không thành công.");
+      }
+
+      const authData = res?.data?.data || res?.data;
+      const accessToken = authData?.accessToken;
+      const refreshToken = authData?.refreshToken;
+
+      toast({
+        title: "Đăng ký thành công! 🎉",
+        description: "Mật khẩu tạm thời đã được gửi tới email của bạn.",
+      });
+
+      if (accessToken) {
+        await stateLogin(accessToken, refreshToken, {
+          email: regEmail.trim(),
         });
+        navigate(redirectTarget);
+      } else {
         setIsLoginTab(true);
         setLoginEmail(regEmail.trim());
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Register failed:", err);
+      const anyErr = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
+      const errorMessage =
+        anyErr?.response?.data?.message ||
+        anyErr?.response?.data?.error ||
+        anyErr?.message ||
+        "Email này có thể đã được sử dụng hoặc không hợp lệ.";
       toast({
         variant: "destructive",
         title: "Đăng ký không thành công",
-        description: "Email này có thể đã được sử dụng hoặc không hợp lệ.",
+        description: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -125,7 +167,7 @@ const LoginSignup: React.FC = () => {
         title: "Đăng nhập bằng Google thành công!",
         description: "Chào mừng bạn đến với 33 RPM.",
       });
-      navigate("/account/details");
+      navigate(redirectTarget);
     } catch {
       toast({
         title: "Đăng nhập bằng Google Demo",
@@ -179,6 +221,16 @@ const LoginSignup: React.FC = () => {
         {/* Right Column: Form (Login / Register Tabs) */}
         <div className="md:col-span-7 p-8 sm:p-10 flex flex-col justify-center space-y-6">
           
+          {/* Notice banner if redirected from checkout or protected action */}
+          {redirectTarget && redirectTarget.includes("checkout") && (
+            <div className="bg-amber-50 border-2 border-amber-400/80 rounded-lg p-3 text-xs text-amber-950 font-medium flex items-center gap-2.5 shadow-sm">
+              <Lock className="w-5 h-5 text-amber-600 flex-shrink-0" />
+              <p>
+                <b>Yêu cầu đăng nhập:</b> Đăng nhập tài khoản 33 RPM để bảo vệ đơn hàng và tiếp tục thanh toán. Hệ thống sẽ tự động đưa bạn về trang thanh toán ngay sau đó!
+              </p>
+            </div>
+          )}
+
           {/* Tab Switcher */}
           <div className="flex border-b-2 border-zinc-200">
             <button

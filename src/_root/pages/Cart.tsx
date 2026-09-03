@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import {
   ShoppingBag,
   Trash2,
@@ -19,6 +20,7 @@ const FREE_SHIPPING_THRESHOLD = 1000000;
 
 const Cart: React.FC = () => {
   const { cart, updateQuantity, removeFromCart, clearCart, totalPrice, totalItems } = useCart();
+  const { token } = useAuth();
   const [shippingMethod, setShippingMethod] = useState<string>("bank");
   const [shippingCost, setShippingCost] = useState<number>(50000);
   const [couponCode, setCouponCode] = useState<string>("");
@@ -58,6 +60,19 @@ const Cart: React.FC = () => {
   const isFreeShip = totalPrice >= FREE_SHIPPING_THRESHOLD;
   const effectiveShipping = isFreeShip ? 0 : shippingCost;
   const grandTotal = Math.max(totalPrice - discountAmount + effectiveShipping, 0);
+
+  const handleProceedToCheckout = () => {
+    if (!token) {
+      toast({
+        variant: "destructive",
+        title: "Yêu cầu đăng nhập 🔒",
+        description: "Vui lòng đăng nhập tài khoản 33 RPM để tiến hành thanh toán đơn hàng.",
+      });
+      navigate("/login-signup?redirect=/checkout", { state: { from: "/checkout" } });
+      return;
+    }
+    navigate("/checkout");
+  };
 
   if (cart.length === 0) {
     return (
@@ -329,7 +344,7 @@ const Cart: React.FC = () => {
             {/* Checkout Button */}
             <motion.button
               whileTap={{ scale: 0.98 }}
-              onClick={() => navigate("/checkout")}
+              onClick={handleProceedToCheckout}
               className="w-full bg-amber-400 hover:bg-amber-300 text-black py-4 px-6 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border-2 border-black shadow-retro transition-colors"
             >
               <span>TIẾN HÀNH ĐẶT HÀNG</span>

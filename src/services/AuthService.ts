@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient, { getStoredRefreshToken } from "./apiClient";
 import { IGoogleLoginForm, ILoginForm } from "types";
 
 export const login = async (userForm: ILoginForm) => {
@@ -33,9 +33,12 @@ export const register = async (email: string) => {
   }
 };
 
-export const refreshToken = async (token: string) => {
+export const refreshToken = async (overrideRefreshToken?: string) => {
   try {
-    const res = await apiClient.post("/api/v1/auth/refresh-token", { token });
+    const token = overrideRefreshToken || getStoredRefreshToken();
+    const res = await apiClient.post("/api/v1/auth/refresh-token", null, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     return res;
   } catch (error) {
     console.error("AuthService.refreshToken error:", error);
